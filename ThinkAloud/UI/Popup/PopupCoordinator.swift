@@ -1,0 +1,284 @@
+import AppKit
+import Foundation
+import Observation
+
+@MainActor
+@Observable
+final class PopupCoordinator {
+    private let permissions: PermissionsService
+    private let modelManager: ModelManager
+    private let recorder: AudioRecorder
+    private let insertion: TextInsertionManager
+    private let datasetStore: DatasetStore
+    private let audioFileStore: AudioFileStore
+
+    let viewModel = PopupViewModel()
+    private let windowController = PopupWindowController()
+
+    private var elapsedTimerTask: Task<Void, Never>?
+    private var levelTask: Task<Void, Never>?
+    private var lastResult: ASRResult?
+    private var lastRecording: RecordingResult?
+
+    init(
+        permissions: PermissionsService,
+        modelManager: ModelManager,
+        recorder: AudioRecorder,
+        insertion: TextInsertionManager,
+        datasetStore: DatasetStore,
+        audioFileStore: AudioFileStore
+    ) {
+        self.permissions = permissions
+        self.modelManager = modelManager
+        self.recorder = recorder
+        self.insertion = insertion
+        self.datasetStore = datasetStore
+        self.audioFileStore = audioFileStore
+    }
+
+    func invoke() {
+        NSLog("ThinkAloud: invoke() phase=\(viewModel.phase)")
+        switch viewModel.phase {
+        case .recording, .transcribing, .review:
+            // .review must early-return so that ⌥Space on a review popup goes to insertAndSave
+            // (the sibling handler) rather than restarting recording and discarding the transcript.
+            return
+        case .idle, .error:
+            break
+        }
+        modelManager.recordActivity()
+        viewModel.reset()
+
+        let focus = FocusContext.capture()
+        viewModel.focusContext = focus
+
+        windowController.show(viewModel: viewModel, coordinator: self, modelManager: modelManager)
+        NSLog("ThinkAloud: popup shown, focus=\(focus.appName ?? "?")")
+
+        Task { @MainActor in
+            await self.startRecording()
+        }
+        modelManager.preloadNow()
+    }
+
+    func stopAndTranscribe() {
+        // Only meaningful from .recording. Guard so spurious calls (e.g. duplicated hotkey) don't
+        // try to stop a recorder that isn't running.
+        guard case .recording = viewModel.phase else { return }
+        Task { @MainActor in
+            await self.finishRecordingAndTranscribe()
+        }
+    }
+
+    func cancel() {
+        Task { @MainActor in
+            await self.recorder.cancel()
+            self.elapsedTimerTask?.cancel()
+            self.levelTask?.cancel()
+            self.elapsedTimerTask = nil
+            self.levelTask = nil
+            self.lastRecording = nil
+            self.lastResult = nil
+            self.viewModel.reset()
+            self.windowController.close()
+        }
+    }
+
+    func insertOnly() {
+        guard canInsertNow else { return }
+        Task { @MainActor in
+            await self.performInsert(save: false)
+        }
+    }
+
+    func insertAndSave() {
+        guard canInsertNow else { return }
+        Task { @MainActor in
+            await self.performInsert(save: true)
+        }
+    }
+
+    var settingsOpener: (() -> Void)?
+
+    func openSettings() {
+        settingsOpener?()
+    }
+
+    private var canInsertNow: Bool {
+        guard case .review = viewModel.phase else { return false }
+        if viewModel.isStreaming { return false }
+        if viewModel.editedTranscript.isEmpty { return false }
+        return true
+    }
+
+    // MARK: - Internals
+
+    private func startRecording() async {
+        NSLog("ThinkAloud: startRecording entry, mic=\(permissions.microphoneStatus)")
+        guard permissions.microphoneStatus != .denied else {
+            viewModel.phase = .error(String(localized: "Microphone permission is required. Open Settings to grant access, then try again."))
+            return
+        }
+        if permissions.microphoneStatus == .notDetermined {
+            NSLog("ThinkAloud: requesting microphone permission")
+            await permissions.requestMicrophone()
+            NSLog("ThinkAloud: mic permission now \(permissions.microphoneStatus)")
+        }
+        guard permissions.microphoneStatus == .granted else {
+            viewModel.phase = .error(String(localized: "Microphone permission is required. Open Settings to grant access, then try again."))
+            return
+        }
+
+        do {
+            try await recorder.start(levelCallback: { [weak self] sample in
+                Task { @MainActor in
+                    self?.viewModel.levelRMS = sample.rms
+                    self?.viewModel.levelPeak = sample.peak
+                }
+            })
+        } catch {
+            NSLog("ThinkAloud: recorder start failed: \(error)")
+            viewModel.phase = .error(String(describing: error))
+            return
+        }
+        NSLog("ThinkAloud: recording started")
+        viewModel.phase = .recording
+        startElapsedTimer()
+    }
+
+    private func startElapsedTimer() {
+        elapsedTimerTask?.cancel()
+        let recorder = recorder
+        elapsedTimerTask = Task { @MainActor [weak self] in
+            var tick = 0
+            while !Task.isCancelled {
+                let seconds = await recorder.elapsedSeconds
+                self?.viewModel.elapsedSeconds = seconds
+                // Tick recordActivity once per second so the idle-eviction timer in ModelManager
+                // never tries to unload weights while we're actively recording.
+                if tick % 10 == 0 {
+                    self?.modelManager.recordActivity()
+                }
+                tick &+= 1
+                try? await Task.sleep(nanoseconds: 100_000_000)
+            }
+        }
+    }
+
+    private func finishRecordingAndTranscribe() async {
+        elapsedTimerTask?.cancel()
+        elapsedTimerTask = nil
+
+        let recordingResult: RecordingResult
+        do {
+            recordingResult = try await recorder.stop()
+        } catch {
+            viewModel.phase = .error(String(describing: error))
+            return
+        }
+        lastRecording = recordingResult
+
+        viewModel.phase = .transcribing
+
+        // Streaming transcription: switch to .review as soon as the first token arrives so
+        // the user sees tokens appear in the editor live.
+        let runtime = modelManager.runtime
+        let style = modelManager.chinesePreference
+        viewModel.rawTranscript = ""
+        viewModel.editedTranscript = ""
+        viewModel.isStreaming = true
+        var accumulated = ""
+        var receivedAny = false
+        var finalResult: ASRResult?
+
+        do {
+            for try await event in runtime.transcribeStream(samples: recordingResult.samples, sampleRate: recordingResult.sampleRate, options: ASROptions(language: nil)) {
+                switch event {
+                case .token(let token):
+                    accumulated += token
+                    if !receivedAny {
+                        receivedAny = true
+                        viewModel.phase = .review
+                    }
+                    viewModel.rawTranscript = accumulated
+                    viewModel.editedTranscript = TranscriptPostProcessor.apply(style, to: accumulated)
+                case .result(let r):
+                    finalResult = r
+                    viewModel.rawTranscript = r.text
+                    viewModel.editedTranscript = TranscriptPostProcessor.apply(style, to: r.text)
+                    viewModel.transcribeDurationMs = r.durationMs
+                    viewModel.asrModelID = r.modelID
+                    viewModel.phase = .review
+                }
+            }
+            viewModel.isStreaming = false
+            lastResult = finalResult
+            modelManager.recordActivity()
+            if !receivedAny && finalResult == nil {
+                viewModel.phase = .error(String(localized: "No transcription produced."))
+            }
+        } catch {
+            viewModel.isStreaming = false
+            modelManager.recordActivity()
+            viewModel.phase = .error(String(describing: error))
+        }
+    }
+
+    private func performInsert(save: Bool) async {
+        // Snapshot everything we need from the view model BEFORE closing the popup, since
+        // closing the popup will reset state.
+        let editedText = viewModel.editedTranscript
+        let rawText = viewModel.rawTranscript
+        let focus = viewModel.focusContext
+        let recording = lastRecording
+        let result = lastResult
+        let saveFlag = save
+
+        // Close popup FIRST — otherwise the popup window holds keyboard focus and our
+        // simulated Cmd+V lands in the popup's own TextEditor instead of the source app.
+        windowController.close()
+        viewModel.reset()
+
+        // Give the OS a brief moment to transfer keyboard focus back to the source app
+        // after our nonactivating panel goes away.
+        try? await Task.sleep(nanoseconds: 120_000_000)
+
+        let outcome = await insertion.insert(editedText, into: focus)
+        NSLog("ThinkAloud: insertion outcome inserted=\(outcome.inserted) clipboard=\(outcome.copiedToClipboard) msg=\(outcome.message)")
+        InsertionFeedback.notifyIfNeeded(outcome: outcome)
+
+        if saveFlag, let recording, let result {
+            do {
+                let recordID = DatasetRecord.generateID(date: recording.startedAt)
+                let stored = try await audioFileStore.persist(samples: recording.samples, sampleRate: Double(recording.sampleRate), recordID: recordID, at: recording.startedAt)
+                let createdAt = ISO8601DateFormatter().string(from: recording.startedAt)
+                let record = DatasetRecord(
+                    id: recordID,
+                    createdAt: createdAt,
+                    audioPath: stored.relativePath,
+                    durationMs: recording.durationMs,
+                    sampleRate: recording.sampleRate,
+                    channels: recording.channels,
+                    sourceAppBundleID: focus?.appBundleID,
+                    sourceAppName: focus?.appName,
+                    asrProvider: "mlx-audio-swift",
+                    asrModel: result.modelID,
+                    asrRuntime: result.runtimeID,
+                    asrConfigJSON: nil,
+                    rawTranscript: rawText,
+                    editedTranscript: editedText,
+                    inserted: outcome.inserted,
+                    savedToDataset: true,
+                    language: result.language,
+                    metadataJSON: nil
+                )
+                try await datasetStore.save(record)
+            } catch {
+                NSLog("ThinkAloud: dataset save failed: \(error)")
+            }
+        }
+
+        lastRecording = nil
+        lastResult = nil
+    }
+}

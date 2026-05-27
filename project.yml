@@ -1,0 +1,117 @@
+name: ThinkAloud
+options:
+  bundleIdPrefix: com.jacoblincool
+  deploymentTarget:
+    macOS: "15.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    MACOSX_DEPLOYMENT_TARGET: "15.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+
+packages:
+  KeyboardShortcuts:
+    url: https://github.com/sindresorhus/KeyboardShortcuts
+    from: 2.4.0
+  mlx-audio-swift:
+    url: https://github.com/Blaizzy/mlx-audio-swift
+    exactVersion: 0.1.2
+  mlx-swift:
+    url: https://github.com/ml-explore/mlx-swift
+    from: 0.30.6
+  GRDB:
+    url: https://github.com/groue/GRDB.swift
+    from: 7.10.0
+
+targets:
+  ThinkAloud:
+    type: application
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: ThinkAloud/App
+      - path: ThinkAloud/UI
+      - path: ThinkAloud/Core
+      - path: ThinkAloud/Models
+      - path: ThinkAloud/Resources/Assets.xcassets
+        buildPhase: resources
+      - path: ThinkAloud/Resources/Localizable.xcstrings
+        buildPhase: resources
+      - path: ThinkAloud/Resources/InfoPlist.xcstrings
+        buildPhase: resources
+    info:
+      path: ThinkAloud/Resources/Info.plist
+      properties:
+        CFBundleName: ThinkAloud
+        CFBundleDisplayName: ThinkAloud
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        LSUIElement: true
+        NSHumanReadableCopyright: "© 2026 JacobLinCool"
+        NSMicrophoneUsageDescription: "ThinkAloud needs microphone access to record your voice for local transcription."
+    entitlements:
+      path: ThinkAloud/Resources/ThinkAloud.entitlements
+      properties:
+        com.apple.security.device.audio-input: true
+        com.apple.security.cs.disable-library-validation: true
+        com.apple.security.cs.allow-jit: true
+        com.apple.security.cs.allow-unsigned-executable-memory: true
+        com.apple.security.automation.apple-events: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jacoblincool.thinkaloud
+        PRODUCT_NAME: ThinkAloud
+        CODE_SIGN_IDENTITY: "Developer ID Application"
+        CODE_SIGN_STYLE: Manual
+        ENABLE_HARDENED_RUNTIME: YES
+        DEVELOPMENT_TEAM: "5H75SGA7KP"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        COMBINE_HIDPI_IMAGES: YES
+        OTHER_CODE_SIGN_FLAGS: "--timestamp=none"
+    dependencies:
+      - package: KeyboardShortcuts
+      - package: mlx-audio-swift
+        product: MLXAudioSTT
+      - package: mlx-audio-swift
+        product: MLXAudioCore
+      - package: mlx-swift
+        product: MLX
+      - package: GRDB
+        product: GRDB
+
+  ThinkAloudTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: ThinkAloudTests
+    dependencies:
+      - target: ThinkAloud
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jacoblincool.thinkaloud.tests
+        CODE_SIGN_IDENTITY: "-"
+        ENABLE_HARDENED_RUNTIME: NO
+        DEVELOPMENT_TEAM: ""
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  ThinkAloud:
+    build:
+      targets:
+        ThinkAloud: all
+        ThinkAloudTests: [test]
+    test:
+      targets:
+        - ThinkAloudTests
+      gatherCoverageData: false
+    run:
+      config: Debug
+    archive:
+      config: Release

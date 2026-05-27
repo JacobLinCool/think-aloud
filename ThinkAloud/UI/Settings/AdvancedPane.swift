@@ -1,0 +1,269 @@
+import AppKit
+import SwiftUI
+
+struct AdvancedPane: View {
+    @Environment(AppContainer.self) private var container
+
+    @State private var inflightDownloads: Set<ModelProfile> = []
+    @State private var inflightRemovals: Set<ModelProfile> = []
+    @State private var error: String?
+    @State private var refreshToken = 0  // bumped to force re-read of cacheSize after mutations
+
+    @State private var hfTokenDraft: String = ""
+    @State private var hfStatus: HFStatus = .idle
+
+    enum HFStatus: Equatable {
+        case idle
+        case testing
+        case verified(String)
+        case failed(String)
+    }
+
+    var body: some View {
+        Form {
+            Section {
+                ForEach(ModelProfile.allCases) { profile in
+                    modelRow(profile)
+                }
+            } header: {
+                Text("Models")
+            } footer: {
+                Text("Download additional variants ahead of time, or remove ones you no longer use to reclaim disk space.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .id(refreshToken)  // Bumps after a download/remove so cacheSize and isDownloaded re-read from disk.
+
+            huggingFaceSection
+
+            if let error {
+                Section {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .padding(.horizontal)
+        .onAppear {
+            // Don't pre-fill the actual token — show empty field so a fresh save replaces it.
+            hfTokenDraft = ""
+            if let v = container.hfTokenStore.verifiedUsername {
+                hfStatus = .verified(v)
+            }
+        }
+    }
+
+    // MARK: - HF section
+
+    private var huggingFaceSection: some View {
+        Section {
+            HStack {
+                Text("Token")
+                Spacer()
+                if container.hfTokenStore.hasToken {
+                    StatusBadge(tone: .ok, text: String(localized: "Saved"))
+                } else {
+                    StatusBadge(tone: .neutral, text: String(localized: "Not set"))
+                }
+            }
+            SecureField(String(localized: "hf_… (paste here, then Save)"), text: $hfTokenDraft)
+                .textFieldStyle(.roundedBorder)
+            HStack {
+                Button(String(localized: "Save token")) {
+                    saveToken()
+                }
+                .disabled(hfTokenDraft.isEmpty)
+                Button(String(localized: "Test connection")) {
+                    testConnection()
+                }
+                .disabled(!container.hfTokenStore.hasToken)
+                Spacer()
+                if container.hfTokenStore.hasToken {
+                    Button(role: .destructive) {
+                        clearToken()
+                    } label: {
+                        Text(String(localized: "Clear"))
+                    }
+                    .controlSize(.small)
+                }
+            }
+            switch hfStatus {
+            case .idle:
+                EmptyView()
+            case .testing:
+                HStack(spacing: 6) {
+                    ProgressView().controlSize(.mini)
+                    Text("Testing…")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            case .verified(let user):
+                Text("Signed in as **\(user)**")
+                    .font(.caption)
+                    .foregroundStyle(.green)
+            case .failed(let msg):
+                Text(msg)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .lineLimit(2)
+            }
+        } header: {
+            Text("Hugging Face")
+        } footer: {
+            Text("Used to push the dataset from the browser window. Token is stored in macOS Keychain.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func saveToken() {
+        do {
+            try container.hfTokenStore.save(token: hfTokenDraft)
+            hfTokenDraft = ""
+            hfStatus = .idle
+        } catch {
+            hfStatus = .failed(String(localized: "Keychain save failed: \(error.localizedDescription)"))
+        }
+    }
+
+    private func clearToken() {
+        do {
+            try container.hfTokenStore.clear()
+            hfTokenDraft = ""
+            hfStatus = .idle
+        } catch {
+            hfStatus = .failed(String(localized: "Keychain clear failed: \(error.localizedDescription)"))
+        }
+    }
+
+    private func testConnection() {
+        guard let token = container.hfTokenStore.token else { return }
+        hfStatus = .testing
+        Task { @MainActor in
+            let client = HFHubClient(token: token)
+            do {
+                let me = try await client.whoami()
+                container.hfTokenStore.verifiedUsername = me.name
+                hfStatus = .verified(me.name)
+            } catch {
+                hfStatus = .failed(String(localized: "Connection failed: \(error.localizedDescription)"))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func modelRow(_ profile: ModelProfile) -> some View {
+        let isCurrent = container.modelManager.profile == profile
+        let downloaded = container.modelManager.isDownloaded(profile)
+        let size = container.modelManager.cacheSize(for: profile)
+        let isDownloading = inflightDownloads.contains(profile)
+        let isRemoving = inflightRemovals.contains(profile)
+
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    Text(profile.shortName).fontWeight(.semibold)
+                    if isCurrent {
+                        Text("Current")
+                            .font(.caption2)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.accentColor.opacity(0.18), in: Capsule())
+                            .foregroundStyle(Color.accentColor)
+                    }
+                }
+                Text(profile.modelID)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                statusLine(downloaded: downloaded, size: size, isDownloading: isDownloading, isRemoving: isRemoving)
+            }
+            Spacer()
+            VStack(alignment: .trailing, spacing: 6) {
+                if downloaded {
+                    DestructiveButton(
+                        "Remove",
+                        confirmMessage: "Delete this model from disk? It will need to re-download next time you select it.",
+                        confirmLabel: "Remove"
+                    ) {
+                        remove(profile)
+                    }
+                    .controlSize(.small)
+                    .disabled(isRemoving)
+                } else {
+                    Button(String(localized: "Download")) {
+                        download(profile)
+                    }
+                    .controlSize(.small)
+                    .disabled(isDownloading)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    @ViewBuilder
+    private func statusLine(downloaded: Bool, size: Int64, isDownloading: Bool, isRemoving: Bool) -> some View {
+        if isDownloading {
+            HStack(spacing: 6) {
+                ProgressView().controlSize(.mini)
+                Text("Downloading…")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        } else if isRemoving {
+            HStack(spacing: 6) {
+                ProgressView().controlSize(.mini)
+                Text("Removing…")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        } else if downloaded {
+            Text("Downloaded · \(formatBytes(size))")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        } else {
+            Text("Not downloaded")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func download(_ profile: ModelProfile) {
+        inflightDownloads.insert(profile)
+        error = nil
+        Task { @MainActor in
+            do {
+                try await container.modelManager.downloadProfile(profile)
+            } catch {
+                self.error = String(localized: "Download failed: \(error.localizedDescription)")
+            }
+            inflightDownloads.remove(profile)
+            refreshToken &+= 1
+        }
+    }
+
+    private func remove(_ profile: ModelProfile) {
+        inflightRemovals.insert(profile)
+        error = nil
+        Task { @MainActor in
+            do {
+                try container.modelManager.removeProfile(profile)
+            } catch {
+                self.error = String(localized: "Remove failed: \(error.localizedDescription)")
+            }
+            inflightRemovals.remove(profile)
+            refreshToken &+= 1
+        }
+    }
+
+    private func formatBytes(_ bytes: Int64) -> String {
+        let f = ByteCountFormatter()
+        f.allowedUnits = [.useMB, .useGB]
+        f.countStyle = .file
+        return f.string(fromByteCount: bytes)
+    }
+}

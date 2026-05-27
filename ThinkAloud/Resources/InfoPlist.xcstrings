@@ -1,0 +1,13 @@
+{
+  "sourceLanguage" : "en",
+  "version" : "1.0",
+  "strings" : {
+    "NSMicrophoneUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "ThinkAloud needs microphone access to record your voice for local transcription." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "ThinkAloud 需要麥克風存取權限以進行本機語音轉錄。" } }
+      }
+    }
+  }
+}
