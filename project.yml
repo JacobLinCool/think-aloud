@@ -19,8 +19,8 @@ packages:
     url: https://github.com/sindresorhus/KeyboardShortcuts
     from: 2.4.0
   mlx-audio-swift:
-    url: https://github.com/Blaizzy/mlx-audio-swift
-    exactVersion: 0.1.2
+    url: https://github.com/JacobLinCool/mlx-audio-swift
+    branch: add-whisper
   mlx-swift:
     url: https://github.com/ml-explore/mlx-swift
     from: 0.30.6

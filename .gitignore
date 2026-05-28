@@ -62,3 +62,6 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 
 *.secret
+
+# Local release pipeline output (xcarchive, .app, DMG staging, signed DMG).
+build/

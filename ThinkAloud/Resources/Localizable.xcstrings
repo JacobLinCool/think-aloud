@@ -72,6 +72,46 @@
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "均衡 (Qwen3-ASR-1.7B-4bit)" } }
       }
     },
+    "Breeze-ASR" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Breeze-ASR" } }
+      }
+    },
+    "Disk space low" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "可用空間不足" } }
+      }
+    },
+    "Normalize (lowercase + strip punctuation + 全→半形)" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "正規化（小寫 + 去標點 + 全→半形）" } }
+      }
+    },
+    "Download anyway" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "仍然下載" } }
+      }
+    },
+    "Only %@ free on the models volume. Continue downloading?" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "模型所在磁碟僅剩 %@ 可用，仍要下載嗎？" } }
+      }
+    },
+    "Breeze-ASR-25 (Mandarin)" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Breeze-ASR-25（中文）" } }
+      }
+    },
+    "Whisper Large v3 Turbo" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Whisper Large v3 Turbo" } }
+      }
+    },
+    "Whisper Turbo" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Whisper Turbo" } }
+      }
+    },
     "Cache Size" : {
       "localizations" : {
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "快取大小" } }

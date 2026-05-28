@@ -13,7 +13,7 @@ final class LiveASRSmokeTest: XCTestCase {
     }
 
     func testTranscribeAudioTestingDataset() async throws {
-        let runtime = MLXAudioQwenRuntime(modelID: ModelProfile.fast.modelID)
+        let runtime = ASRRuntimeFactory.make(profile: .fast, cacheDirectory: nil)
         let cacheDir = FileManager.default.temporaryDirectory.appendingPathComponent("ThinkAloudLiveSmokeTest", isDirectory: true)
         try? FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true)
         let runner = SmokeTestRunner(cacheDirectory: cacheDir)

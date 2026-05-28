@@ -66,7 +66,7 @@ final class ModelManager {
     private(set) var lastError: String?
     private(set) var lastActivityAt: Date = .distantPast
 
-    private var runtimeRef: MLXAudioQwenRuntime
+    private var runtimeRef: any ASRRuntime
     private var statusPollingTask: Task<Void, Never>?
     private var idleEvictionTask: Task<Void, Never>?
 
@@ -78,7 +78,7 @@ final class ModelManager {
         self.chinesePreference = storedPref
         let storedTimeout = UserDefaults.standard.string(forKey: idleTimeoutKey).flatMap(IdleTimeout.init(rawValue:)) ?? .tenMinutes
         self.idleTimeout = storedTimeout
-        self.runtimeRef = MLXAudioQwenRuntime(modelID: stored.modelID, cacheDirectory: modelsDirectory)
+        self.runtimeRef = ASRRuntimeFactory.make(profile: stored, cacheDirectory: modelsDirectory)
     }
 
     var modelID: String { profile.modelID }
@@ -152,7 +152,7 @@ final class ModelManager {
     private func rebuildRuntime() {
         idleEvictionTask?.cancel()
         idleEvictionTask = nil
-        runtimeRef = MLXAudioQwenRuntime(modelID: profile.modelID, cacheDirectory: modelsDirectory)
+        runtimeRef = ASRRuntimeFactory.make(profile: profile, cacheDirectory: modelsDirectory)
         runtimeStatus = .unloaded
         lastError = nil
         lastActivityAt = .distantPast
@@ -189,7 +189,7 @@ final class ModelManager {
     /// Resolves the on-disk snapshot directory for any profile (matches mlx-audio's layout).
     func snapshotURL(for profile: ModelProfile) -> URL {
         let cache = HubCache(cacheDirectory: modelsDirectory)
-        return MLXAudioQwenRuntime.snapshotDirectory(for: profile.modelID, cache: cache)
+        return ASRRuntimeFactory.snapshotDirectory(for: profile.modelID, cache: cache)
     }
 
     func cacheSize(for profile: ModelProfile) -> Int64 {
@@ -197,7 +197,7 @@ final class ModelManager {
     }
 
     func isDownloaded(_ profile: ModelProfile) -> Bool {
-        MLXAudioQwenRuntime.hasModelFiles(in: snapshotURL(for: profile))
+        ASRRuntimeFactory.hasModelFiles(in: snapshotURL(for: profile))
     }
 
     /// Downloads a profile's weights to disk. For the active profile this just calls preload();
@@ -207,7 +207,7 @@ final class ModelManager {
             try await runtimeRef.preload()
             return
         }
-        let transient = MLXAudioQwenRuntime(modelID: profile.modelID, cacheDirectory: modelsDirectory)
+        let transient = ASRRuntimeFactory.make(profile: profile, cacheDirectory: modelsDirectory)
         try await transient.preload()
         await transient.unload()
         pruneRedundantHFCache()

@@ -36,4 +36,41 @@ final class TextMetricsTests: XCTestCase {
         XCTAssertTrue(TextMetrics.exactMatch(reference: "hello   world", hypothesis: "hello world"))
         XCTAssertFalse(TextMetrics.exactMatch(reference: "abc", hypothesis: "Abc"))
     }
+
+    func testAggressiveNormalizeStripsPunctuationCaseAndWidth() {
+        // Punctuation + case fold
+        XCTAssertEqual(TextMetrics.normalize("Hello, World!", mode: .aggressive), "hello world")
+        // Full-width digits + letters fold to half-width
+        XCTAssertEqual(TextMetrics.normalize("ＡＢＣ１２３", mode: .aggressive), "abc123")
+        // CJK punctuation stripped, content preserved
+        XCTAssertEqual(TextMetrics.normalize("你好，世界。", mode: .aggressive), "你好世界")
+        // Quotes (curly + straight) stripped
+        XCTAssertEqual(TextMetrics.normalize("\"It's\" — fine.", mode: .aggressive), "its fine")
+    }
+
+    func testAggressiveCERIgnoresCaseAndPunctuation() {
+        // Strict: case + punctuation count as errors. Aggressive: zero.
+        XCTAssertGreaterThan(TextMetrics.cer(reference: "Hello, World!", hypothesis: "hello world", mode: .light), 0)
+        XCTAssertEqual(TextMetrics.cer(reference: "Hello, World!", hypothesis: "hello world", mode: .aggressive), 0, accuracy: 1e-9)
+        // Substitution still counts under aggressive.
+        XCTAssertEqual(
+            TextMetrics.cer(reference: "abc", hypothesis: "abd", mode: .aggressive),
+            1.0 / 3.0,
+            accuracy: 1e-9
+        )
+    }
+
+    func testAggressiveStripsCJKPunctuationExhaustive() {
+        // Covers the common CJK punctuation set: ideographic comma/stop, corner brackets,
+        // angle brackets, lenticular brackets, fullwidth ASCII punctuation, em dash, ellipsis,
+        // middle dot, fullwidth tilde (symbol category). Should reduce to bare characters.
+        let cjk = "你好、世界。「測試」『再測』（括號）【粗體】《書名》〈篇名〉；：！？—…·～"
+        XCTAssertEqual(TextMetrics.normalize(cjk, mode: .aggressive), "你好世界測試再測括號粗體書名篇名")
+    }
+
+    func testAggressiveExactMatch() {
+        XCTAssertTrue(TextMetrics.exactMatch(reference: "ABC.", hypothesis: "abc", mode: .aggressive))
+        XCTAssertTrue(TextMetrics.exactMatch(reference: "你好，世界！", hypothesis: "你好世界", mode: .aggressive))
+        XCTAssertFalse(TextMetrics.exactMatch(reference: "abc", hypothesis: "abd", mode: .aggressive))
+    }
 }

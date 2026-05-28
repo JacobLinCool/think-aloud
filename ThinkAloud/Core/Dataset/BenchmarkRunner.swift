@@ -8,14 +8,34 @@ struct BenchmarkResult: Sendable, Identifiable, Codable, Equatable {
     let groundTruth: String         // record.editedTranscript at run time (treated as ground truth)
     let predictedRaw: String        // model output before post-process
     let predictedEdited: String     // after TranscriptPostProcessor (final pipeline output)
+
+    // Strict scoring — whitespace-only normalization. Preserves case + punctuation + full-width.
     let editDistance: Int
     let referenceLength: Int
     let cer: Double
     let exactMatch: Bool
+
+    // Lenient scoring — aggressive normalization (lowercase, full→half width, strip punctuation).
+    // Matches the convention Whisper-style ASR benchmarks report. Optional for forward-compat
+    // with any legacy in-memory report objects that predate this field.
+    let editDistanceNormalized: Int?
+    let referenceLengthNormalized: Int?
+    let cerNormalized: Double?
+    let exactMatchNormalized: Bool?
+
     let durationMs: Int
     let error: String?
 
     var passed: Bool { error == nil }
+
+    /// Pick the right metric tuple based on the user's display toggle. Falls back to the strict
+    /// fields when an older report doesn't carry normalized values.
+    func cer(useNormalized: Bool) -> Double {
+        useNormalized ? (cerNormalized ?? cer) : cer
+    }
+    func exactMatch(useNormalized: Bool) -> Bool {
+        useNormalized ? (exactMatchNormalized ?? exactMatch) : exactMatch
+    }
 }
 
 struct BenchmarkReport: Sendable, Codable {
@@ -27,13 +47,18 @@ struct BenchmarkReport: Sendable, Codable {
     var total: Int { results.count }
     var completed: Int { results.filter { $0.error == nil }.count }
     var failed: Int { results.filter { $0.error != nil }.count }
-    var exactMatchCount: Int { results.filter { $0.exactMatch }.count }
-    var exactMatchRate: Double { total == 0 ? 0 : Double(exactMatchCount) / Double(total) }
 
-    var averageCER: Double {
+    func exactMatchCount(useNormalized: Bool) -> Int {
+        results.filter { $0.exactMatch(useNormalized: useNormalized) }.count
+    }
+    func exactMatchRate(useNormalized: Bool) -> Double {
+        total == 0 ? 0 : Double(exactMatchCount(useNormalized: useNormalized)) / Double(total)
+    }
+
+    func averageCER(useNormalized: Bool) -> Double {
         let valid = results.filter { $0.error == nil }
         guard !valid.isEmpty else { return 0 }
-        return valid.map(\.cer).reduce(0, +) / Double(valid.count)
+        return valid.map { $0.cer(useNormalized: useNormalized) }.reduce(0, +) / Double(valid.count)
     }
 
     var averageLatencyMs: Int {
@@ -113,10 +138,15 @@ actor BenchmarkRunner {
         let editedText = TranscriptPostProcessor.apply(chinesePreference, to: rawText)
         let elapsedMs = Int(Date().timeIntervalSince(start) * 1000)
 
-        let normalizedRef = TextMetrics.normalize(groundTruth)
-        let normalizedHyp = TextMetrics.normalize(editedText)
-        let dist = TextMetrics.editDistance(normalizedRef, normalizedHyp)
-        let cer = normalizedRef.isEmpty ? (normalizedHyp.isEmpty ? 0 : 1) : Double(dist) / Double(normalizedRef.count)
+        let lightRef = TextMetrics.normalize(groundTruth, mode: .light)
+        let lightHyp = TextMetrics.normalize(editedText, mode: .light)
+        let lightDist = TextMetrics.editDistance(lightRef, lightHyp)
+        let lightCER = lightRef.isEmpty ? (lightHyp.isEmpty ? 0 : 1) : Double(lightDist) / Double(lightRef.count)
+
+        let aggrRef = TextMetrics.normalize(groundTruth, mode: .aggressive)
+        let aggrHyp = TextMetrics.normalize(editedText, mode: .aggressive)
+        let aggrDist = TextMetrics.editDistance(aggrRef, aggrHyp)
+        let aggrCER = aggrRef.isEmpty ? (aggrHyp.isEmpty ? 0 : 1) : Double(aggrDist) / Double(aggrRef.count)
 
         return BenchmarkResult(
             id: record.id,
@@ -124,10 +154,14 @@ actor BenchmarkRunner {
             groundTruth: groundTruth,
             predictedRaw: rawText,
             predictedEdited: editedText,
-            editDistance: dist,
-            referenceLength: normalizedRef.count,
-            cer: cer,
-            exactMatch: normalizedRef == normalizedHyp,
+            editDistance: lightDist,
+            referenceLength: lightRef.count,
+            cer: lightCER,
+            exactMatch: lightRef == lightHyp,
+            editDistanceNormalized: aggrDist,
+            referenceLengthNormalized: aggrRef.count,
+            cerNormalized: aggrCER,
+            exactMatchNormalized: aggrRef == aggrHyp,
             durationMs: elapsedMs,
             error: nil
         )
@@ -145,6 +179,10 @@ actor BenchmarkRunner {
             referenceLength: groundTruth.count,
             cer: 0,
             exactMatch: false,
+            editDistanceNormalized: 0,
+            referenceLengthNormalized: groundTruth.count,
+            cerNormalized: 0,
+            exactMatchNormalized: false,
             durationMs: elapsedMs,
             error: String(describing: error)
         )

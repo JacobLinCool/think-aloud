@@ -175,6 +175,8 @@ struct BenchmarkView: View {
 
             summaryGrid(report)
 
+            metricsToggleBar
+
             cerLegend
 
             Divider()
@@ -189,6 +191,7 @@ struct BenchmarkView: View {
 
     @ViewBuilder
     private func summaryGrid(_ report: BenchmarkReport) -> some View {
+        let useNorm = controller.useNormalizedMetrics
         Grid(alignment: .leading, horizontalSpacing: 24, verticalSpacing: 6) {
             GridRow {
                 summaryCell(label: String(localized: "Model"), value: report.modelID)
@@ -196,12 +199,15 @@ struct BenchmarkView: View {
             }
             GridRow {
                 summaryCell(label: String(localized: "Total"), value: "\(report.total)")
-                summaryCell(label: String(localized: "Exact match"), value: "\(report.exactMatchCount) (\(String(format: "%.1f%%", report.exactMatchRate * 100)))")
+                summaryCell(
+                    label: String(localized: "Exact match"),
+                    value: "\(report.exactMatchCount(useNormalized: useNorm)) (\(String(format: "%.1f%%", report.exactMatchRate(useNormalized: useNorm) * 100)))"
+                )
             }
             GridRow {
                 summaryCell(
                     label: String(localized: "Avg CER"),
-                    value: String(format: "%.3f", report.averageCER),
+                    value: String(format: "%.3f", report.averageCER(useNormalized: useNorm)),
                     tooltip: String(localized: "Character Error Rate — 0 means perfect, lower is better.")
                 )
                 summaryCell(label: String(localized: "Avg latency"), value: "\(report.averageLatencyMs) ms")
@@ -211,6 +217,19 @@ struct BenchmarkView: View {
                     summaryCell(label: String(localized: "Failed"), value: "\(report.failed)", tone: .red)
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var metricsToggleBar: some View {
+        HStack(spacing: 8) {
+            Toggle(isOn: $controller.useNormalizedMetrics) {
+                Text("Normalize (lowercase + strip punctuation + 全→半形)")
+                    .font(.caption)
+            }
+            .toggleStyle(.switch)
+            .controlSize(.mini)
+            Spacer()
         }
     }
 
@@ -290,16 +309,19 @@ struct BenchmarkView: View {
 
     @ViewBuilder
     private func resultRow(_ r: BenchmarkResult) -> some View {
+        let useNorm = controller.useNormalizedMetrics
+        let cerValue = r.cer(useNormalized: useNorm)
+        let isExact = r.exactMatch(useNormalized: useNorm)
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 6) {
-                Image(systemName: rowIcon(r))
-                    .foregroundStyle(rowColor(r))
+                Image(systemName: rowIcon(r, isExact: isExact))
+                    .foregroundStyle(rowColor(r, cer: cerValue, isExact: isExact))
                     .imageScale(.small)
                 Text(r.id)
                     .font(.caption.weight(.medium))
                 Spacer()
                 if r.error == nil {
-                    Text("CER \(String(format: "%.2f", r.cer))")
+                    Text("CER \(String(format: "%.2f", cerValue))")
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                     Text("\(r.durationMs) ms")
@@ -312,7 +334,7 @@ struct BenchmarkView: View {
                     .font(.caption2)
                     .foregroundStyle(.red)
                     .lineLimit(2)
-            } else if r.exactMatch {
+            } else if isExact {
                 Text(verbatim: r.predictedEdited)
                     .font(.caption2)
                     .foregroundStyle(.primary)
@@ -360,17 +382,17 @@ struct BenchmarkView: View {
         return out.font(.caption2)
     }
 
-    private func rowIcon(_ r: BenchmarkResult) -> String {
+    private func rowIcon(_ r: BenchmarkResult, isExact: Bool) -> String {
         if r.error != nil { return "exclamationmark.triangle.fill" }
-        if r.exactMatch { return "checkmark.circle.fill" }
+        if isExact { return "checkmark.circle.fill" }
         return "circle.fill"
     }
 
-    private func rowColor(_ r: BenchmarkResult) -> Color {
+    private func rowColor(_ r: BenchmarkResult, cer: Double, isExact: Bool) -> Color {
         if r.error != nil { return .red }
-        if r.exactMatch { return .green }
-        if r.cer < 0.1 { return .yellow }
-        if r.cer < 0.3 { return .orange }
+        if isExact { return .green }
+        if cer < 0.1 { return .yellow }
+        if cer < 0.3 { return .orange }
         return .red
     }
 

@@ -9,8 +9,14 @@ struct AdvancedPane: View {
     @State private var error: String?
     @State private var refreshToken = 0  // bumped to force re-read of cacheSize after mutations
 
+    @State private var lowDiskPrompt: ModelProfile?
+    @State private var availableBytes: Int64 = 0
+
     @State private var hfTokenDraft: String = ""
     @State private var hfStatus: HFStatus = .idle
+
+    /// Trigger the low-disk confirmation when free space on the models volume drops below this.
+    private let lowDiskThresholdBytes: Int64 = 5 * 1_000_000_000
 
     enum HFStatus: Equatable {
         case idle
@@ -46,6 +52,21 @@ struct AdvancedPane: View {
         }
         .formStyle(.grouped)
         .padding(.horizontal)
+        .alert(
+            String(localized: "Disk space low"),
+            isPresented: Binding(
+                get: { lowDiskPrompt != nil },
+                set: { if !$0 { lowDiskPrompt = nil } }
+            ),
+            presenting: lowDiskPrompt
+        ) { profile in
+            Button(String(localized: "Download anyway"), role: .destructive) {
+                performDownload(profile)
+            }
+            Button(String(localized: "Cancel"), role: .cancel) {}
+        } message: { _ in
+            Text("Only \(formatBytes(availableBytes)) free on the models volume. Continue downloading?")
+        }
         .onAppear {
             // Don't pre-fill the actual token — show empty field so a fresh save replaces it.
             hfTokenDraft = ""
@@ -233,6 +254,16 @@ struct AdvancedPane: View {
     }
 
     private func download(_ profile: ModelProfile) {
+        let free = freeSpaceAtModelsVolume()
+        if free < lowDiskThresholdBytes {
+            availableBytes = free
+            lowDiskPrompt = profile
+            return
+        }
+        performDownload(profile)
+    }
+
+    private func performDownload(_ profile: ModelProfile) {
         inflightDownloads.insert(profile)
         error = nil
         Task { @MainActor in
@@ -244,6 +275,15 @@ struct AdvancedPane: View {
             inflightDownloads.remove(profile)
             refreshToken &+= 1
         }
+    }
+
+    /// Free bytes on the volume that hosts the models cache. Uses
+    /// `volumeAvailableCapacityForImportantUsageKey` so it accounts for purgeable storage the
+    /// system will reclaim under pressure (closer to what Finder shows).
+    private func freeSpaceAtModelsVolume() -> Int64 {
+        let url = container.modelManager.modelCacheURL
+        let values = try? url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
+        return Int64(values?.volumeAvailableCapacityForImportantUsage ?? 0)
     }
 
     private func remove(_ profile: ModelProfile) {

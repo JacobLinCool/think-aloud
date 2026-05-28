@@ -56,21 +56,6 @@ struct ModelPane: View {
                 RevealInFinderButton(url: container.modelManager.modelCacheURL)
             }
 
-            HStack {
-                Text("Cache size")
-                Spacer()
-                Text(formatBytes(container.modelManager.cacheSizeBytes()))
-                    .foregroundStyle(.secondary)
-                DestructiveButton(
-                    "Clear cache",
-                    confirmMessage: "Delete all downloaded model files? The model will re-download on next use.",
-                    confirmLabel: "Clear cache"
-                ) {
-                    _ = container.modelManager.pruneRedundantHFCache()
-                    container.modelManager.unloadNow()
-                }
-                .controlSize(.small)
-            }
         } header: {
             Text("ASR Model")
         }
@@ -186,12 +171,6 @@ struct ModelPane: View {
         }
     }
 
-    private func formatBytes(_ bytes: Int64) -> String {
-        let formatter = ByteCountFormatter()
-        formatter.allowedUnits = [.useMB, .useGB]
-        formatter.countStyle = .file
-        return formatter.string(fromByteCount: bytes)
-    }
 }
 
 private struct SmokeReportView: View {

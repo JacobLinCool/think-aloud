@@ -7,6 +7,10 @@ final class BenchmarkController {
     // Configuration (bound to UI pickers)
     var selectedProfile: ModelProfile
     var selectedPreference: ChinesePreference
+    /// When true, CER / exact-match read the aggressive-normalized fields (Whisper-style:
+    /// lowercase, strip punctuation, full→half width). When false, they use the strict fields
+    /// (whitespace-only normalization). Pure view toggle — both metrics are always computed.
+    var useNormalizedMetrics: Bool = true
 
     // Runtime state
     private(set) var isRunning: Bool = false
@@ -79,7 +83,7 @@ final class BenchmarkController {
 
                 // Transient runtime so the popup's active runtime is undisturbed. It will be
                 // unloaded after the run completes.
-                let runtime = MLXAudioQwenRuntime(modelID: profile.modelID, cacheDirectory: modelsDirectory)
+                let runtime = ASRRuntimeFactory.make(profile: profile, cacheDirectory: modelsDirectory)
                 do {
                     try await runtime.preload()
                 } catch {
