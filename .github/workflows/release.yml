@@ -59,6 +59,17 @@ jobs:
           echo "build=${GITHUB_RUN_NUMBER}"           >> "$GITHUB_OUTPUT"
           echo "Building $TAG (MARKETING_VERSION=$VERSION, CFBundleVersion=$GITHUB_RUN_NUMBER)"
 
+      - name: Select latest Xcode
+        run: |
+          set -euo pipefail
+          # mlx-audio-swift's Package.swift uses `swift-tools-version:6.2`, which requires
+          # Xcode 16.4+. The macos-15 image's default xcode-select may be on 16.1 (Swift 6.1).
+          LATEST=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          echo "Selecting $LATEST"
+          sudo xcode-select -s "$LATEST"
+          xcodebuild -version
+          swift --version
+
       - name: Install build deps
         run: brew install xcodegen
 
@@ -224,12 +235,11 @@ jobs:
           fi
 
       - name: Upload DMG as build artifact
-        if: always()
+        if: steps.dmg.outputs.path != ''
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.dmg.outputs.name }}
           path: ${{ steps.dmg.outputs.path }}
-          if-no-files-found: ignore
           retention-days: 14
 
       - name: Clean up keychain
