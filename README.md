@@ -13,6 +13,7 @@ Built around [Qwen3-ASR](https://huggingface.co/mlx-community?search_models=Qwen
 - **Built-in benchmark** — re-run any saved model against your dataset, see CER + exact-match rate + per-character git-style diff. Multiple runs kept for cross-model comparison. JSON export.
 - **Push to Hugging Face Hub** — full LFS support, repo card auto-generated, token stored in macOS Keychain.
 - **Idle auto-unload** of model weights to free memory between sessions.
+- **Automatic updates** via [Sparkle](https://sparkle-project.org/) — checks GitHub Releases daily, verifies each update's signature, and installs on your OK. Settings → Updates.
 
 ## Requirements
 
@@ -76,6 +77,32 @@ To open in Xcode: `open ThinkAloud.xcodeproj`.
 
 The project signs with Developer ID Application (so TCC permissions persist across builds). To build locally, edit `project.yml` and replace `DEVELOPMENT_TEAM` with your own team ID, then regenerate.
 
+## Releasing & auto-update
+
+Pushing a `v*` tag (e.g. `v0.2.0`) triggers `.github/workflows/release.yml`, which builds, signs, notarizes, and staples a DMG, then publishes a GitHub Release. The app updates itself with [Sparkle](https://sparkle-project.org/):
+
+- `SUFeedURL` (in `project.yml`) points at `releases/latest/download/appcast.xml`, which always resolves to the newest published release.
+- The release job EdDSA-signs the stapled DMG and uploads a one-item `appcast.xml` next to it. The in-app **Settings → Updates** pane offers manual checks plus toggles for automatic checking and automatic download+install.
+
+**One-time signing-key setup** (required for updates to actually be served):
+
+```bash
+# Get Sparkle's tools (matches the framework version; any 2.x works for signing).
+curl -L https://github.com/sparkle-project/Sparkle/releases/download/2.9.2/Sparkle-2.9.2.tar.xz | tar -xJ
+
+# Generate the ed25519 key pair. Stores the private key in your login Keychain and
+# prints SUPublicEDKey — already set in project.yml as `SUPublicEDKey`.
+./bin/generate_keys
+
+# Export the private key and add it to the repo as the SPARKLE_ED_PRIVATE_KEY secret,
+# then delete the file. (Settings → Secrets and variables → Actions → New repository secret.)
+./bin/generate_keys -x sparkle_private_key.txt
+gh secret set SPARKLE_ED_PRIVATE_KEY < sparkle_private_key.txt
+rm sparkle_private_key.txt
+```
+
+Keep the **same** Developer ID certificate and the **same** EdDSA key across every release — Sparkle rejects an update whose signing identity doesn't match the installed copy. `CFBundleVersion` must also increase each release; CI derives it from the run number, which is monotonic. If `SPARKLE_ED_PRIVATE_KEY` is unset the release still ships, but no appcast is generated and clients won't see the update.
+
 ## Tech stack
 
 - SwiftUI + AppKit, Swift 6, macOS 15+
@@ -83,6 +110,7 @@ The project signs with Developer ID Application (so TCC permissions persist acro
 - [mlx-swift](https://github.com/ml-explore/mlx-swift) — Apple's MLX
 - [GRDB.swift](https://github.com/groue/GRDB.swift) — SQLite layer
 - [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) — global hotkeys
+- [Sparkle](https://github.com/sparkle-project/Sparkle) — signed auto-updates from GitHub Releases
 - [xcodegen](https://github.com/yonaskolb/XcodeGen) — project file generation
 
 ## Status

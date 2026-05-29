@@ -9,7 +9,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "0.2.0"
     CURRENT_PROJECT_VERSION: "1"
     MACOSX_DEPLOYMENT_TARGET: "15.0"
     SWIFT_STRICT_CONCURRENCY: complete
@@ -27,6 +27,9 @@ packages:
   GRDB:
     url: https://github.com/groue/GRDB.swift
     from: 7.10.0
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: 2.8.0
 
 targets:
   ThinkAloud:
@@ -55,6 +58,19 @@ targets:
         LSUIElement: true
         NSHumanReadableCopyright: "© 2026 JacobLinCool"
         NSMicrophoneUsageDescription: "ThinkAloud needs microphone access to record your voice for local transcription."
+        # Sparkle auto-update. Appcast is published as a GitHub Release asset; the
+        # `releases/latest/download/…` URL always resolves to the newest published release.
+        SUFeedURL: "https://github.com/JacobLinCool/think-aloud/releases/latest/download/appcast.xml"
+        # EdDSA (ed25519) public key from Sparkle's `generate_keys`. The matching private key
+        # lives only in the maintainer's Keychain and the CI secret SPARKLE_ED_PRIVATE_KEY.
+        SUPublicEDKey: "8IyjtacKsc5qlweQsGwig2OyD9e2dETsJzzy4QL1A8o="
+        # Default automatic checks on (and skip Sparkle's own second-launch opt-in prompt —
+        # we expose our own toggle in Settings → Updates instead).
+        SUEnableAutomaticChecks: true
+        # Allow the optional "download & install automatically" path (off by default in the UI).
+        SUAllowsAutomaticUpdates: true
+        # Check once per day.
+        SUScheduledCheckInterval: 86400
     entitlements:
       path: ThinkAloud/Resources/ThinkAloud.entitlements
       properties:
@@ -73,7 +89,14 @@ targets:
         DEVELOPMENT_TEAM: "5H75SGA7KP"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         COMBINE_HIDPI_IMAGES: YES
-        OTHER_CODE_SIGN_FLAGS: "--timestamp=none"
+      configs:
+        # Debug skips the timestamp server round-trip for faster local signing.
+        Debug:
+          OTHER_CODE_SIGN_FLAGS: "--timestamp=none"
+        # Release MUST embed a secure timestamp — required by the notary, and applied to
+        # Sparkle's nested helpers/XPC services so the signed update validates. Never add --deep.
+        Release:
+          OTHER_CODE_SIGN_FLAGS: "--timestamp"
     dependencies:
       - package: KeyboardShortcuts
       - package: mlx-audio-swift
@@ -84,6 +107,8 @@ targets:
         product: MLX
       - package: GRDB
         product: GRDB
+      - package: Sparkle
+        product: Sparkle
 
   ThinkAloudTests:
     type: bundle.unit-test

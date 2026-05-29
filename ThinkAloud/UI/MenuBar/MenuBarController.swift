@@ -28,6 +28,7 @@ final class MenuBarController: NSObject {
         menu.addItem(.separator())
         menu.addItem(makeItem(title: String(localized: "Browse Dataset…"), action: #selector(openDatasetBrowser), keyEquivalent: "d"))
         menu.addItem(makeItem(title: String(localized: "Settings…"), action: #selector(openSettings), keyEquivalent: ","))
+        menu.addItem(makeItem(title: String(localized: "Check for Updates…"), action: #selector(checkForUpdates), keyEquivalent: ""))
         menu.addItem(.separator())
         menu.addItem(makeItem(title: String(localized: "Quit ThinkAloud"), action: #selector(quit), keyEquivalent: "q"))
         statusItem.menu = menu
@@ -51,7 +52,21 @@ final class MenuBarController: NSObject {
         container.openDatasetBrowser()
     }
 
+    @objc private func checkForUpdates() {
+        container.updater.checkForUpdates()
+    }
+
     @objc private func quit() {
         NSApp.terminate(nil)
+    }
+}
+
+extension MenuBarController: NSMenuItemValidation {
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        // Grey out "Check for Updates…" while a check/download is already in flight.
+        if menuItem.action == #selector(checkForUpdates) {
+            return container.updater.canCheckForUpdates
+        }
+        return true
     }
 }

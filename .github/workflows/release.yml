@@ -14,6 +14,12 @@
 #   NOTARY_API_ISSUER_ID            ASC API issuer UUID (Users and Access → Integrations)
 #   NOTARY_API_KEY_P8_BASE64        base64-encoded contents of the AuthKey_*.p8 file
 #                                   (`base64 -i AuthKey_XXX.p8 | pbcopy`)
+#   SPARKLE_ED_PRIVATE_KEY          base64 ed25519 private key for signing Sparkle updates.
+#                                   Generate once: download Sparkle's tools, run `./bin/generate_keys`
+#                                   (stores the key in your Keychain + prints SUPublicEDKey, already
+#                                   set in project.yml), then export with `./bin/generate_keys -x key.txt`
+#                                   and paste key.txt's contents into this secret. Optional — if unset,
+#                                   the release still ships but no appcast is generated (no auto-update).
 
 name: Release
 
@@ -218,6 +224,70 @@ jobs:
           spctl --assess --type open --context context:primary-signature -v \
             "${{ steps.dmg.outputs.path }}"
 
+      - name: Generate Sparkle appcast
+        id: appcast
+        env:
+          # base64 ed25519 private key exported via `generate_keys -x`. If unset, the appcast is
+          # skipped (the release still ships, but auto-update won't be served for it).
+          SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${SPARKLE_ED_PRIVATE_KEY:-}" ]]; then
+            echo "::warning::SPARKLE_ED_PRIVATE_KEY secret not set — skipping appcast generation. Auto-update will not be served for this release."
+            exit 0
+          fi
+
+          VERSION="${{ steps.version.outputs.version }}"
+          BUILD="${{ steps.version.outputs.build }}"
+          TAG="${{ steps.version.outputs.tag }}"
+          DMG="${{ steps.dmg.outputs.path }}"
+          DMG_NAME="${{ steps.dmg.outputs.name }}"
+
+          # Fetch Sparkle's signing tools. The EdDSA signature format is stable across 2.x, so we
+          # pin the tool version independently of the framework version resolved by SwiftPM.
+          SPARKLE_TOOLS_VERSION="2.9.2"
+          curl -sL -o "$RUNNER_TEMP/sparkle.tar.xz" \
+            "https://github.com/sparkle-project/Sparkle/releases/download/${SPARKLE_TOOLS_VERSION}/Sparkle-${SPARKLE_TOOLS_VERSION}.tar.xz"
+          mkdir -p "$RUNNER_TEMP/sparkle"
+          tar -xf "$RUNNER_TEMP/sparkle.tar.xz" -C "$RUNNER_TEMP/sparkle"
+
+          # Sign the FINAL stapled DMG (the exact bytes users download). Emits:
+          #   sparkle:edSignature="…" length="…"
+          SIG_ATTRS=$(printf '%s' "$SPARKLE_ED_PRIVATE_KEY" \
+            | "$RUNNER_TEMP/sparkle/bin/sign_update" "$DMG" --ed-key-file -)
+          echo "Signature: $SIG_ATTRS"
+
+          ENCLOSURE_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${DMG_NAME}"
+          PUB_DATE="$(date '+%a, %d %b %Y %H:%M:%S %z')"
+          APPCAST="$RUNNER_TEMP/appcast.xml"
+
+          # `releases/latest/download/appcast.xml` (the SUFeedURL) always resolves to the newest
+          # published release's copy of this file; the enclosure points at the immutable per-tag URL.
+          cat > "$APPCAST" <<EOF
+          <?xml version="1.0" encoding="utf-8"?>
+          <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+            <channel>
+              <title>ThinkAloud</title>
+              <link>https://github.com/${GITHUB_REPOSITORY}</link>
+              <description>ThinkAloud automatic updates</description>
+              <language>en</language>
+              <item>
+                <title>ThinkAloud ${VERSION}</title>
+                <sparkle:version>${BUILD}</sparkle:version>
+                <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
+                <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+                <pubDate>${PUB_DATE}</pubDate>
+                <description><![CDATA[<p>See the full release notes on <a href="https://github.com/${GITHUB_REPOSITORY}/releases/tag/${TAG}">GitHub</a>.</p>]]></description>
+                <enclosure url="${ENCLOSURE_URL}" ${SIG_ATTRS} type="application/octet-stream" />
+              </item>
+            </channel>
+          </rss>
+          EOF
+
+          echo "path=$APPCAST" >> "$GITHUB_OUTPUT"
+          echo "--- appcast.xml ---"
+          cat "$APPCAST"
+
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -225,11 +295,19 @@ jobs:
           set -euo pipefail
           TAG="${{ steps.version.outputs.tag }}"
           DMG="${{ steps.dmg.outputs.path }}"
+          APPCAST="${{ steps.appcast.outputs.path }}"
+
+          # Upload the appcast alongside the DMG when it was generated (secret present).
+          ASSETS=("$DMG")
+          if [[ -n "$APPCAST" && -f "$APPCAST" ]]; then
+            ASSETS+=("$APPCAST")
+          fi
+
           if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release $TAG already exists — uploading asset with --clobber."
-            gh release upload "$TAG" "$DMG" --clobber
+            echo "Release $TAG already exists — uploading assets with --clobber."
+            gh release upload "$TAG" "${ASSETS[@]}" --clobber
           else
-            gh release create "$TAG" "$DMG" \
+            gh release create "$TAG" "${ASSETS[@]}" \
               --title "ThinkAloud ${{ steps.version.outputs.version }}" \
               --generate-notes
           fi

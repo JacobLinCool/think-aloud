@@ -15,6 +15,8 @@ struct SettingsScene: View {
                 .tabItem { Label("Dataset", systemImage: "tray.full") }
             AdvancedPane()
                 .tabItem { Label("Advanced", systemImage: "wrench.and.screwdriver") }
+            UpdatesPane()
+                .tabItem { Label("Updates", systemImage: "arrow.down.circle") }
         }
         .frame(width: 580, height: 560)
         .environment(container)

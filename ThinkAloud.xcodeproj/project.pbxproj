@@ -71,6 +71,7 @@
 		BF80DE864C0DE89DF3F72504 /* DatasetBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C07E5343695A44A98537FD0 /* DatasetBrowserView.swift */; };
 		C492CCCB5E53CF5AF9D900EE /* PopupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068B6C7059D1C5F1764A315A /* PopupCoordinator.swift */; };
 		C682621D9FAE517E0268F325 /* DatasetPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97588038BE4D9F1A1AFCAA4 /* DatasetPane.swift */; };
+		C779B40A1483D247010BE3A5 /* UpdaterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FD3F4527544A3A07747081 /* UpdaterController.swift */; };
 		C8457A3E4A555EC7FC0BC6BC /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = A389E63AB08670C598B88DA9 /* GRDB */; };
 		CBCFB4FD571F0FFF906B6419 /* AudioFileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6D7F5933BC81068AABC808 /* AudioFileStore.swift */; };
 		CC39673E60FB03EB04894B23 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 8BFF94F4B18ECA6C9CA2CB73 /* KeyboardShortcuts */; };
@@ -78,9 +79,11 @@
 		D10B43D7FCDF9FB51241DF5E /* ModelProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245C5255544E35B0F757AC6 /* ModelProfile.swift */; };
 		D7C72F43BC3E72B81C66E6A1 /* JSONLExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8338028F7DADE62C366203CF /* JSONLExporter.swift */; };
 		D8CB7F5C5D1EEA8682F8C4B4 /* HFPushController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26221FB6390D85725464D77C /* HFPushController.swift */; };
+		DD5711211F9A0E3332D21EA8 /* UpdatesPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03621137776497554827947 /* UpdatesPane.swift */; };
 		EB0F92B99E4F8EE4AB32C7D5 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A39DD3579672781CD31E47B /* SettingsWindowController.swift */; };
 		EB645F06277F6649E633D1EC /* GeneralPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FD854BD739FBEAE1940EFD /* GeneralPane.swift */; };
 		EE1B1EE967EF9DCA2B0E7A29 /* BenchmarkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725A8E3A12BB296B2C9CB12F /* BenchmarkController.swift */; };
+		FAB6D430F40B9C0893A7F4AA /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = A7263926C87393B0CD40DC6A /* Sparkle */; };
 		FDE8B40A8346E02547CA8952 /* DatasetStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC28A17CB6F73A79386DFE39 /* DatasetStoreTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -121,6 +124,7 @@
 		3F4BEEFB045E0D8DB3D86E2B /* PopupStateViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupStateViews.swift; sourceTree = "<group>"; };
 		4240922A32D7CC500A0672ED /* HFKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HFKeychain.swift; sourceTree = "<group>"; };
 		4245C5255544E35B0F757AC6 /* ModelProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelProfile.swift; sourceTree = "<group>"; };
+		45FD3F4527544A3A07747081 /* UpdaterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterController.swift; sourceTree = "<group>"; };
 		46476A9C0B62C359D2210696 /* HFPushService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HFPushService.swift; sourceTree = "<group>"; };
 		492231F5B28C1FBBCEC65925 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5400453F3F562CC916635B3D /* PermissionsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsPane.swift; sourceTree = "<group>"; };
@@ -153,6 +157,7 @@
 		B79A9A74C3F01B6D2AB8B981 /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		B93A0806562F1F9FEEEB6D84 /* ASRRuntimeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASRRuntimeFactory.swift; sourceTree = "<group>"; };
 		BE2A70290B1B2DEE0F3491BD /* HFPushView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HFPushView.swift; sourceTree = "<group>"; };
+		C03621137776497554827947 /* UpdatesPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatesPane.swift; sourceTree = "<group>"; };
 		D24DE150685310626611E6E2 /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
 		D84B6290801A9E8A17AE4204 /* AudioRecorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderTests.swift; sourceTree = "<group>"; };
 		D98227A733DFD2EC496F1E1E /* RecordRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordRowView.swift; sourceTree = "<group>"; };
@@ -179,6 +184,7 @@
 				552A8D55907514E9B464AD09 /* MLXAudioCore in Frameworks */,
 				4FD5AC7877DDD37FF10AF2B8 /* MLX in Frameworks */,
 				C8457A3E4A555EC7FC0BC6BC /* GRDB in Frameworks */,
+				FAB6D430F40B9C0893A7F4AA /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +258,14 @@
 			path = Popup;
 			sourceTree = "<group>";
 		};
+		496BAEA36F52799A574BC5BA /* Updater */ = {
+			isa = PBXGroup;
+			children = (
+				45FD3F4527544A3A07747081 /* UpdaterController.swift */,
+			);
+			path = Updater;
+			sourceTree = "<group>";
+		};
 		58078D38436E65625B48ECCF /* DatasetBrowser */ = {
 			isa = PBXGroup;
 			children = (
@@ -299,6 +313,7 @@
 				9DB72B3C0E85277A4DAA7825 /* HuggingFace */,
 				E5B73E67C1612442FD986BF9 /* Insertion */,
 				8765C744C2B925FB8DB4563B /* Permissions */,
+				496BAEA36F52799A574BC5BA /* Updater */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -394,6 +409,7 @@
 				7A8A9D524A1F544B967A35EB /* SettingsHelpers.swift */,
 				F3063447DF7A70BF7F29DFCD /* SettingsScene.swift */,
 				1A39DD3579672781CD31E47B /* SettingsWindowController.swift */,
+				C03621137776497554827947 /* UpdatesPane.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -455,6 +471,7 @@
 				8B831953F3C70B81B291B00A /* MLXAudioCore */,
 				D0BAB6E0509D0E8C894AF531 /* MLX */,
 				A389E63AB08670C598B88DA9 /* GRDB */,
+				A7263926C87393B0CD40DC6A /* Sparkle */,
 			);
 			productName = ThinkAloud;
 			productReference = F8BE5B9BD3F54BAFF1448F07 /* ThinkAloud.app */;
@@ -490,6 +507,7 @@
 			packageReferences = (
 				13F24DC513C5AEF609FD6684 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				99DBF2258CC70C2F6887A812 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
+				DC481752F6F157F763ED1966 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				E80138E4E51D9A9A7514471A /* XCRemoteSwiftPackageReference "mlx-audio-swift" */,
 				3B72E948DF09962325B88E0A /* XCRemoteSwiftPackageReference "mlx-swift" */,
 			);
@@ -596,6 +614,8 @@
 				8E60585BE708C3BCD43C7A90 /* TextMetrics.swift in Sources */,
 				92FD52B1A144912ECBAC8568 /* ThinkAloudApp.swift in Sources */,
 				382ADBA269D39F4334CA15FE /* TranscriptPostProcessor.swift in Sources */,
+				C779B40A1483D247010BE3A5 /* UpdaterController.swift in Sources */,
+				DD5711211F9A0E3332D21EA8 /* UpdatesPane.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -670,7 +690,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				OTHER_CODE_SIGN_FLAGS = "--timestamp=none";
+				OTHER_CODE_SIGN_FLAGS = "--timestamp";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacoblincool.thinkaloud;
 				PRODUCT_NAME = ThinkAloud;
 				SDKROOT = macosx;
@@ -751,7 +771,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -811,7 +831,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -880,6 +900,14 @@
 				minimumVersion = 2.4.0;
 			};
 		};
+		DC481752F6F157F763ED1966 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.0;
+			};
+		};
 		E80138E4E51D9A9A7514471A /* XCRemoteSwiftPackageReference "mlx-audio-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/JacobLinCool/mlx-audio-swift";
@@ -910,6 +938,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 13F24DC513C5AEF609FD6684 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
+		};
+		A7263926C87393B0CD40DC6A /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DC481752F6F157F763ED1966 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 		D0BAB6E0509D0E8C894AF531 /* MLX */ = {
 			isa = XCSwiftPackageProductDependency;
