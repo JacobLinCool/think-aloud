@@ -10,6 +10,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.accessory)
         container.start()
         menuBarController = MenuBarController(container: container)
+        // First launch: walk the user through permissions, model download, and a quick tour.
+        // The menu bar is already up, so onboarding is purely additive.
+        if !container.onboardingState.isCompleted {
+            container.openOnboarding()
+        }
     }
 
     func applicationWillTerminate(_ notification: Notification) {

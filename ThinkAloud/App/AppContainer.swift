@@ -12,8 +12,10 @@ final class AppContainer {
     let recorder: AudioRecorder
     let insertion: TextInsertionManager
     let coordinator: PopupCoordinator
+    let onboardingState: OnboardingState
     private(set) var settingsWindow: SettingsWindowController!
     private(set) var datasetBrowserWindow: DatasetBrowserWindowController!
+    private(set) var onboardingWindow: OnboardingWindowController!
     let hfTokenStore: HFTokenStore
     let updater: UpdaterController
 
@@ -36,6 +38,7 @@ final class AppContainer {
         let insertion = TextInsertionManager()
         let hfTokenStore = HFTokenStore()
         let updater = UpdaterController()
+        let onboardingState = OnboardingState()
 
         self.permissions = permissions
         self.hotkeys = hotkeys
@@ -46,6 +49,7 @@ final class AppContainer {
         self.insertion = insertion
         self.hfTokenStore = hfTokenStore
         self.updater = updater
+        self.onboardingState = onboardingState
         self.coordinator = PopupCoordinator(
             permissions: permissions,
             modelManager: modelManager,
@@ -56,6 +60,7 @@ final class AppContainer {
         )
         self.settingsWindow = SettingsWindowController(container: self)
         self.datasetBrowserWindow = DatasetBrowserWindowController(container: self)
+        self.onboardingWindow = OnboardingWindowController(container: self)
         self.coordinator.settingsOpener = { [weak self] in
             self?.openSettings()
         }
@@ -67,6 +72,16 @@ final class AppContainer {
 
     func openDatasetBrowser() {
         datasetBrowserWindow.show()
+    }
+
+    func openOnboarding() {
+        onboardingWindow.show()
+    }
+
+    /// Close the onboarding window programmatically (Finish / Skip). Cleanup runs in
+    /// `OnboardingWindowController.windowWillClose`.
+    func finishOnboarding() {
+        onboardingWindow.finish()
     }
 
     func start() {

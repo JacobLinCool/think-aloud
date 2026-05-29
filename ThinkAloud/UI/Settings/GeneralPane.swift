@@ -35,6 +35,18 @@ struct GeneralPane: View {
                     .controlSize(.small)
                 }
             }
+
+            Section {
+                Button(String(localized: "Run Setup Assistant again")) {
+                    container.openOnboarding()
+                }
+            } header: {
+                Text("Setup")
+            } footer: {
+                Text("Revisit the welcome flow to grant permissions or download a model.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
         .padding(.horizontal)
