@@ -200,7 +200,7 @@ struct AdvancedPane: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                     .truncationMode(.middle)
-                statusLine(downloaded: downloaded, size: size, isDownloading: isDownloading, isRemoving: isRemoving)
+                statusLine(profile: profile, downloaded: downloaded, size: size, isDownloading: isDownloading, isRemoving: isRemoving)
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 6) {
@@ -227,14 +227,14 @@ struct AdvancedPane: View {
     }
 
     @ViewBuilder
-    private func statusLine(downloaded: Bool, size: Int64, isDownloading: Bool, isRemoving: Bool) -> some View {
+    private func statusLine(profile: ModelProfile, downloaded: Bool, size: Int64, isDownloading: Bool, isRemoving: Bool) -> some View {
         if isDownloading {
-            HStack(spacing: 6) {
-                ProgressView().controlSize(.mini)
-                Text("Downloading…")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+            // Text-only. `displayLabel` already reads "Downloading X% (dn / tot)" once the
+            // per-profile poller in ModelManager has a known total, else "Downloading… (dn)".
+            let status = container.modelManager.profileDownloadStatus[profile]
+            Text(status?.displayLabel ?? String(localized: "Downloading…"))
+                .font(.caption)
+                .foregroundStyle(.secondary)
         } else if isRemoving {
             HStack(spacing: 6) {
                 ProgressView().controlSize(.mini)

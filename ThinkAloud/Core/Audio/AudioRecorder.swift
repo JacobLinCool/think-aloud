@@ -37,14 +37,18 @@ actor AudioRecorder {
     private let targetSampleRate: Double = 16000
     private let engine = AVAudioEngine()
     private var outputBuffers: [Float] = []
-    private var levelCallback: (@Sendable (LevelSample) -> Void)?
+    // Latest input level, overwritten on every tap buffer. Read (pulled) by the display loop
+    // rather than pushed via a per-buffer callback — see `currentLevel` / `ingest`.
+    private var lastRMS: Float = 0
+    private var lastPeak: Float = 0
     private var startedAt: Date?
     private var isRecording: Bool = false
 
-    func start(levelCallback: (@Sendable (LevelSample) -> Void)? = nil) async throws {
+    func start() async throws {
         if isRecording { return }
         outputBuffers.removeAll(keepingCapacity: true)
-        self.levelCallback = levelCallback
+        lastRMS = 0
+        lastPeak = 0
 
         let input = engine.inputNode
         let inputFormat = input.outputFormat(forBus: 0)
@@ -117,7 +121,8 @@ actor AudioRecorder {
         }
         outputBuffers.removeAll(keepingCapacity: false)
         startedAt = nil
-        levelCallback = nil
+        lastRMS = 0
+        lastPeak = 0
     }
 
     var elapsedSeconds: TimeInterval {
@@ -125,12 +130,18 @@ actor AudioRecorder {
         return -startedAt.timeIntervalSinceNow
     }
 
+    /// Latest computed input level. The popup's display loop pulls this at ~15Hz instead of the
+    /// recorder pushing a MainActor Task per audio buffer (~47/s) — that push path was a major
+    /// source of UI invalidation churn during recording.
+    var currentLevel: LevelSample {
+        LevelSample(rms: lastRMS, peak: lastPeak, timestamp: startedAt.map { -$0.timeIntervalSinceNow } ?? 0)
+    }
+
     fileprivate func ingest(chunk: ConvertedChunk) {
         outputBuffers.append(contentsOf: chunk.samples)
-        if let levelCallback {
-            let ts = startedAt.map { -$0.timeIntervalSinceNow } ?? 0
-            levelCallback(LevelSample(rms: chunk.rms, peak: chunk.peak, timestamp: ts))
-        }
+        // Just stash the latest level; the display loop reads it on its own cadence.
+        lastRMS = chunk.rms
+        lastPeak = chunk.peak
     }
 
     fileprivate nonisolated static func convert(buffer: AVAudioPCMBuffer, converter: AVAudioConverter, targetFormat: AVAudioFormat) -> ConvertedChunk? {

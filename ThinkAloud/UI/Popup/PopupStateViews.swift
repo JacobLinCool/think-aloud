@@ -21,14 +21,17 @@ struct RecordingPopupView: View {
                 Image(systemName: "waveform")
                     .foregroundStyle(.red)
                     .symbolEffect(.pulse, options: .repeat(.continuous))
-                Text(formattedElapsed)
-                    .font(.title2.monospacedDigit())
+                // The elapsed clock and the level meter update ~15×/sec. Isolating each in its own
+                // leaf view means only that leaf re-renders on a tick — this VStack (pulse icon,
+                // "Recording" label, buttons) is no longer invalidated on every frame, and the
+                // pulse animation isn't restarted.
+                RecordingTimerLabel(viewModel: viewModel)
                 Spacer()
                 Text("Recording")
                     .foregroundStyle(.red)
                     .font(.subheadline)
             }
-            LevelMeterView(rms: viewModel.levelRMS, peak: viewModel.levelPeak)
+            RecordingLevelMeter(viewModel: viewModel)
             Spacer()
             HStack {
                 Button("Cancel") { coordinator.cancel() }
@@ -40,6 +43,16 @@ struct RecordingPopupView: View {
             }
         }
     }
+}
+
+/// Leaf that reads ONLY `elapsedSeconds`, so the timer ticking re-renders just this label.
+private struct RecordingTimerLabel: View {
+    let viewModel: PopupViewModel
+
+    var body: some View {
+        Text(formattedElapsed)
+            .font(.title2.monospacedDigit())
+    }
 
     private var formattedElapsed: String {
         let total = Int(viewModel.elapsedSeconds)
@@ -47,6 +60,15 @@ struct RecordingPopupView: View {
         let seconds = total % 60
         let millis = Int((viewModel.elapsedSeconds - Double(total)) * 10)
         return String(format: "%02d:%02d.%01d", minutes, seconds, millis)
+    }
+}
+
+/// Leaf that reads ONLY the level, so meter updates don't invalidate the timer or buttons.
+private struct RecordingLevelMeter: View {
+    let viewModel: PopupViewModel
+
+    var body: some View {
+        LevelMeterView(rms: viewModel.levelRMS, peak: viewModel.levelPeak)
     }
 }
 
