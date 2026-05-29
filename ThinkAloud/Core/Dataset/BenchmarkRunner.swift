@@ -23,7 +23,15 @@ struct BenchmarkResult: Sendable, Identifiable, Codable, Equatable {
     let cerNormalized: Double?
     let exactMatchNormalized: Bool?
 
+    // Word Error Rate (light = whitespace-only normalization, normalized = aggressive).
+    // Optional for forward-compat with reports that predate the metric.
+    let wer: Double?
+    let werNormalized: Double?
+
     let durationMs: Int
+    /// Decoded audio length in milliseconds. Drives RTF (processing ÷ audio). Optional for
+    /// forward-compat and nil when audio decode failed.
+    let audioDurationMs: Int?
     let error: String?
 
     var passed: Bool { error == nil }
@@ -33,8 +41,16 @@ struct BenchmarkResult: Sendable, Identifiable, Codable, Equatable {
     func cer(useNormalized: Bool) -> Double {
         useNormalized ? (cerNormalized ?? cer) : cer
     }
+    func wer(useNormalized: Bool) -> Double {
+        useNormalized ? (werNormalized ?? 0) : (wer ?? 0)
+    }
     func exactMatch(useNormalized: Bool) -> Bool {
         useNormalized ? (exactMatchNormalized ?? exactMatch) : exactMatch
+    }
+    /// Real-Time Factor: processing time ÷ audio length. nil when audio length is unknown.
+    var rtf: Double? {
+        guard let audioDurationMs, audioDurationMs > 0 else { return nil }
+        return Double(durationMs) / Double(audioDurationMs)
     }
 }
 
@@ -61,10 +77,28 @@ struct BenchmarkReport: Sendable, Codable {
         return valid.map { $0.cer(useNormalized: useNormalized) }.reduce(0, +) / Double(valid.count)
     }
 
+    func averageWER(useNormalized: Bool) -> Double {
+        let valid = results.filter { $0.error == nil }
+        guard !valid.isEmpty else { return 0 }
+        return valid.map { $0.wer(useNormalized: useNormalized) }.reduce(0, +) / Double(valid.count)
+    }
+
     var averageLatencyMs: Int {
         let valid = results.filter { $0.error == nil }
         guard !valid.isEmpty else { return 0 }
         return valid.map(\.durationMs).reduce(0, +) / valid.count
+    }
+
+    /// Overall Real-Time Factor: total processing time ÷ total audio length across records with
+    /// a known audio length. Weighting by audio length means long clips dominate (the standard
+    /// throughput-style RTF) rather than each clip counting equally. nil when no record carries
+    /// duration data (e.g. an older report), letting the UI show a placeholder.
+    var averageRTF: Double? {
+        let valid = results.filter { $0.error == nil && ($0.audioDurationMs ?? 0) > 0 }
+        let totalAudioMs = valid.reduce(0) { $0 + ($1.audioDurationMs ?? 0) }
+        guard totalAudioMs > 0 else { return nil }
+        let totalProcessingMs = valid.reduce(0) { $0 + $1.durationMs }
+        return Double(totalProcessingMs) / Double(totalAudioMs)
     }
 }
 
@@ -112,9 +146,11 @@ actor BenchmarkRunner {
 
         // Decode audio → [Float] mirroring production pipeline.
         let samples: [Float]
+        let audioDurationMs: Int
         do {
-            let (_, mlxArray) = try loadAudioArray(from: audioURL, sampleRate: 16000)
+            let (sampleRate, mlxArray) = try loadAudioArray(from: audioURL, sampleRate: 16000)
             samples = mlxArray.asArray(Float.self)
+            audioDurationMs = sampleRate > 0 ? Int(Double(samples.count) / Double(sampleRate) * 1000) : 0
         } catch {
             return failure(record: record, groundTruth: groundTruth, error: error, start: start)
         }
@@ -148,6 +184,9 @@ actor BenchmarkRunner {
         let aggrDist = TextMetrics.editDistance(aggrRef, aggrHyp)
         let aggrCER = aggrRef.isEmpty ? (aggrHyp.isEmpty ? 0 : 1) : Double(aggrDist) / Double(aggrRef.count)
 
+        let lightWER = TextMetrics.wer(reference: groundTruth, hypothesis: editedText, mode: .light)
+        let aggrWER = TextMetrics.wer(reference: groundTruth, hypothesis: editedText, mode: .aggressive)
+
         return BenchmarkResult(
             id: record.id,
             recordCreatedAt: record.createdAt,
@@ -162,7 +201,10 @@ actor BenchmarkRunner {
             referenceLengthNormalized: aggrRef.count,
             cerNormalized: aggrCER,
             exactMatchNormalized: aggrRef == aggrHyp,
+            wer: lightWER,
+            werNormalized: aggrWER,
             durationMs: elapsedMs,
+            audioDurationMs: audioDurationMs,
             error: nil
         )
     }
@@ -183,7 +225,10 @@ actor BenchmarkRunner {
             referenceLengthNormalized: groundTruth.count,
             cerNormalized: 0,
             exactMatchNormalized: false,
+            wer: 0,
+            werNormalized: 0,
             durationMs: elapsedMs,
+            audioDurationMs: nil,
             error: String(describing: error)
         )
     }

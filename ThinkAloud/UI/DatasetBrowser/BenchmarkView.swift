@@ -210,7 +210,19 @@ struct BenchmarkView: View {
                     value: String(format: "%.3f", report.averageCER(useNormalized: useNorm)),
                     tooltip: String(localized: "Character Error Rate — 0 means perfect, lower is better.")
                 )
+                summaryCell(
+                    label: String(localized: "Avg WER"),
+                    value: String(format: "%.3f", report.averageWER(useNormalized: useNorm)),
+                    tooltip: String(localized: "Word Error Rate — CJK ideographs count as words; 0 means perfect, lower is better.")
+                )
+            }
+            GridRow {
                 summaryCell(label: String(localized: "Avg latency"), value: "\(report.averageLatencyMs) ms")
+                summaryCell(
+                    label: String(localized: "Avg RTF"),
+                    value: report.averageRTF.map { String(format: "%.2f×", $0) } ?? "—",
+                    tooltip: String(localized: "Real-Time Factor — processing time ÷ audio length. Below 1.0× is faster than real time.")
+                )
             }
             if report.failed > 0 {
                 GridRow {

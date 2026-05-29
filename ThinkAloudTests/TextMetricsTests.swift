@@ -73,4 +73,52 @@ final class TextMetricsTests: XCTestCase {
         XCTAssertTrue(TextMetrics.exactMatch(reference: "你好，世界！", hypothesis: "你好世界", mode: .aggressive))
         XCTAssertFalse(TextMetrics.exactMatch(reference: "abc", hypothesis: "abd", mode: .aggressive))
     }
+
+    // MARK: - WER
+
+    func testWordTokensMixedScript() {
+        // Latin words stay grouped; each CJK ideograph is its own token.
+        XCTAssertEqual(TextMetrics.wordTokens("build a GitHub 網站"), ["build", "a", "GitHub", "網", "站"])
+        // No spaces between CJK chars still splits per ideograph.
+        XCTAssertEqual(TextMetrics.wordTokens("會議重點"), ["會", "議", "重", "點"])
+        // Latin run with no spaces is a single token.
+        XCTAssertEqual(TextMetrics.wordTokens("hello"), ["hello"])
+        XCTAssertEqual(TextMetrics.wordTokens(""), [])
+    }
+
+    func testWERWordLevel() {
+        // Identical → 0.
+        XCTAssertEqual(TextMetrics.wer(reference: "the quick brown fox", hypothesis: "the quick brown fox"), 0)
+        // 1 substituted word out of 4 → 1/4.
+        XCTAssertEqual(
+            TextMetrics.wer(reference: "the quick brown fox", hypothesis: "the quick green fox"),
+            1.0 / 4.0,
+            accuracy: 1e-9
+        )
+        // 1 inserted word: ref has 4 words, 1 insertion → 1/4.
+        XCTAssertEqual(
+            TextMetrics.wer(reference: "the quick brown fox", hypothesis: "the quick brown lazy fox"),
+            1.0 / 4.0,
+            accuracy: 1e-9
+        )
+        // Empty ref + empty hyp → 0; empty ref + non-empty hyp → 1.
+        XCTAssertEqual(TextMetrics.wer(reference: "", hypothesis: ""), 0)
+        XCTAssertEqual(TextMetrics.wer(reference: "", hypothesis: "x"), 1)
+    }
+
+    func testWERChineseTreatsEachCharAsWord() {
+        // 4 ideograph "words", 1 substituted → 1/4. Mirrors CER for pure CJK by design.
+        XCTAssertEqual(
+            TextMetrics.wer(reference: "會議重點", hypothesis: "會議重論"),
+            1.0 / 4.0,
+            accuracy: 1e-9
+        )
+    }
+
+    func testWERAggressiveIgnoresPunctuationAndCase() {
+        // Light WER: trailing punctuation attaches to the word, so "fox" vs "fox." differ.
+        XCTAssertGreaterThan(TextMetrics.wer(reference: "The Fox.", hypothesis: "the fox", mode: .light), 0)
+        // Aggressive WER: punctuation + case folded away → identical.
+        XCTAssertEqual(TextMetrics.wer(reference: "The Fox.", hypothesis: "the fox", mode: .aggressive), 0, accuracy: 1e-9)
+    }
 }

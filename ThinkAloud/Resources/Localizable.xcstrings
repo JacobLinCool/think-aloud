@@ -321,12 +321,62 @@
         }
       }
     },
+    "App language" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "介面語言"
+          }
+        }
+      }
+    },
+    "Automatic (system)" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動（跟隨系統）"
+          }
+        }
+      }
+    },
+    "Automatic follows your system language. Changes take effect after relaunch." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「自動」會跟隨系統語言。變更需重新啟動後才會完整生效。"
+          }
+        }
+      }
+    },
     "Avg CER" : {
       "localizations" : {
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "平均 CER"
+          }
+        }
+      }
+    },
+    "Avg RTF" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "平均 RTF"
+          }
+        }
+      }
+    },
+    "Avg WER" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "平均 WER"
           }
         }
       }
@@ -507,6 +557,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "字元錯誤率（CER）—— 0 為完美，越低越好。"
+          }
+        }
+      }
+    },
+    "Word Error Rate — CJK ideographs count as words; 0 means perfect, lower is better." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詞錯誤率（WER）—— 中日韓表意字各算一個詞；0 為完美，越低越好。"
+          }
+        }
+      }
+    },
+    "Real-Time Factor — processing time ÷ audio length. Below 1.0× is faster than real time." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "即時因子（RTF）—— 處理時間 ÷ 音訊長度；低於 1.0× 代表快於即時。"
           }
         }
       }
@@ -1397,6 +1467,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "語言"
+          }
+        }
+      }
+    },
+    "Relaunch now" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即重新啟動"
+          }
+        }
+      }
+    },
+    "Restart to apply the new language." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新啟動以套用新語言。"
           }
         }
       }
