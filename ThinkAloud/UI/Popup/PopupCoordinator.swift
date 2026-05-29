@@ -191,7 +191,7 @@ final class PopupCoordinator {
         // Streaming transcription: switch to .review as soon as the first token arrives so
         // the user sees tokens appear in the editor live.
         let runtime = modelManager.runtime
-        let style = modelManager.chinesePreference
+        let postEdit = modelManager.postEdit
         viewModel.rawTranscript = ""
         viewModel.editedTranscript = ""
         viewModel.isStreaming = true
@@ -209,11 +209,11 @@ final class PopupCoordinator {
                         viewModel.phase = .review
                     }
                     viewModel.rawTranscript = accumulated
-                    viewModel.editedTranscript = TranscriptPostProcessor.apply(style, to: accumulated)
+                    viewModel.editedTranscript = TranscriptPostProcessor.apply(postEdit, to: accumulated)
                 case .result(let r):
                     finalResult = r
                     viewModel.rawTranscript = r.text
-                    viewModel.editedTranscript = TranscriptPostProcessor.apply(style, to: r.text)
+                    viewModel.editedTranscript = TranscriptPostProcessor.apply(postEdit, to: r.text)
                     viewModel.transcribeDurationMs = r.durationMs
                     viewModel.asrModelID = r.modelID
                     viewModel.phase = .review

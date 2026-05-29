@@ -6,7 +6,7 @@ import Observation
 final class BenchmarkController {
     // Configuration (bound to UI pickers)
     var selectedProfile: ModelProfile
-    var selectedPreference: ChinesePreference
+    var selectedPostEdit: PostEditConfig
     /// When true, CER / exact-match read the aggressive-normalized fields (Whisper-style:
     /// lowercase, strip punctuation, full→half width). When false, they use the strict fields
     /// (whitespace-only normalization). Pure view toggle — both metrics are always computed.
@@ -39,13 +39,13 @@ final class BenchmarkController {
         audioFileStore: AudioFileStore,
         modelsDirectory: URL,
         initialProfile: ModelProfile,
-        initialPreference: ChinesePreference
+        initialPostEdit: PostEditConfig
     ) {
         self.datasetStore = datasetStore
         self.audioFileStore = audioFileStore
         self.modelsDirectory = modelsDirectory
         self.selectedProfile = initialProfile
-        self.selectedPreference = initialPreference
+        self.selectedPostEdit = initialPostEdit
     }
 
     var progressFraction: Double {
@@ -56,7 +56,7 @@ final class BenchmarkController {
     func run() {
         guard !isRunning else { return }
         let profile = selectedProfile
-        let preference = selectedPreference
+        let postEdit = selectedPostEdit
         let datasetStore = datasetStore
         let audioFileStore = audioFileStore
         let modelsDirectory = modelsDirectory
@@ -97,7 +97,7 @@ final class BenchmarkController {
                     report = try await runner.run(
                         records: records,
                         runtime: runtime,
-                        chinesePreference: preference,
+                        postEdit: postEdit,
                         audioURLProvider: { record in
                             await audioFileStore.absoluteURL(for: record.audioPath)
                         },

@@ -56,7 +56,7 @@ struct BenchmarkResult: Sendable, Identifiable, Codable, Equatable {
 
 struct BenchmarkReport: Sendable, Codable {
     let modelID: String
-    let chinesePreference: ChinesePreference
+    let postEdit: PostEditConfig
     let runAt: String               // ISO8601 timestamp
     let results: [BenchmarkResult]
 
@@ -116,7 +116,7 @@ actor BenchmarkRunner {
     func run(
         records: [DatasetRecord],
         runtime: any ASRRuntime,
-        chinesePreference: ChinesePreference,
+        postEdit: PostEditConfig,
         audioURLProvider: @Sendable (DatasetRecord) async -> URL,
         progress: @Sendable (BenchmarkProgress) async -> Void = { _ in }
     ) async throws -> BenchmarkReport {
@@ -128,7 +128,7 @@ actor BenchmarkRunner {
             await progress(BenchmarkProgress(completed: index, total: records.count, currentRecordID: record.id))
 
             let audioURL = await audioURLProvider(record)
-            let result = await transcribe(record: record, audioURL: audioURL, runtime: runtime, chinesePreference: chinesePreference)
+            let result = await transcribe(record: record, audioURL: audioURL, runtime: runtime, postEdit: postEdit)
             results.append(result)
         }
 
@@ -137,10 +137,10 @@ actor BenchmarkRunner {
 
         let modelID = await runtime.modelID
         let runAt = ISO8601DateFormatter().string(from: Date())
-        return BenchmarkReport(modelID: modelID, chinesePreference: chinesePreference, runAt: runAt, results: results)
+        return BenchmarkReport(modelID: modelID, postEdit: postEdit, runAt: runAt, results: results)
     }
 
-    private func transcribe(record: DatasetRecord, audioURL: URL, runtime: any ASRRuntime, chinesePreference: ChinesePreference) async -> BenchmarkResult {
+    private func transcribe(record: DatasetRecord, audioURL: URL, runtime: any ASRRuntime, postEdit: PostEditConfig) async -> BenchmarkResult {
         let groundTruth = record.editedTranscript
         let start = Date()
 
@@ -171,7 +171,7 @@ actor BenchmarkRunner {
             return failure(record: record, groundTruth: groundTruth, error: error, start: start)
         }
 
-        let editedText = TranscriptPostProcessor.apply(chinesePreference, to: rawText)
+        let editedText = TranscriptPostProcessor.apply(postEdit, to: rawText)
         let elapsedMs = Int(Date().timeIntervalSince(start) * 1000)
 
         let lightRef = TextMetrics.normalize(groundTruth, mode: .light)

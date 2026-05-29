@@ -11,7 +11,7 @@ struct ModelPane: View {
     var body: some View {
         Form {
             modelSection
-            chineseSection
+            postEditSection
             memorySection
             smokeTestSection
         }
@@ -61,21 +61,29 @@ struct ModelPane: View {
         }
     }
 
-    // MARK: - Chinese preference
+    // MARK: - Auto Post-Edit
 
-    private var chineseSection: some View {
+    private var postEditSection: some View {
         Section {
-            Picker(String(localized: "Output style"), selection: Binding(
-                get: { container.modelManager.chinesePreference },
-                set: { container.modelManager.chinesePreference = $0 }
+            Picker(String(localized: "Chinese output"), selection: Binding(
+                get: { container.modelManager.postEdit.chinese },
+                set: { container.modelManager.postEdit.chinese = $0 }
             )) {
                 ForEach(ChinesePreference.allCases) { pref in
                     Text(pref.displayName).tag(pref)
                 }
             }
             .pickerStyle(.menu)
+
+            Toggle(isOn: Binding(
+                get: { container.modelManager.postEdit.cjkLatinSpacing },
+                set: { container.modelManager.postEdit.cjkLatinSpacing = $0 }
+            )) {
+                Text("CJK–Latin spacing")
+                Text("Insert a space between Chinese and adjacent English / numbers.")
+            }
         } header: {
-            Text("Chinese preference")
+            Text("Auto Post-Edit")
         }
     }
 
@@ -157,12 +165,12 @@ struct ModelPane: View {
         smokeRunning = true
         smokeError = nil
         let runtime = container.modelManager.runtime
-        let preference = container.modelManager.chinesePreference
+        let postEdit = container.modelManager.postEdit
         let cacheDir = AppPaths.applicationSupportDirectory().appendingPathComponent("smoke-test-cache", isDirectory: true)
         Task { @MainActor in
             do {
                 let runner = SmokeTestRunner(cacheDirectory: cacheDir)
-                let report = try await runner.run(using: runtime, chinesePreference: preference)
+                let report = try await runner.run(using: runtime, postEdit: postEdit)
                 self.smokeReport = report
             } catch {
                 self.smokeError = String(describing: error)
@@ -180,7 +188,7 @@ private struct SmokeReportView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Model: \(report.modelID)")
                 .font(.caption)
-            Text("Output style: \(report.chinesePreference.displayName)")
+            Text("Output style: \(report.postEdit.summary)")
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Text("Passed: \(report.passed) / \(report.total) · Average latency: \(report.averageLatencyMs) ms")

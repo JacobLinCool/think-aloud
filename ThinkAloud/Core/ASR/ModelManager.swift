@@ -47,10 +47,16 @@ final class ModelManager {
         }
     }
 
+    /// Legacy key from when post-processing was Chinese-conversion only. Read once at launch to
+    /// migrate into `postEdit`; no longer written.
     private let chinesePreferenceKey = "ThinkAloud.chinesePreference"
-    var chinesePreference: ChinesePreference {
+    private let postEditKey = "ThinkAloud.postEditConfig"
+    /// Auto Post-Edit configuration (Chinese conversion + CJK/Latin spacing, …).
+    var postEdit: PostEditConfig {
         didSet {
-            UserDefaults.standard.set(chinesePreference.rawValue, forKey: chinesePreferenceKey)
+            if let data = try? JSONEncoder().encode(postEdit) {
+                UserDefaults.standard.set(data, forKey: postEditKey)
+            }
         }
     }
 
@@ -80,8 +86,14 @@ final class ModelManager {
         self.modelsDirectory = modelsDirectory
         let stored = UserDefaults.standard.string(forKey: defaultsKey).flatMap(ModelProfile.init(rawValue:)) ?? .accurate
         self.profile = stored
-        let storedPref = UserDefaults.standard.string(forKey: chinesePreferenceKey).flatMap(ChinesePreference.init(rawValue:)) ?? .model
-        self.chinesePreference = storedPref
+        if let data = UserDefaults.standard.data(forKey: postEditKey),
+           let cfg = try? JSONDecoder().decode(PostEditConfig.self, from: data) {
+            self.postEdit = cfg
+        } else {
+            // Migrate the legacy Chinese-preference-only setting into the new pipeline config.
+            let legacy = UserDefaults.standard.string(forKey: chinesePreferenceKey).flatMap(ChinesePreference.init(rawValue:)) ?? .model
+            self.postEdit = PostEditConfig(chinese: legacy)
+        }
         let storedTimeout = UserDefaults.standard.string(forKey: idleTimeoutKey).flatMap(IdleTimeout.init(rawValue:)) ?? .tenMinutes
         self.idleTimeout = storedTimeout
         self.runtimeRef = ASRRuntimeFactory.make(profile: stored, cacheDirectory: modelsDirectory)

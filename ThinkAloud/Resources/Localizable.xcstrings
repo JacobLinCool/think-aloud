@@ -3076,6 +3076,56 @@
           }
         }
       }
+    },
+    "No preference" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無偏好"
+          }
+        }
+      }
+    },
+    "Auto Post-Edit" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動後製編輯"
+          }
+        }
+      }
+    },
+    "Chinese output" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中文輸出"
+          }
+        }
+      }
+    },
+    "CJK–Latin spacing" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中英自動空格"
+          }
+        }
+      }
+    },
+    "Insert a space between Chinese and adjacent English / numbers." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在中文與相鄰的英文／數字之間插入空格。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

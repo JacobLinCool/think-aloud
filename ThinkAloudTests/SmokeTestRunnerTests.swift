@@ -11,7 +11,7 @@ final class SmokeTestRunnerTests: XCTestCase {
             SmokeTestResult(id: "s1", sample: samples[0], transcript: "a", editedTranscript: "a", durationMs: 100, error: nil),
             SmokeTestResult(id: "s2", sample: samples[1], transcript: "", editedTranscript: "", durationMs: 200, error: "boom")
         ]
-        let report = SmokeTestReport(modelID: "mock", chinesePreference: .model, results: results)
+        let report = SmokeTestReport(modelID: "mock", postEdit: .default, results: results)
         XCTAssertEqual(report.passed, 1)
         XCTAssertEqual(report.total, 2)
         XCTAssertEqual(report.averageLatencyMs, 150)
@@ -28,8 +28,8 @@ final class SmokeTestRunnerTests: XCTestCase {
         // must differ from the raw one — proving post-processing actually ran inside the runner.
         let mock = ChineseMockASRRuntime(modelID: "cn-mock", raw: "这是简体中文")
         let runner = SmokeTestRunner(cacheDirectory: tempDir)
-        let report = try await runner.run(using: mock, chinesePreference: .traditional)
-        XCTAssertEqual(report.chinesePreference, .traditional)
+        let report = try await runner.run(using: mock, postEdit: PostEditConfig(chinese: .traditional))
+        XCTAssertEqual(report.postEdit.chinese, .traditional)
         for r in report.results {
             XCTAssertEqual(r.transcript, "这是简体中文")
             XCTAssertNotEqual(r.editedTranscript, r.transcript, "post-processor should have converted to traditional")

@@ -53,8 +53,8 @@ struct BenchmarkView: View {
                     .pickerStyle(.menu)
                     .labelsHidden()
                 }
-                LabeledContent(String(localized: "Output style")) {
-                    Picker("", selection: $controller.selectedPreference) {
+                LabeledContent(String(localized: "Chinese output")) {
+                    Picker("", selection: $controller.selectedPostEdit.chinese) {
                         ForEach(ChinesePreference.allCases) { c in
                             Text(c.displayName).tag(c)
                         }
@@ -62,6 +62,8 @@ struct BenchmarkView: View {
                     .pickerStyle(.menu)
                     .labelsHidden()
                 }
+                Toggle(String(localized: "CJK–Latin spacing"), isOn: $controller.selectedPostEdit.cjkLatinSpacing)
+                    .toggleStyle(.checkbox)
                 Spacer()
                 Button {
                     controller.run()
@@ -195,7 +197,7 @@ struct BenchmarkView: View {
         Grid(alignment: .leading, horizontalSpacing: 24, verticalSpacing: 6) {
             GridRow {
                 summaryCell(label: String(localized: "Model"), value: report.modelID)
-                summaryCell(label: String(localized: "Output style"), value: report.chinesePreference.displayName)
+                summaryCell(label: String(localized: "Output style"), value: report.postEdit.summary)
             }
             GridRow {
                 summaryCell(label: String(localized: "Total"), value: "\(report.total)")
