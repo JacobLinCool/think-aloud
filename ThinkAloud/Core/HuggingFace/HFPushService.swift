@@ -63,8 +63,8 @@ actor HFPushService {
 
         let metadataURL = staging.appendingPathComponent("metadata.jsonl")
         let readmeURL = staging.appendingPathComponent("README.md")
-        try writeMetadataJSONL(records: records, to: metadataURL)
-        try writeReadme(records: records, to: readmeURL)
+        try writeMetadataJSONL(records: records, includeAudio: options.includeAudio, to: metadataURL)
+        try writeReadme(records: records, includeAudio: options.includeAudio, to: readmeURL)
 
         var stagedFiles: [(repoPath: String, localURL: URL)] = [
             ("metadata.jsonl", metadataURL),
@@ -153,20 +153,35 @@ actor HFPushService {
         return dir
     }
 
-    private func writeMetadataJSONL(records: [DatasetRecord], to url: URL) throws {
+    private func writeMetadataJSONL(records: [DatasetRecord], includeAudio: Bool, to url: URL) throws {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.withoutEscapingSlashes]
         var lines: [String] = []
         for record in records {
             let data = try encoder.encode(record)
-            guard let line = String(data: data, encoding: .utf8) else { continue }
-            lines.append(line)
+            // HF folder_based_builder (AudioFolder) requires `file_name` in each row
+            // pointing at the audio file's repo-relative path. We keep `audio_path`
+            // for human readability and add `file_name` only when audio is included.
+            if includeAudio,
+               var obj = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let path = obj["audio_path"] as? String {
+                obj["file_name"] = path
+                let patched = try JSONSerialization.data(
+                    withJSONObject: obj,
+                    options: [.sortedKeys, .withoutEscapingSlashes]
+                )
+                guard let line = String(data: patched, encoding: .utf8) else { continue }
+                lines.append(line)
+            } else {
+                guard let line = String(data: data, encoding: .utf8) else { continue }
+                lines.append(line)
+            }
         }
         let text = lines.joined(separator: "\n") + "\n"
         try Data(text.utf8).write(to: url, options: .atomic)
     }
 
-    private func writeReadme(records: [DatasetRecord], to url: URL) throws {
+    private func writeReadme(records: [DatasetRecord], includeAudio: Bool, to url: URL) throws {
         let langCounts = Dictionary(grouping: records, by: { $0.language ?? "unknown" }).mapValues(\.count)
         let modelCounts = Dictionary(grouping: records, by: { $0.asrModel }).mapValues(\.count)
         var text = """
@@ -202,8 +217,13 @@ actor HFPushService {
         ## Layout
 
         - `metadata.jsonl` — one JSON record per line; mirrors ThinkAloud's local SQLite schema.
-        - `audio/<yyyy-mm-dd>/<id>.wav` — 16 kHz mono PCM recordings; path matches each record's `audio_path` field.
         """
+        if includeAudio {
+            text += """
+
+            - `audio/<yyyy-mm-dd>/<id>.wav` — 16 kHz mono PCM recordings; path matches each record's `file_name` (and `audio_path`) field.
+            """
+        }
         try Data(text.utf8).write(to: url, options: .atomic)
     }
 }
