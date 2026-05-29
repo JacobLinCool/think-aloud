@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ThinkAloud — voice input for macOS that stays on your Mac</title>
+  <meta name="description" content="Press a hotkey, talk, and ThinkAloud types it into any app — transcribed entirely on your Mac. No cloud, no account, no telemetry." />
+  <meta name="theme-color" content="#0351FF" />
+  <meta name="color-scheme" content="light" />
+
+  <!-- Mark JS available before first paint so reveal-on-scroll elements
+       start hidden without a flash. Plain CSS still works if JS is off. -->
+  <script>document.documentElement.classList.add("js");</script>
+
+  <!-- Open Graph / social. Image/URL must be ABSOLUTE — crawlers don't
+       resolve relative paths, and the site lives on the /think-aloud/ subpath. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jacoblincool.github.io/think-aloud/" />
+  <meta property="og:title" content="ThinkAloud — voice input for macOS" />
+  <meta property="og:description" content="Talk, and it types — into any app, entirely on your Mac. No cloud, no telemetry." />
+  <meta property="og:image" content="https://jacoblincool.github.io/think-aloud/assets/icon-512.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="ThinkAloud — voice input for macOS" />
+  <meta name="twitter:description" content="Talk, and it types — into any app, entirely on your Mac." />
+  <meta name="twitter:image" content="https://jacoblincool.github.io/think-aloud/assets/icon-512.png" />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/icon-256.png" />
+  <link rel="preload" as="image" href="assets/icon-1024.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav" data-intro>
+    <a class="nav__brand" href="#top" aria-label="ThinkAloud">
+      <img src="assets/icon-256.png" alt="" width="26" height="26" class="nav__icon" />
+      <span class="nav__name">ThinkAloud</span>
+    </a>
+    <div class="nav__right">
+      <a class="nav__link" href="https://github.com/JacobLinCool/think-aloud" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn--primary btn--sm" id="navDownload" href="https://github.com/JacobLinCool/think-aloud/releases/latest" target="_blank" rel="noopener">Download</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <span id="top"></span>
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" aria-labelledby="hero-title">
+      <!-- Opening animation: a dot rises from the bottom of the screen in a
+           tight, fading column and settles into the app icon. -->
+      <div class="hero-stage" aria-hidden="true">
+        <div class="icon">
+          <img class="icon-img" src="assets/icon-1024.png" alt="" width="232" height="232" />
+          <span class="riser" style="--i:0"></span>
+          <span class="riser" style="--i:1"></span>
+          <span class="riser" style="--i:2"></span>
+          <span class="riser" style="--i:3"></span>
+          <span class="riser" style="--i:4"></span>
+          <span class="riser" style="--i:5"></span>
+          <span class="riser" style="--i:6"></span>
+          <span class="riser" style="--i:7"></span>
+          <span class="riser" style="--i:8"></span>
+          <span class="riser" style="--i:9"></span>
+          <span class="riser" style="--i:10"></span>
+          <span class="riser" style="--i:11"></span>
+          <span class="riser" style="--i:12"></span>
+          <span class="riser" style="--i:13"></span>
+        </div>
+      </div>
+
+      <div class="hero-copy">
+        <h1 id="hero-title">Talk. It’s typed.</h1>
+        <p class="hero-sub">
+          Turns your voice into text in any Mac app -
+          transcribed on-device, edited if you like, then dropped right
+          where your cursor is.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn--primary btn--lg" id="heroDownload"
+             href="https://github.com/JacobLinCool/think-aloud/releases/latest"
+             target="_blank" rel="noopener">Download for macOS</a>
+          <a class="hero-ghost" href="https://github.com/JacobLinCool/think-aloud" target="_blank" rel="noopener">View source ↗</a>
+        </div>
+        <p class="hero-meta" id="downloadVersionHero">macOS 15+ · Apple Silicon</p>
+      </div>
+
+      <a class="scroll-cue" href="#flow" data-intro aria-label="Scroll down">
+        <span class="scroll-cue__dot"></span>
+      </a>
+    </section>
+
+    <!-- ===================== STATEMENT BAND ===================== -->
+    <section class="band" aria-label="Privacy">
+      <p data-reveal="up">
+        No cloud. No account.
+        <span>The model runs on your Mac, and your audio never leaves it.</span>
+      </p>
+    </section>
+
+    <!-- ===================== MOMENT: THE FLOW ===================== -->
+    <section class="feature" id="flow">
+      <div class="feature__text" data-reveal="left">
+        <p class="kicker">The flow</p>
+        <h2>One key does the whole thing</h2>
+        <p>Press <kbd>⌥Space</kbd> to record. Press it again to stop and transcribe — words stream into a preview you can fix. Press once more to insert.</p>
+      </div>
+      <figure class="feature__shot" data-reveal="right">
+        <img src="assets/onboard-4.png" alt="ThinkAloud's three-step guide: press to record, again to transcribe, again to insert." loading="lazy" width="1504" height="1488" />
+      </figure>
+    </section>
+
+    <!-- ===================== MOMENT: THE STUDIO ===================== -->
+    <section class="feature feature--rev">
+      <div class="feature__text" data-reveal="right">
+        <p class="kicker">Beyond dictation</p>
+        <h2>Quietly, an ASR studio</h2>
+        <p>Keep your dictations as a labeled dataset. Edit transcripts, pit models against each other on your own audio, and push the whole set to Hugging Face when you’re ready.</p>
+      </div>
+      <figure class="feature__shot" data-reveal="left">
+        <img src="assets/dataset-benchmark.png" alt="ThinkAloud's benchmark view comparing a model against a saved dataset, with per-record diffs and CER." loading="lazy" width="1984" height="1488" />
+      </figure>
+    </section>
+
+    <!-- ===================== MODELS LINE ===================== -->
+    <section class="note">
+      <p data-reveal="up">
+        Runs SOTA models through
+        <a href="https://github.com/ml-explore/mlx-swift" target="_blank" rel="noopener">Apple MLX</a> — pick a model that fits your Mac, from fast and light to most accurate.
+      </p>
+    </section>
+
+    <!-- ===================== DOWNLOAD ===================== -->
+    <section class="cta" id="download" aria-labelledby="cta-title">
+      <div data-reveal="up">
+        <img src="assets/icon-256.png" alt="" width="76" height="76" class="cta__icon" />
+        <h2 id="cta-title">Get ThinkAloud</h2>
+        <p class="cta__ver" id="downloadVersion">Free for macOS</p>
+        <a class="btn btn--primary btn--lg" id="ctaDownload"
+           href="https://github.com/JacobLinCool/think-aloud/releases/latest"
+           target="_blank" rel="noopener">Download for macOS</a>
+        <p class="cta__sub">
+          macOS 15+ · Apple Silicon ·
+          <a href="https://github.com/JacobLinCool/think-aloud#build-from-source" target="_blank" rel="noopener">build from source</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="footer__brand" href="#top">
+      <img src="assets/icon-256.png" alt="" width="22" height="22" />
+      <span>ThinkAloud</span>
+    </a>
+    <p class="footer__fine">
+      Local-first voice input for macOS, by
+      <a href="https://github.com/JacobLinCool" target="_blank" rel="noopener">JacobLinCool</a>.
+      <a href="https://github.com/JacobLinCool/think-aloud" target="_blank" rel="noopener">Source</a> ·
+      <a href="https://github.com/JacobLinCool/think-aloud/releases" target="_blank" rel="noopener">Releases</a>
+    </p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

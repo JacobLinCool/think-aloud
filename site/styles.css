@@ -1,0 +1,424 @@
+/* ============================================================
+   ThinkAloud — landing page
+   Palette sampled from the app icon:
+   brand #0351FF · trail #4D8AFF · rings #80B0F8→#C5E2FB · ice #D8F0F8
+   ============================================================ */
+
+:root {
+  --brand: #0351ff;
+  --brand-press: #0344d6;
+  --ice: #d8f0f8;
+  --ice-soft: #eef7fd;
+
+  --ink: #0b1626;
+  --ink-soft: #4b576d;
+  --ink-faint: #636f83;
+  --line: #e8edf5;
+  --bg: #ffffff;
+  --bg-alt: #f6f9ff;
+
+  --maxw: 1080px;
+  --nav-h: 66px;          /* sticky nav occupies flow space above the hero */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --shadow-sm: 0 1px 2px rgba(11, 22, 38, 0.05), 0 8px 22px rgba(11, 22, 38, 0.05);
+  --shadow-lg: 0 30px 70px rgba(11, 22, 38, 0.14), 0 6px 18px rgba(11, 22, 38, 0.06);
+  --shadow-brand: 0 12px 26px rgba(3, 81, 255, 0.3);
+
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Segoe UI", system-ui, "Helvetica Neue", Arial, "PingFang TC",
+    "Noto Sans TC", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: var(--brand); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2 { margin: 0; line-height: 1.05; letter-spacing: -0.03em; }
+p { margin: 0; }
+:focus-visible { outline: 3px solid rgba(3, 81, 255, 0.45); outline-offset: 3px; border-radius: 6px; }
+
+kbd {
+  font-family: var(--mono);
+  font-size: 0.82em;
+  background: var(--ice-soft);
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 7px;
+  padding: 0.08em 0.45em;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.skip-link { position: absolute; left: -999px; top: 0; background: var(--brand); color: #fff; padding: 10px 16px; z-index: 200; }
+.skip-link:focus { left: 0; }
+
+/* ---------------- buttons ---------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  font-weight: 600;
+  font-size: 0.98rem;
+  border-radius: 999px;
+  padding: 0.72em 1.5em;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s var(--ease), box-shadow 0.2s var(--ease), background 0.2s;
+  white-space: nowrap;
+}
+.btn:hover { text-decoration: none; transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+.btn--primary { background: var(--brand); color: #fff; box-shadow: var(--shadow-brand); }
+.btn--primary:hover { background: var(--brand-press); }
+.btn--lg { font-size: 1.06rem; padding: 0.88em 1.9em; }
+.btn--sm { font-size: 0.9rem; padding: 0.5em 1.1em; }
+
+/* ====================================================
+   NAV
+   ==================================================== */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem clamp(1rem, 4vw, 2.4rem);
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.nav--scrolled { border-bottom-color: var(--line); }
+.nav__brand { display: flex; align-items: center; gap: 0.55rem; color: var(--ink); font-weight: 700; }
+.nav__brand:hover { text-decoration: none; }
+.nav__icon { border-radius: 7px; }
+.nav__name { font-size: 1.04rem; letter-spacing: -0.01em; }
+.nav__right { display: flex; align-items: center; gap: 1.3rem; }
+.nav__link { color: var(--ink-soft); font-weight: 500; font-size: 0.95rem; }
+.nav__link:hover { color: var(--brand); text-decoration: none; }
+
+/* ====================================================
+   HERO + opening icon animation
+   ==================================================== */
+.hero {
+  position: relative;
+  /* clip only the horizontal axis so the wide background glow can't add a
+     page-level scrollbar, while the rising dots still overflow vertically */
+  overflow-x: clip;
+  /* fill the viewport minus the sticky nav, so the scroll cue at the
+     hero's bottom stays on-screen without scrolling */
+  min-height: calc(100svh - var(--nav-h));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 860px;
+  margin-inline: auto;
+  padding: clamp(2rem, 6vw, 4rem) 1.25rem clamp(4rem, 8vw, 6rem);
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 -30% auto -30%;
+  height: 90%;
+  background: radial-gradient(52% 46% at 50% 34%, rgba(3, 81, 255, 0.09), rgba(3, 81, 255, 0) 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero-stage {
+  --stage: clamp(168px, 22vw, 228px);
+  position: relative;
+  width: var(--stage);
+  height: var(--stage);
+  margin-bottom: clamp(1.6rem, 4vw, 2.75rem);
+  overflow: visible;
+}
+.icon { position: absolute; inset: 0; }
+
+/* the real app icon — fades in once the rising dot reaches the centre */
+.icon-img {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(0.9);
+  filter: drop-shadow(0 20px 44px rgba(3, 81, 255, 0.2));
+  animation: iconIn 0.6s var(--ease) 1.9s forwards;
+}
+@keyframes iconIn { to { opacity: 1; transform: scale(1); } }
+
+/* The rising cascade: a tight column of dots from the bottom of the viewport
+   up to the icon's blue dot. Each fades in then out (no hard jumps), staggered
+   so a few are visible at once — a smooth, closely-stacked ascent that hands
+   off to the real icon. */
+.riser {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 15%;
+  height: 15%;
+  border-radius: 50%;
+  background: var(--brand);
+  --rise: 60vh;                                  /* bottom-most dot, near screen bottom */
+  --rest: calc(var(--stage) * -0.14);            /* meets the icon's blue dot (≈36% from top) */
+  --steps: 13;
+  --y: calc(var(--rise) + (var(--rest) - var(--rise)) * var(--i) / var(--steps));
+  opacity: 0;
+  transform: translate(-50%, calc(-50% + var(--y))) scale(0.7);
+  animation: riserPulse 0.62s ease-in-out both;
+  animation-delay: calc(var(--i) * 0.12s);
+}
+@keyframes riserPulse {
+  0%   { opacity: 0; transform: translate(-50%, calc(-50% + var(--y) + 16px)) scale(0.5); }
+  42%  { opacity: 1; transform: translate(-50%, calc(-50% + var(--y))) scale(1); }
+  62%  { opacity: 1; transform: translate(-50%, calc(-50% + var(--y))) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, calc(-50% + var(--y) - 16px)) scale(1.05); }
+}
+
+.hero-copy { max-width: 660px; }
+.hero-copy > * { animation: fadeUp 0.7s var(--ease) both; }
+.hero-copy > *:nth-child(1) { animation-delay: 2.45s; }
+.hero-copy > *:nth-child(2) { animation-delay: 2.55s; }
+.hero-copy > *:nth-child(3) { animation-delay: 2.65s; }
+.hero-copy > *:nth-child(4) { animation-delay: 2.75s; }
+
+h1 {
+  font-size: clamp(2.9rem, 8.5vw, 5.2rem);
+  font-weight: 800;
+  line-height: 1.0;
+}
+.hero-sub {
+  font-size: clamp(1.1rem, 2.1vw, 1.32rem);
+  color: var(--ink-soft);
+  max-width: 30em;
+  margin: 1.4rem auto 2.1rem;
+  line-height: 1.55;
+}
+.hero-cta { display: flex; gap: 1.3rem; align-items: center; justify-content: center; flex-wrap: wrap; }
+.hero-ghost { font-weight: 600; color: var(--ink-soft); }
+.hero-ghost:hover { color: var(--brand); }
+.hero-meta { margin-top: 1.5rem; color: var(--ink-faint); font-size: 0.92rem; }
+
+.nav[data-intro] { animation: fadeDown 0.7s var(--ease) 2.4s both; }
+.scroll-cue[data-intro] { animation: fadeUp 0.7s var(--ease) 2.95s both; }
+.scroll-cue {
+  position: absolute;
+  bottom: clamp(1.1rem, 3vw, 2rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 42px;
+  border: 2px solid #cbd5e6;
+  border-radius: 14px;
+}
+.scroll-cue__dot {
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--brand);
+  animation: scrollBob 1.6s ease-in-out infinite;
+}
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+@keyframes scrollBob { 0%, 100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(14px); opacity: 0.3; } }
+
+/* reveal-on-scroll (only active when JS is present) */
+.js [data-reveal] {
+  opacity: 0;
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+  will-change: opacity, transform;
+}
+.js [data-reveal="left"]  { transform: translateX(-40px); }
+.js [data-reveal="right"] { transform: translateX(40px); }
+.js [data-reveal="up"]    { transform: translateY(30px); }
+.js [data-reveal].is-visible { opacity: 1; transform: none; }
+
+/* ====================================================
+   STATEMENT BAND
+   ==================================================== */
+.band {
+  text-align: center;
+  padding: clamp(4.5rem, 12vw, 8.5rem) clamp(1.2rem, 5vw, 3rem);
+  border-block: 1px solid var(--line);
+  background: var(--bg-alt);
+}
+.band p {
+  max-width: 18ch;
+  margin-inline: auto;
+  font-size: clamp(1.7rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.band span {
+  display: block;
+  max-width: 26ch;
+  margin: 0.7em auto 0;
+  font-size: 0.46em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+/* ====================================================
+   FEATURE MOMENTS
+   ==================================================== */
+.feature {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 7vw, 6rem);
+  align-items: center;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: clamp(4rem, 10vw, 7.5rem) clamp(1.2rem, 4vw, 2.5rem);
+  scroll-margin-top: 72px;
+  overflow-x: clip;          /* contain the screenshot's soft glow */
+}
+.feature--rev .feature__text { order: 2; }
+.feature--rev .feature__shot { order: 1; }
+.kicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--brand);
+  margin-bottom: 1.05rem;
+}
+.feature__text h2 { font-size: clamp(1.9rem, 4.2vw, 2.9rem); font-weight: 800; margin-bottom: 1.1rem; }
+.feature__text p { color: var(--ink-soft); font-size: clamp(1.04rem, 1.7vw, 1.2rem); max-width: 34ch; }
+.feature__text kbd { font-size: 0.78em; }
+
+.feature__shot { position: relative; margin: 0; }
+.feature__shot::before {
+  content: "";
+  position: absolute;
+  inset: -10% -8%;
+  background: radial-gradient(55% 55% at 50% 45%, rgba(3, 81, 255, 0.12), rgba(3, 81, 255, 0) 72%);
+  z-index: -1;
+}
+.feature__shot img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+/* ====================================================
+   NOTE LINE
+   ==================================================== */
+.note {
+  max-width: 56ch;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 1.5rem clamp(3.5rem, 9vw, 6rem);
+}
+.note p { color: var(--ink-soft); font-size: clamp(1.02rem, 1.8vw, 1.18rem); line-height: 1.6; }
+
+/* ====================================================
+   DOWNLOAD CTA
+   ==================================================== */
+.cta {
+  text-align: center;
+  padding: clamp(4.5rem, 11vw, 8rem) 1.5rem;
+  background: linear-gradient(180deg, #ffffff 0%, var(--ice-soft) 100%);
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 72px;
+}
+.cta__icon { margin: 0 auto 1.3rem; border-radius: 18px; box-shadow: 0 14px 32px rgba(3, 81, 255, 0.22); }
+.cta h2 { font-size: clamp(2.1rem, 5.5vw, 3.1rem); font-weight: 800; }
+.cta__ver { color: var(--ink-faint); margin: 0.55rem 0 1.7rem; font-size: 0.95rem; }
+.cta .btn { margin-inline: auto; }
+.cta__sub { margin-top: 1.3rem; color: var(--ink-faint); font-size: 0.92rem; }
+.cta__sub a { color: var(--ink-faint); text-decoration: underline; text-underline-offset: 3px; }
+.cta__sub a:hover { color: var(--brand); }
+
+/* ====================================================
+   FOOTER
+   ==================================================== */
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: 2.4rem clamp(1.2rem, 4vw, 2.5rem) 3rem;
+  border-top: 1px solid var(--line);
+}
+.footer__brand { display: flex; align-items: center; gap: 0.5rem; color: var(--ink); font-weight: 700; }
+.footer__brand:hover { text-decoration: none; }
+.footer__brand img { border-radius: 6px; }
+.footer__fine { color: var(--ink-faint); font-size: 0.9rem; }
+.footer__fine a { color: var(--ink-faint); text-decoration: underline; text-underline-offset: 3px; }
+.footer__fine a:hover { color: var(--brand); }
+
+/* ====================================================
+   RESPONSIVE
+   ==================================================== */
+@media (max-width: 760px) {
+  /* On phones a full-viewport hero leaves big empty bands above and below the
+     content. Size it to its content instead, with a slightly larger icon. */
+  .hero {
+    min-height: auto;
+    padding-top: clamp(2.25rem, 7vw, 3.25rem);
+    padding-bottom: clamp(2.75rem, 8vw, 4rem);
+  }
+  .hero-stage { --stage: clamp(184px, 50vw, 216px); }
+  .riser { --rise: 46vh; }              /* dots still rise from low on screen, but stay within the hero */
+  .scroll-cue { display: none; }        /* phones scroll naturally */
+
+  /* single column → reveal vertically (a horizontal slide would push
+     off-screen content past the viewport edge and add a scrollbar) */
+  .js [data-reveal="left"],
+  .js [data-reveal="right"] { transform: translateY(28px); }
+
+  .feature { grid-template-columns: 1fr; gap: 1.8rem; }
+  .feature--rev .feature__text { order: 1; }
+  .feature--rev .feature__shot { order: 2; }
+  .feature__text p { max-width: none; }
+}
+@media (max-width: 420px) {
+  .nav__name { display: none; }
+}
+
+/* ====================================================
+   REDUCED MOTION — skip the show, present the result
+   ==================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .hero-copy > *, [data-intro] { opacity: 1 !important; transform: none !important; }
+  .js [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .icon-img { opacity: 1 !important; transform: scale(1) !important; }
+  .riser { display: none !important; }
+  .scroll-cue__dot { animation: none !important; }
+}
