@@ -52,4 +52,30 @@ enum ModelProfile: String, CaseIterable, Identifiable, Sendable {
         case .breezeASR25: return "MediaTek-Research/Breeze-ASR-25"
         }
     }
+
+    /// One-line "what is this for" blurb shown next to each model during onboarding.
+    var tagline: String {
+        switch self {
+        case .fast: return String(localized: "Lowest latency and RAM. Good on older or low-power Macs.")
+        case .balanced: return String(localized: "A solid middle ground between speed and accuracy.")
+        case .accurate: return String(localized: "Best accuracy. Recommended for most modern Macs.")
+        case .whisperLargeV3Turbo: return String(localized: "OpenAI Whisper, strong for multilingual audio.")
+        case .breezeASR25: return String(localized: "Tuned for Taiwanese Mandarin by MediaTek Research.")
+        }
+    }
+
+    /// Rough download size for display before the real byte count is known. The model step
+    /// shows live bytes once a download starts; this is just to set expectations up front.
+    var estimatedDownloadSize: String {
+        switch self {
+        case .fast: return "~0.5 GB"
+        case .balanced: return "~1.1 GB"
+        case .accurate: return "~1.9 GB"
+        case .whisperLargeV3Turbo: return "~1.6 GB"
+        case .breezeASR25: return "~3.0 GB"
+        }
+    }
+
+    /// Sensible default to pre-select in onboarding — matches the app's default profile.
+    static var recommended: ModelProfile { .accurate }
 }

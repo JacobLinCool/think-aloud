@@ -46,6 +46,18 @@ final class PermissionsService {
         }
     }
 
+    /// Triggers macOS's own "grant Accessibility access" dialog and registers the app in the
+    /// Accessibility list. Unlike microphone, there's no async grant callback — the user toggles
+    /// it in System Settings — so callers should `refresh()` afterwards (e.g. on a poll / window
+    /// focus) to pick up the change. Updates `accessibilityStatus` with the immediate result.
+    func promptAccessibility() {
+        // The SDK exposes `kAXTrustedCheckOptionPrompt` as a non-Sendable global `var`, which
+        // Swift 6 strict concurrency rejects. Its value is the stable string below.
+        let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
+        let trusted = AXIsProcessTrustedWithOptions(options)
+        accessibilityStatus = trusted ? .granted : .denied
+    }
+
     func openAccessibilitySettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
             NSWorkspace.shared.open(url)

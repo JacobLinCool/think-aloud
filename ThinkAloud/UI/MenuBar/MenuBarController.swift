@@ -24,19 +24,26 @@ final class MenuBarController: NSObject {
 
     private func rebuildMenu() {
         let menu = NSMenu()
-        menu.addItem(makeItem(title: String(localized: "Start Voice Input"), action: #selector(invokePopup), keyEquivalent: ""))
+        // SF Symbols mirror the matching Settings tabs so the menu reads consistently with the
+        // Settings window (Dataset → tray.full, Updates → arrow.down.circle, Settings → gearshape).
+        menu.addItem(makeItem(title: String(localized: "Start Voice Input"), action: #selector(invokePopup), keyEquivalent: "", systemImage: "mic.fill"))
         menu.addItem(.separator())
-        menu.addItem(makeItem(title: String(localized: "Browse Dataset…"), action: #selector(openDatasetBrowser), keyEquivalent: "d"))
-        menu.addItem(makeItem(title: String(localized: "Settings…"), action: #selector(openSettings), keyEquivalent: ","))
-        menu.addItem(makeItem(title: String(localized: "Check for Updates…"), action: #selector(checkForUpdates), keyEquivalent: ""))
+        menu.addItem(makeItem(title: String(localized: "Browse Dataset…"), action: #selector(openDatasetBrowser), keyEquivalent: "d", systemImage: "tray.full"))
+        menu.addItem(makeItem(title: String(localized: "Settings…"), action: #selector(openSettings), keyEquivalent: ",", systemImage: "gearshape"))
+        menu.addItem(makeItem(title: String(localized: "Check for Updates…"), action: #selector(checkForUpdates), keyEquivalent: "", systemImage: "arrow.down.circle"))
         menu.addItem(.separator())
         menu.addItem(makeItem(title: String(localized: "Quit ThinkAloud"), action: #selector(quit), keyEquivalent: "q"))
         statusItem.menu = menu
     }
 
-    private func makeItem(title: String, action: Selector, keyEquivalent: String) -> NSMenuItem {
+    private func makeItem(title: String, action: Selector, keyEquivalent: String, systemImage: String? = nil) -> NSMenuItem {
         let item = NSMenuItem(title: title, action: action, keyEquivalent: keyEquivalent)
         item.target = self
+        if let systemImage {
+            let image = NSImage(systemSymbolName: systemImage, accessibilityDescription: nil)
+            image?.isTemplate = true
+            item.image = image
+        }
         return item
     }
 
