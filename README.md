@@ -39,7 +39,7 @@ Built around [Qwen3-ASR](https://huggingface.co/mlx-community?search_models=Qwen
 | --- | --- |
 | **Hotkeys** | Per-action keybindings (start / stop / insert + save). All default to `⌥Space`. |
 | **Permissions** | Microphone + Accessibility status. One-click "Open System Settings". |
-| **Model** | Quality preset (Fast / Balanced / Accurate Qwen3-ASR variants), Chinese output preference, idle auto-unload timeout, smoke test. |
+| **Model** | Quality preset (Fast / Balanced / Accurate Qwen3-ASR variants, plus Whisper Large v3 Turbo and Breeze-ASR-25 for Mandarin), Chinese output preference, idle auto-unload timeout, smoke test. |
 | **Dataset** | Storage stats, open data folder, export JSONL, clear all. Opens the dataset browser. |
 | **Advanced** | Per-model download/remove. Hugging Face token. |
 
