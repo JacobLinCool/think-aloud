@@ -28,5 +28,15 @@
 	<string>© 2026 JacobLinCool</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>ThinkAloud needs microphone access to record your voice for local transcription.</string>
+	<key>SUAllowsAutomaticUpdates</key>
+	<true/>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://github.com/JacobLinCool/think-aloud/releases/latest/download/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>8IyjtacKsc5qlweQsGwig2OyD9e2dETsJzzy4QL1A8o=</string>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
 </dict>
 </plist>

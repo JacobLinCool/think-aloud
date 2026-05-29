@@ -15,6 +15,7 @@ final class AppContainer {
     private(set) var settingsWindow: SettingsWindowController!
     private(set) var datasetBrowserWindow: DatasetBrowserWindowController!
     let hfTokenStore: HFTokenStore
+    let updater: UpdaterController
 
     init() {
         let appSupport = AppPaths.applicationSupportDirectory()
@@ -34,6 +35,7 @@ final class AppContainer {
         let recorder = AudioRecorder()
         let insertion = TextInsertionManager()
         let hfTokenStore = HFTokenStore()
+        let updater = UpdaterController()
 
         self.permissions = permissions
         self.hotkeys = hotkeys
@@ -43,6 +45,7 @@ final class AppContainer {
         self.recorder = recorder
         self.insertion = insertion
         self.hfTokenStore = hfTokenStore
+        self.updater = updater
         self.coordinator = PopupCoordinator(
             permissions: permissions,
             modelManager: modelManager,

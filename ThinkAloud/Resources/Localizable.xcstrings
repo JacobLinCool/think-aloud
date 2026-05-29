@@ -2,6 +2,36 @@
   "sourceLanguage" : "en",
   "version" : "1.0",
   "strings" : {
+    "Automatically check for updates" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "自動檢查更新" } }
+      }
+    },
+    "Automatically download and install updates" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "自動下載並安裝更新" } }
+      }
+    },
+    "Check for Updates…" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "檢查更新…" } }
+      }
+    },
+    "Current version" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "目前版本" } }
+      }
+    },
+    "Updates" : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "更新" } }
+      }
+    },
+    "Updates are downloaded from GitHub Releases and verified with a cryptographic signature before installing." : {
+      "localizations" : {
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "更新會從 GitHub Releases 下載，並在安裝前以密碼學簽章驗證。" } }
+      }
+    },
     "5 minutes" : {
       "localizations" : {
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "5 分鐘" } }

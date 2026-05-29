@@ -1,0 +1,48 @@
+# Build check for PRs and main. Compiles the app on a clean runner so broken builds
+# are caught before merge. (Signing/notarization + the unit tests that need a signed
+# host app are exercised by the tag-driven release workflow; a plain build needs neither.)
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 40
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select latest Xcode
+        run: |
+          set -euo pipefail
+          # mlx-audio-swift needs swift-tools-version:6.2 (Xcode 16.4+); pick the newest installed.
+          LATEST=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          echo "Selecting $LATEST"
+          sudo xcode-select -s "$LATEST"
+          xcodebuild -version
+          swift --version
+
+      - name: Install build deps
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build
+        run: |
+          set -euo pipefail
+          xcodebuild build \
+            -project ThinkAloud.xcodeproj \
+            -scheme ThinkAloud \
+            -configuration Debug \
+            -destination 'generic/platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            COMPILER_INDEX_STORE_ENABLE=NO
