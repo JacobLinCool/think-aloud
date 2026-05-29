@@ -16,7 +16,7 @@ final class PopupCoordinator {
     private let windowController = PopupWindowController()
 
     private var elapsedTimerTask: Task<Void, Never>?
-    private var levelTask: Task<Void, Never>?
+    private var recordingStartedAt: Date?
     private var lastResult: ASRResult?
     private var lastRecording: RecordingResult?
 
@@ -74,9 +74,8 @@ final class PopupCoordinator {
         Task { @MainActor in
             await self.recorder.cancel()
             self.elapsedTimerTask?.cancel()
-            self.levelTask?.cancel()
             self.elapsedTimerTask = nil
-            self.levelTask = nil
+            self.recordingStartedAt = nil
             self.lastRecording = nil
             self.lastResult = nil
             self.viewModel.reset()
@@ -130,37 +129,46 @@ final class PopupCoordinator {
         }
 
         do {
-            try await recorder.start(levelCallback: { [weak self] sample in
-                Task { @MainActor in
-                    self?.viewModel.levelRMS = sample.rms
-                    self?.viewModel.levelPeak = sample.peak
-                }
-            })
+            try await recorder.start()
         } catch {
             NSLog("ThinkAloud: recorder start failed: \(error)")
             viewModel.phase = .error(String(describing: error))
             return
         }
+        // Anchor elapsed time on the MainActor so the display loop never has to hop into the
+        // recorder actor (busy ingesting audio buffers) just to read the clock.
+        recordingStartedAt = Date()
         NSLog("ThinkAloud: recording started")
         viewModel.phase = .recording
         startElapsedTimer()
     }
 
+    /// Single ~15Hz MainActor loop that drives BOTH the elapsed clock and the level meter.
+    /// Elapsed is computed locally (no actor hop); the level is pulled from the recorder once
+    /// per tick. This replaces the old split of a 100ms elapsed poll + a per-buffer (~47/s)
+    /// level-callback push, which together flooded the MainActor and made the timer tick
+    /// unevenly while re-rendering the whole popup.
     private func startElapsedTimer() {
         elapsedTimerTask?.cancel()
         let recorder = recorder
+        let start = recordingStartedAt ?? Date()
         elapsedTimerTask = Task { @MainActor [weak self] in
-            var tick = 0
+            var lastActivitySecond = -1
             while !Task.isCancelled {
-                let seconds = await recorder.elapsedSeconds
-                self?.viewModel.elapsedSeconds = seconds
-                // Tick recordActivity once per second so the idle-eviction timer in ModelManager
-                // never tries to unload weights while we're actively recording.
-                if tick % 10 == 0 {
-                    self?.modelManager.recordActivity()
+                let elapsed = Date().timeIntervalSince(start)
+                let level = await recorder.currentLevel
+                guard let self else { return }
+                self.viewModel.elapsedSeconds = elapsed
+                self.viewModel.levelRMS = level.rms
+                self.viewModel.levelPeak = level.peak
+                // Tick recordActivity on each whole-second crossing so the idle-eviction timer in
+                // ModelManager never tries to unload weights while we're actively recording.
+                let whole = Int(elapsed)
+                if whole != lastActivitySecond {
+                    lastActivitySecond = whole
+                    self.modelManager.recordActivity()
                 }
-                tick &+= 1
-                try? await Task.sleep(nanoseconds: 100_000_000)
+                try? await Task.sleep(nanoseconds: 66_000_000)
             }
         }
     }
