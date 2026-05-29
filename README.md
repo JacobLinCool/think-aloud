@@ -1,5 +1,7 @@
 # ThinkAloud
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Local-first voice input for macOS. Press a hotkey anywhere, dictate, get the text pasted into the focused app — and optionally save the recording + transcript as a personal dataset.
 
 Built around [Qwen3-ASR](https://huggingface.co/mlx-community?search_models=Qwen3-ASR) running on-device via [mlx-audio-swift](https://github.com/Blaizzy/mlx-audio-swift). No cloud, no telemetry.
@@ -9,8 +11,9 @@ Built around [Qwen3-ASR](https://huggingface.co/mlx-community?search_models=Qwen
 - **One hotkey, whole flow.** Default `⌥Space` starts recording → press again to stop & transcribe → press again to insert & save. The three actions are also rebindable separately.
 - **Streaming transcription** with editable preview before inserting.
 - **Chinese output preference** — keep model output as-is, prefer Traditional (正體), or prefer Simplified (簡體). Conversion runs locally via ICU.
+- **Localized UI** — English and 正體中文, or follow the system language. Switch any time in Settings → General (takes effect after relaunch).
 - **Dataset browser** — play recordings, scrub the timeline, edit transcripts, bulk delete.
-- **Built-in benchmark** — re-run any saved model against your dataset, see CER + exact-match rate + per-character git-style diff. Multiple runs kept for cross-model comparison. JSON export.
+- **Built-in benchmark** — re-run any saved model against your dataset; see CER, WER, exact-match rate, real-time factor (RTF), and a per-character git-style diff. Toggle strict vs lenient (normalized) scoring without re-running. Multiple runs kept for cross-model comparison. JSON export.
 - **Push to Hugging Face Hub** — full LFS support, repo card auto-generated, token stored in macOS Keychain.
 - **Idle auto-unload** of model weights to free memory between sessions.
 - **Automatic updates** via [Sparkle](https://sparkle-project.org/) — checks GitHub Releases daily, verifies each update's signature, and installs on your OK. Settings → Updates.
@@ -37,18 +40,21 @@ Built around [Qwen3-ASR](https://huggingface.co/mlx-community?search_models=Qwen
 
 | Pane | What it controls |
 | --- | --- |
-| **Hotkeys** | Per-action keybindings (start / stop / insert + save). All default to `⌥Space`. |
+| **General** | App language (Automatic / English / 正體中文), per-action keybindings (start / stop / insert + save, all default to `⌥Space`), and a button to re-run the Setup Assistant. |
 | **Permissions** | Microphone + Accessibility status. One-click "Open System Settings". |
 | **Model** | Quality preset (Fast / Balanced / Accurate Qwen3-ASR variants, plus Whisper Large v3 Turbo and Breeze-ASR-25 for Mandarin), Chinese output preference, idle auto-unload timeout, smoke test. |
 | **Dataset** | Storage stats, open data folder, export JSONL, clear all. Opens the dataset browser. |
 | **Advanced** | Per-model download/remove. Hugging Face token. |
+| **Updates** | Sparkle auto-update controls — run a manual check, toggle automatic checking and automatic download + install. |
 
 ## Dataset browser
 
 Open from menu bar **Browse Dataset…** (`⌘D`) or Settings → Dataset.
 
 - **Records** — saved dictations. Play, scrub, edit the transcript (raw stays immutable, edited overwrites). Multi-select + `⌘⌫` for bulk delete. Push the whole dataset to HF Hub from the toolbar.
-- **Benchmark** — pick a model + Chinese preference, run the full pipeline (audio decode → model → post-process) against every record. Reports overall CER, exact-match rate, average latency; per-record diffs show what the model omitted (green underline) vs hallucinated (red strikethrough). Multiple runs are kept in-session for comparison and can be exported as JSON.
+- **Benchmark** — pick a model + Chinese preference, run the full pipeline (audio decode → model → post-process) against every record. Reports overall CER, WER, exact-match rate, average latency, and real-time factor (RTF); a Normalize toggle flips between strict (case + punctuation preserved) and lenient scoring without re-running. Per-record diffs show what the model omitted (green) vs hallucinated (red). Multiple runs are kept in-session for comparison and can be exported as JSON.
+
+![Dataset browser & benchmark](images/dataset-benchmark.png)
 
 ## Privacy
 
@@ -69,7 +75,7 @@ xcodegen generate
 # Build
 xcodebuild -project ThinkAloud.xcodeproj -scheme ThinkAloud -configuration Debug build
 
-# Run tests (37 unit tests; one optional live ASR test gated by env)
+# Run tests (45 unit tests; one optional live ASR test gated by env)
 xcodebuild -project ThinkAloud.xcodeproj -scheme ThinkAloud -configuration Debug test
 ```
 
@@ -116,3 +122,7 @@ Keep the **same** Developer ID certificate and the **same** EdDSA key across eve
 ## Status
 
 MVP. Working end-to-end on macOS 15.x / Apple Silicon. Tested with Qwen3-ASR 0.6B-4bit, 1.7B-4bit, and 1.7B-8bit variants.
+
+## License
+
+Released under the [MIT License](LICENSE).
