@@ -66,6 +66,12 @@ final class ModelManager {
     private(set) var lastError: String?
     private(set) var lastActivityAt: Date = .distantPast
 
+    /// Live download status keyed by profile, used by the Advanced pane to show a percentage +
+    /// progress bar while ANY model downloads — including profiles other than the active one,
+    /// whose status never reaches `runtimeStatus`. Populated during `downloadProfile`, cleared
+    /// when it finishes.
+    private(set) var profileDownloadStatus: [ModelProfile: ASRRuntimeStatus] = [:]
+
     private var runtimeRef: any ASRRuntime
     private var statusPollingTask: Task<Void, Never>?
     private var idleEvictionTask: Task<Void, Never>?
@@ -204,13 +210,40 @@ final class ModelManager {
     /// for non-active profiles it spins up a transient runtime, fetches, then unloads its weights.
     func downloadProfile(_ profile: ModelProfile) async throws {
         if profile == self.profile {
+            // Active profile: reuse the live runtime so its weights stay loaded afterwards.
+            let poll = startProfileDownloadPolling(profile: profile, runtime: runtimeRef)
+            defer {
+                poll.cancel()
+                profileDownloadStatus[profile] = nil
+            }
             try await runtimeRef.preload()
             return
         }
         let transient = ASRRuntimeFactory.make(profile: profile, cacheDirectory: modelsDirectory)
+        let poll = startProfileDownloadPolling(profile: profile, runtime: transient)
+        defer {
+            poll.cancel()
+            profileDownloadStatus[profile] = nil
+        }
         try await transient.preload()
         await transient.unload()
         pruneRedundantHFCache()
+    }
+
+    /// Polls a (possibly transient) runtime's status into `profileDownloadStatus[profile]` at 4Hz
+    /// so the Advanced pane can render a live percentage/bar during download. Stops on
+    /// ready/failed; the caller also cancels it via `defer` once `preload()` returns.
+    private func startProfileDownloadPolling(profile: ModelProfile, runtime: any ASRRuntime) -> Task<Void, Never> {
+        Task { @MainActor [weak self] in
+            while !Task.isCancelled {
+                let s = await runtime.status()
+                if Task.isCancelled { return }
+                self?.profileDownloadStatus[profile] = s
+                if case .ready = s { return }
+                if case .failed = s { return }
+                try? await Task.sleep(nanoseconds: 250_000_000)
+            }
+        }
     }
 
     /// Removes a profile's snapshot directory and its parallel HF blob cache. If it's the
