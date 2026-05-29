@@ -199,8 +199,31 @@ final class PopupCoordinator {
         var receivedAny = false
         var finalResult: ASRResult?
 
+        // Auto Pre-Edit: optionally denoise (DeepFilterNet, 48 kHz), then resample to the 16 kHz
+        // the ASR runtimes require. Dataset save still uses the original `recordingResult` (48 kHz raw).
+        var asrSamples = recordingResult.samples
+        var asrSampleRate = recordingResult.sampleRate
+        if modelManager.preEdit.denoise {
+            do {
+                asrSamples = try await modelManager.denoise(asrSamples)
+            } catch {
+                NSLog("ThinkAloud: denoise failed, using original audio: \(error)")
+            }
+        }
+        if asrSampleRate != 16000 {
+            do {
+                asrSamples = try AudioRecorder.resample(asrSamples, from: asrSampleRate, to: 16000)
+                asrSampleRate = 16000
+            } catch {
+                // Never feed source-rate audio to the 16 kHz-only runtimes — abort instead.
+                viewModel.isStreaming = false
+                viewModel.phase = .error(String(describing: error))
+                return
+            }
+        }
+
         do {
-            for try await event in runtime.transcribeStream(samples: recordingResult.samples, sampleRate: recordingResult.sampleRate, options: ASROptions(language: nil)) {
+            for try await event in runtime.transcribeStream(samples: asrSamples, sampleRate: asrSampleRate, options: ASROptions(language: nil)) {
                 switch event {
                 case .token(let token):
                     accumulated += token

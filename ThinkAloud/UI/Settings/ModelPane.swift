@@ -11,6 +11,7 @@ struct ModelPane: View {
     var body: some View {
         Form {
             modelSection
+            preEditSection
             postEditSection
             memorySection
             smokeTestSection
@@ -58,6 +59,54 @@ struct ModelPane: View {
 
         } header: {
             Text("ASR Model")
+        }
+    }
+
+    // MARK: - Auto Pre-Edit
+
+    private var preEditSection: some View {
+        Section {
+            Toggle(isOn: Binding(
+                get: { container.modelManager.preEdit.denoise },
+                set: { container.modelManager.preEdit.denoise = $0 }
+            )) {
+                Text("Audio denoising")
+                Text("Suppress background noise with DeepFilterNet before transcription. Downloads a small model on first use.")
+            }
+
+            if container.modelManager.preEdit.denoise {
+                HStack {
+                    Text("Denoiser")
+                    Spacer()
+                    StatusBadge(tone: container.modelManager.dfnStatus.badge,
+                                text: container.modelManager.dfnStatus.displayLabel)
+                }
+                if container.modelManager.dfnStatus.isLoading {
+                    ProgressView()
+                }
+                HStack {
+                    Button(String(localized: "Load denoiser")) {
+                        container.modelManager.preloadDFN()
+                    }
+                    .disabled(container.modelManager.dfnStatus.isLoading || container.modelManager.dfnStatus == .ready)
+
+                    if container.modelManager.dfnStatus == .ready {
+                        DestructiveButton(
+                            "Unload denoiser",
+                            confirmMessage: "Free the denoiser weights from memory? It will reload on next use.",
+                            confirmLabel: "Unload"
+                        ) {
+                            container.modelManager.unloadDFNNow()
+                        }
+                    }
+                }
+            }
+        } header: {
+            Text("Auto Pre-Edit")
+        } footer: {
+            Text("Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Best for noisy environments; may not help (or slightly hurt) clean recordings — use Benchmark to compare.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 

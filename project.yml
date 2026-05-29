@@ -103,6 +103,8 @@ targets:
         product: MLXAudioSTT
       - package: mlx-audio-swift
         product: MLXAudioCore
+      - package: mlx-audio-swift
+        product: MLXAudioSTS
       - package: mlx-swift
         product: MLX
       - package: GRDB

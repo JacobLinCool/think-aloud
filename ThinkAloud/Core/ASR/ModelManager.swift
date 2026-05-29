@@ -60,6 +60,16 @@ final class ModelManager {
         }
     }
 
+    private let preEditKey = "ThinkAloud.preEditConfig"
+    /// Auto Pre-Edit configuration (audio denoise before ASR, …).
+    var preEdit: PreEditConfig {
+        didSet {
+            if let data = try? JSONEncoder().encode(preEdit) {
+                UserDefaults.standard.set(data, forKey: preEditKey)
+            }
+        }
+    }
+
     private let idleTimeoutKey = "ThinkAloud.idleTimeout"
     var idleTimeout: IdleTimeout {
         didSet {
@@ -82,6 +92,11 @@ final class ModelManager {
     private var statusPollingTask: Task<Void, Never>?
     private var idleEvictionTask: Task<Void, Never>?
 
+    /// Auto Pre-Edit denoiser (DeepFilterNet). Lazily loaded on first use, freed on idle/unload
+    /// alongside the ASR model. `dfnStatus` mirrors its state for the Settings UI.
+    private let dfnRuntimeRef: DeepFilterNetRuntime
+    private(set) var dfnStatus: ASRRuntimeStatus = .unloaded
+
     init(modelsDirectory: URL) {
         self.modelsDirectory = modelsDirectory
         let stored = UserDefaults.standard.string(forKey: defaultsKey).flatMap(ModelProfile.init(rawValue:)) ?? .accurate
@@ -94,9 +109,16 @@ final class ModelManager {
             let legacy = UserDefaults.standard.string(forKey: chinesePreferenceKey).flatMap(ChinesePreference.init(rawValue:)) ?? .model
             self.postEdit = PostEditConfig(chinese: legacy)
         }
+        if let data = UserDefaults.standard.data(forKey: preEditKey),
+           let cfg = try? JSONDecoder().decode(PreEditConfig.self, from: data) {
+            self.preEdit = cfg
+        } else {
+            self.preEdit = .default
+        }
         let storedTimeout = UserDefaults.standard.string(forKey: idleTimeoutKey).flatMap(IdleTimeout.init(rawValue:)) ?? .tenMinutes
         self.idleTimeout = storedTimeout
         self.runtimeRef = ASRRuntimeFactory.make(profile: stored, cacheDirectory: modelsDirectory)
+        self.dfnRuntimeRef = DeepFilterNetRuntime(modelsDirectory: modelsDirectory)
     }
 
     var modelID: String { profile.modelID }
@@ -140,10 +162,57 @@ final class ModelManager {
         idleEvictionTask?.cancel()
         idleEvictionTask = nil
         let runtime = runtimeRef
+        let dfn = dfnRuntimeRef
         Task { @MainActor in
             await runtime.unload()
             self.runtimeStatus = await runtime.status()
+            await dfn.unload()
+            self.dfnStatus = .unloaded
             NSLog("ThinkAloud: model unloaded manually")
+        }
+    }
+
+    // MARK: - Auto Pre-Edit (denoiser)
+
+    /// Runs the DeepFilterNet denoiser on a 48 kHz mono clip, lazily loading it on first use.
+    /// Updates `dfnStatus` for the Settings UI. Throws if loading/inference fails (callers should
+    /// fall back to the original audio).
+    func denoise(_ samples: [Float]) async throws -> [Float] {
+        let dfn = dfnRuntimeRef
+        let loaded = await dfn.isLoaded
+        if !loaded { dfnStatus = .loading }
+        do {
+            let out = try await dfn.enhance(samples)
+            dfnStatus = .ready
+            recordActivity()
+            return out
+        } catch {
+            dfnStatus = .failed(String(describing: error))
+            throw error
+        }
+    }
+
+    /// Eagerly downloads + loads the denoiser (Settings "Load denoiser" button).
+    func preloadDFN() {
+        let dfn = dfnRuntimeRef
+        dfnStatus = .loading
+        Task { @MainActor in
+            do {
+                try await dfn.preload()
+                self.dfnStatus = await dfn.status
+                self.recordActivity()
+            } catch {
+                self.dfnStatus = .failed(String(describing: error))
+            }
+        }
+    }
+
+    /// Manually frees the denoiser weights from memory.
+    func unloadDFNNow() {
+        let dfn = dfnRuntimeRef
+        Task { @MainActor in
+            await dfn.unload()
+            self.dfnStatus = .unloaded
         }
     }
 
@@ -180,6 +249,7 @@ final class ModelManager {
         idleEvictionTask?.cancel()
         guard let timeout = idleTimeout.seconds else { return }
         let runtime = runtimeRef
+        let dfn = dfnRuntimeRef
         let activityAt = lastActivityAt
         idleEvictionTask = Task { @MainActor [weak self] in
             // Sleep until the timeout has elapsed since the recorded activity.
@@ -196,6 +266,12 @@ final class ModelManager {
                 await runtime.unload()
                 self.runtimeStatus = await runtime.status()
                 NSLog("ThinkAloud: model auto-unloaded after idle timeout=\(timeout)s")
+            }
+            // Free the denoiser too, on the same idle policy.
+            if await dfn.isLoaded {
+                await dfn.unload()
+                self.dfnStatus = .unloaded
+                NSLog("ThinkAloud: denoiser auto-unloaded after idle timeout=\(timeout)s")
             }
         }
     }

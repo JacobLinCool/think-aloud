@@ -64,6 +64,8 @@ struct BenchmarkView: View {
                 }
                 Toggle(String(localized: "CJK–Latin spacing"), isOn: $controller.selectedPostEdit.cjkLatinSpacing)
                     .toggleStyle(.checkbox)
+                Toggle(String(localized: "Denoise"), isOn: $controller.selectedPreEdit.denoise)
+                    .toggleStyle(.checkbox)
                 Spacer()
                 Button {
                     controller.run()
@@ -198,6 +200,9 @@ struct BenchmarkView: View {
             GridRow {
                 summaryCell(label: String(localized: "Model"), value: report.modelID)
                 summaryCell(label: String(localized: "Output style"), value: report.postEdit.summary)
+            }
+            GridRow {
+                summaryCell(label: String(localized: "Denoise"), value: report.preEdit.summary)
             }
             GridRow {
                 summaryCell(label: String(localized: "Total"), value: "\(report.total)")
