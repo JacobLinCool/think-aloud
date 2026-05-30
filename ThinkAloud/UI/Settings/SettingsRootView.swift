@@ -44,12 +44,14 @@ private struct SettingsDetail: View {
     @ViewBuilder
     private var content: some View {
         switch category {
-        case .general: GeneralPane()
+        case .startup: StartupPane()
+        case .shortcuts: ShortcutsPane()
         case .permissions: PermissionsPane()
+        case .softwareUpdate: UpdatesPane()
         case .model: ModelPane()
+        case .output: OutputPane()
         case .dataset: DatasetPane()
         case .advanced: AdvancedPane()
-        case .updates: UpdatesPane()
         }
     }
 }

@@ -20,7 +20,7 @@ final class SettingsRouter {
         // Deep-link target wins; else restore the last-viewed category; else a friendly default.
         self.selection = initial
             ?? UserDefaults.standard.string(forKey: Self.storageKey).flatMap(SettingsCategory.init(rawValue:))
-            ?? .general
+            ?? .startup
     }
 
     func route(to category: SettingsCategory?) {

@@ -4,38 +4,45 @@ import SwiftUI
 /// persisted selection token (see `SettingsRouter`), so reordering or adding cases later never
 /// corrupts a previously-saved selection.
 ///
-/// Milestone A (the shell) keeps the SAME six categories the old TabView had, so the sidebar can
-/// host the existing pane bodies verbatim and any regression is unambiguously a shell bug. The
-/// re-slice to the eight job-shaped categories lands in a later phase.
+/// The eight job-shaped categories. Each mental object lives in exactly one home: app-level setup
+/// (Startup), the dictation hotkeys (Shortcuts), OS grants (Permissions), updates (Software Update),
+/// the engine + its files (Model), everyday output shaping (Output), saved records (Dataset), and
+/// power/diagnostic tools (Advanced).
 enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
-    case general
+    case startup
+    case shortcuts
     case permissions
+    case softwareUpdate
     case model
+    case output
     case dataset
     case advanced
-    case updates
 
     var id: String { rawValue }
 
     var title: LocalizedStringKey {
         switch self {
-        case .general: "General"
+        case .startup: "Startup"
+        case .shortcuts: "Shortcuts"
         case .permissions: "Permissions"
+        case .softwareUpdate: "Software Update"
         case .model: "Model"
+        case .output: "Output"
         case .dataset: "Dataset"
         case .advanced: "Advanced"
-        case .updates: "Updates"
         }
     }
 
     var symbol: String {
         switch self {
-        case .general: "gearshape"
+        case .startup: "gearshape"
+        case .shortcuts: "keyboard"
         case .permissions: "lock.shield"
+        case .softwareUpdate: "arrow.down.circle"
         case .model: "brain"
+        case .output: "text.cursor"
         case .dataset: "tray.full"
         case .advanced: "wrench.and.screwdriver"
-        case .updates: "arrow.down.circle"
         }
     }
 }

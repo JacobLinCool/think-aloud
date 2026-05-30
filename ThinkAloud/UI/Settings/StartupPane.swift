@@ -1,8 +1,9 @@
 import AppKit
-import KeyboardShortcuts
 import SwiftUI
 
-struct GeneralPane: View {
+/// Settings → Startup: app-level "set once" preferences (interface language; Open at login arrives
+/// in a later phase). Lifted verbatim from the old General pane — same @AppStorage key and bindings.
+struct StartupPane: View {
     @Environment(AppContainer.self) private var container
 
     /// Persists the user's explicit language choice. Kept separate from `AppleLanguages` (which
@@ -46,39 +47,9 @@ struct GeneralPane: View {
             } header: {
                 Text("Language")
             } footer: {
-                Text("Automatic follows your system language. Changes take effect after relaunch.")
+                Text("Sets the app's interface language — not the transcription output. Automatic follows your system language. Changes take effect after relaunch.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-            }
-
-            Section {
-                KeyboardShortcuts.Recorder(String(localized: "Start recording"), name: .startRecording)
-            } header: {
-                Text("Global")
-            } footer: {
-                Text("Fires from anywhere to open the popup and start recording.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Section {
-                KeyboardShortcuts.Recorder(String(localized: "Stop & transcribe"), name: .stopAndTranscribe)
-                KeyboardShortcuts.Recorder(String(localized: "Insert & save"), name: .insertAndSave)
-            } header: {
-                Text("Popup")
-            } footer: {
-                HStack(alignment: .firstTextBaseline) {
-                    Text("Both default to ⌥Space — popup phase decides which fires.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    // Label says "全部 (all)" to signal that this clears every shortcut, including
-                    // the Global one above — even though the button visually sits in the Popup section.
-                    Button(String(localized: "Reset all hotkeys")) {
-                        KeyboardShortcuts.reset(.startRecording, .stopAndTranscribe, .insertAndSave)
-                    }
-                    .controlSize(.small)
-                }
             }
 
             Section {
