@@ -10,53 +10,11 @@ struct ModelPane: View {
 
     var body: some View {
         Form {
-            modelSection
+            ModelDownloadList()
             memorySection
             smokeTestSection
         }
         .formStyle(.grouped)
-    }
-
-    // MARK: - Model
-
-    private var modelSection: some View {
-        Section {
-            Picker(String(localized: "Quality"), selection: Binding(
-                get: { container.modelManager.profile },
-                set: { container.modelManager.setProfile($0) }
-            )) {
-                ForEach(ModelProfile.allCases) { profile in
-                    Text(profile.displayName).tag(profile)
-                }
-            }
-            .pickerStyle(.menu)
-
-            HStack {
-                Text("Status")
-                Spacer()
-                StatusBadge(tone: container.modelManager.runtimeStatus.badge,
-                            text: container.modelManager.runtimeStatus.displayLabel)
-            }
-            if let progress = container.modelManager.runtimeStatus.downloadProgress {
-                ProgressView(value: progress)
-            } else if case .downloading = container.modelManager.runtimeStatus {
-                ProgressView()
-            } else if case .loading = container.modelManager.runtimeStatus {
-                ProgressView()
-            }
-
-            HStack {
-                Text("Identifier")
-                Spacer()
-                Text(container.modelManager.profile.shortName)
-                    .foregroundStyle(.secondary)
-                    .help(container.modelManager.modelID)
-                RevealInFinderButton(url: container.modelManager.modelCacheURL)
-            }
-
-        } header: {
-            Text("ASR Model")
-        }
     }
 
     // MARK: - Memory
