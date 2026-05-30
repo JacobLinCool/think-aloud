@@ -205,7 +205,19 @@ final class PopupCoordinator {
         // the ASR runtimes require. Dataset save still uses the original `recordingResult` (48 kHz raw).
         var asrSamples = recordingResult.samples
         var asrSampleRate = recordingResult.sampleRate
-        if modelManager.preEdit.denoise {
+        let shouldDenoise: Bool
+        switch modelManager.preEdit.denoise {
+        case .off:
+            shouldDenoise = false
+        case .on:
+            shouldDenoise = true
+        case .auto:
+            // Inspect the raw 48 kHz clip; only denoise when it looks noisy enough to benefit.
+            let decision = DenoiseHeuristic.analyze(asrSamples, sampleRate: asrSampleRate)
+            NSLog("ThinkAloud: Auto denoise \(decision.logLine)")
+            shouldDenoise = decision.shouldDenoise
+        }
+        if shouldDenoise {
             do {
                 asrSamples = try await modelManager.denoise(asrSamples)
             } catch {

@@ -64,8 +64,15 @@ struct BenchmarkView: View {
                 }
                 Toggle(String(localized: "CJK–Latin spacing"), isOn: $controller.selectedPostEdit.cjkLatinSpacing)
                     .toggleStyle(.checkbox)
-                Toggle(String(localized: "Denoise"), isOn: $controller.selectedPreEdit.denoise)
-                    .toggleStyle(.checkbox)
+                LabeledContent(String(localized: "Denoise")) {
+                    Picker("", selection: $controller.selectedPreEdit.denoise) {
+                        ForEach(DenoiseMode.allCases) { mode in
+                            Text(mode.displayName).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                }
                 Spacer()
                 Button {
                     controller.run()

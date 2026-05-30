@@ -131,7 +131,7 @@ actor BenchmarkRunner {
             await progress(BenchmarkProgress(completed: index, total: records.count, currentRecordID: record.id))
 
             let audioURL = await audioURLProvider(record)
-            let result = await transcribe(record: record, audioURL: audioURL, runtime: runtime, postEdit: postEdit, denoise: preEdit.denoise ? denoise : nil)
+            let result = await transcribe(record: record, audioURL: audioURL, runtime: runtime, postEdit: postEdit, denoiseMode: preEdit.denoise, denoise: preEdit.denoise != .off ? denoise : nil)
             results.append(result)
         }
 
@@ -143,21 +143,24 @@ actor BenchmarkRunner {
         return BenchmarkReport(modelID: modelID, preEdit: preEdit, postEdit: postEdit, runAt: runAt, results: results)
     }
 
-    private func transcribe(record: DatasetRecord, audioURL: URL, runtime: any ASRRuntime, postEdit: PostEditConfig, denoise: (@Sendable ([Float]) async throws -> [Float])?) async -> BenchmarkResult {
+    private func transcribe(record: DatasetRecord, audioURL: URL, runtime: any ASRRuntime, postEdit: PostEditConfig, denoiseMode: DenoiseMode, denoise: (@Sendable ([Float]) async throws -> [Float])?) async -> BenchmarkResult {
         let groundTruth = record.editedTranscript
         let start = Date()
 
-        // Decode audio → [Float] mirroring production pipeline. When denoising, decode at 48 kHz
-        // (DeepFilterNet's rate), enhance, then resample to the 16 kHz the ASR model requires.
+        // Decode audio → [Float] mirroring production. When denoising is possible, decode at 48 kHz
+        // (DeepFilterNet's rate); `.auto` runs the SAME heuristic as production on that 48 kHz band
+        // and only enhances noisy clips; then resample to the 16 kHz the ASR model requires.
         let samples: [Float]
         let audioDurationMs: Int
         do {
-            if let denoise {
+            if let denoise, denoiseMode != .off {
                 let (_, mlxArray) = try loadAudioArray(from: audioURL, sampleRate: 48000)
                 let full = mlxArray.asArray(Float.self)
                 audioDurationMs = Int(Double(full.count) / 48000.0 * 1000)
-                let enhanced = try await denoise(full)
-                samples = try AudioRecorder.resample(enhanced, from: 48000, to: 16000)
+                let runDenoise = denoiseMode == .on
+                    || DenoiseHeuristic.analyze(full, sampleRate: 48000).shouldDenoise
+                let processed = runDenoise ? try await denoise(full) : full
+                samples = try AudioRecorder.resample(processed, from: 48000, to: 16000)
             } else {
                 let (sampleRate, mlxArray) = try loadAudioArray(from: audioURL, sampleRate: 16000)
                 samples = mlxArray.asArray(Float.self)

@@ -3366,6 +3366,46 @@
           }
         }
       }
+    },
+    "Auto" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動"
+          }
+        }
+      }
+    },
+    "On" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟"
+          }
+        }
+      }
+    },
+    "Auto inspects each recording and denoises only noisy clips; On always denoises (DeepFilterNet). Downloads a small model on first use." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動會檢查每段錄音、只對吵雜的片段降噪；開啟則一律降噪（DeepFilterNet）。首次使用會下載一個小型模型。"
+          }
+        }
+      }
+    },
+    "Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Auto only denoises clips it detects as noisy (and loads the model lazily on the first such clip); On always denoises. Use Benchmark to compare Off / Auto / On." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "降噪會在音訊降採樣給 ASR 模型之前以 48 kHz 執行。自動只對偵測為吵雜的片段降噪（並在第一個這種片段時才延遲載入模型）；開啟則一律降噪。可用 Benchmark 比較 關閉／自動／開啟。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
