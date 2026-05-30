@@ -7,13 +7,14 @@ import SwiftUI
 struct OutputPane: View {
     @Environment(AppContainer.self) private var container
 
-    @State private var dictTestInput: String = ""
+    @State private var previewInput: String = ""
 
     var body: some View {
         Form {
             preEditSection
             postEditSection
             customDictionarySection
+            previewSection
         }
         .formStyle(.grouped)
     }
@@ -34,6 +35,8 @@ struct OutputPane: View {
                 Text("Auto cleans only clips it detects as noisy; On always cleans (DeepFilterNet).")
             }
             .pickerStyle(.segmented)
+
+            DenoiseTesterView()
         } header: {
             Text("Audio cleanup")
         } footer: {
@@ -115,28 +118,86 @@ struct OutputPane: View {
             } label: {
                 Label(String(localized: "Add term"), systemImage: "plus")
             }
-
-            // Live preview through the FULL pipeline (conversion + spacing + dictionary), so the
-            // user authors against the text the dictionary actually sees (see the spacing note).
-            VStack(alignment: .leading, spacing: 4) {
-                TextField(String(localized: "Test — type to preview…"), text: $dictTestInput)
-                    .textFieldStyle(.roundedBorder)
-                if !dictTestInput.isEmpty {
-                    HStack(spacing: 4) {
-                        Image(systemName: "arrow.turn.down.right").foregroundStyle(.secondary).imageScale(.small)
-                        Text(TranscriptPostProcessor.apply(container.modelManager.postEdit, to: dictTestInput))
-                            .font(.callout)
-                            .textSelection(.enabled)
-                    }
-                }
-            }
         } header: {
             Text("Word replacements")
         } footer: {
-            Text("Replacements run last — after Chinese conversion and spacing — and the longest matching term wins. Write terms the way the text looks after those steps. Longer, distinctive terms are safer; very short terms can fire inside unrelated words.")
+            Text("Replacements run last — after Chinese conversion and spacing — and the longest matching term wins. Write terms the way the text looks after those steps; use the Preview below to check. Longer, distinctive terms are safer; very short terms can fire inside unrelated words.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
+    }
+
+    // MARK: - Preview (whole text pipeline)
+
+    private struct FormattingStage: Identifiable {
+        let id = UUID()
+        let label: LocalizedStringKey
+        let text: String
+        var isResult = false
+    }
+
+    private var previewSection: some View {
+        Section {
+            TextField(String(localized: "Type to preview the formatting…"), text: $previewInput, axis: .vertical)
+                .textFieldStyle(.roundedBorder)
+                .lineLimit(1...3)
+
+            if !previewInput.isEmpty {
+                let cfg = container.modelManager.postEdit
+                let stages = pipelineStages(cfg, input: previewInput)
+                stageRow(FormattingStage(label: "Input", text: previewInput, isResult: stages.isEmpty))
+                ForEach(stages) { stageRow($0) }
+                if stages.isEmpty {
+                    Text("No formatting steps are active — the output matches your input.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text("Preview")
+        } footer: {
+            Text("Runs the whole text pipeline — Chinese conversion, then spacing, then your word replacements — on whatever you type, showing what each active step changes. The last line is the final inserted text.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private func stageRow(_ stage: FormattingStage) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Text(stage.label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .frame(width: 96, alignment: .leading)
+            Text(stage.text.isEmpty ? " " : stage.text)
+                .font(stage.isResult ? .callout.weight(.medium) : .callout)
+                .foregroundStyle(stage.isResult ? .primary : .secondary)
+                .textSelection(.enabled)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    /// The cumulative output after each ACTIVE step, in pipeline order. Built from partial configs
+    /// so each row reflects exactly what that step (and the ones before it) produced — the last row
+    /// is the final text. Empty when no step is active.
+    private func pipelineStages(_ cfg: PostEditConfig, input: String) -> [FormattingStage] {
+        var stages: [FormattingStage] = []
+        if cfg.chinese != .model {
+            let t = TranscriptPostProcessor.apply(PostEditConfig(chinese: cfg.chinese), to: input)
+            stages.append(FormattingStage(label: "Chinese conversion", text: t))
+        }
+        if cfg.cjkLatinSpacing {
+            let t = TranscriptPostProcessor.apply(PostEditConfig(chinese: cfg.chinese, cjkLatinSpacing: true), to: input)
+            stages.append(FormattingStage(label: "Spacing", text: t))
+        }
+        if cfg.activeRuleCount > 0 {
+            let t = TranscriptPostProcessor.apply(cfg, to: input)
+            stages.append(FormattingStage(label: "Word replacements", text: t))
+        }
+        if !stages.isEmpty {
+            stages[stages.count - 1].isResult = true
+        }
+        return stages
     }
 
     @ViewBuilder

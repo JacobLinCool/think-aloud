@@ -3766,6 +3766,296 @@
           }
         }
       }
+    },
+    "Test my environment" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "測試我的環境"
+          }
+        }
+      }
+    },
+    "Microphone access is needed to record a test sample." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要麥克風權限才能錄製測試樣本。"
+          }
+        }
+      }
+    },
+    "Microphone access is off. Enable it to record a test sample." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麥克風權限已關閉。開啟後才能錄製測試樣本。"
+          }
+        }
+      }
+    },
+    "Records a few seconds so you can see whether Auto would clean it — speak a sentence as you normally would, then Stop." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "錄幾秒鐘,讓你看看 Auto 會不會清理它 — 像平常一樣說一句話,然後按停止。"
+          }
+        }
+      }
+    },
+    "Record a sample" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "錄製樣本"
+          }
+        }
+      }
+    },
+    "Recording… %llds" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "錄音中… %lld 秒"
+          }
+        }
+      }
+    },
+    "Analyzing & cleaning… (the first run downloads the denoiser)" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分析與清理中…(首次執行會下載降噪器)"
+          }
+        }
+      }
+    },
+    "Auto would clean this clip" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto 會清理這段錄音"
+          }
+        }
+      }
+    },
+    "Auto would leave this clip as-is" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto 會維持這段錄音原樣"
+          }
+        }
+      }
+    },
+    "Your current mode is On, so every recording is cleaned regardless." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你目前的模式是「開啟」,因此每段錄音都會被清理。"
+          }
+        }
+      }
+    },
+    "Your current mode is Off, so no recording is cleaned. Switch to Auto or On to use this." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你目前的模式是「關閉」,因此不會清理任何錄音。切換到「自動」或「開啟」才會作用。"
+          }
+        }
+      }
+    },
+    "Original" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原始"
+          }
+        }
+      }
+    },
+    "Cleaned" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清理後"
+          }
+        }
+      }
+    },
+    "Record again" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新錄製"
+          }
+        }
+      }
+    },
+    "Steady background noise detected (signal-to-noise ≈ %@ dB, below the %@ dB threshold)." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "偵測到穩定的背景噪音(訊噪比約 %@ dB,低於 %@ dB 門檻)。"
+          }
+        }
+      }
+    },
+    "Quiet enough — clear gaps between speech (signal-to-noise ≈ %@ dB, at/above the %@ dB threshold)." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "夠安靜 — 語句間有明顯停頓(訊噪比約 %@ dB,達到或高於 %@ dB 門檻)。"
+          }
+        }
+      }
+    },
+    "No clear speech detected (too little dynamic range). Try again and speak a full sentence." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未偵測到清晰的語音(動態範圍太小)。請重試並說完整一句話。"
+          }
+        }
+      }
+    },
+    "The audio is clipping (too loud) — cleaning is forced. Move back from the mic or lower the input level." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音訊發生削峰(太大聲)— 會強制清理。請離麥克風遠一點或調低輸入音量。"
+          }
+        }
+      }
+    },
+    "The clip was too short to judge. Record a couple of seconds." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "錄音太短,無法判斷。請錄幾秒鐘。"
+          }
+        }
+      }
+    },
+    "Type to preview the formatting…" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸入文字以預覽格式化結果…"
+          }
+        }
+      }
+    },
+    "Input" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸入"
+          }
+        }
+      }
+    },
+    "Chinese conversion" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中文轉換"
+          }
+        }
+      }
+    },
+    "Spacing" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加空格"
+          }
+        }
+      }
+    },
+    "No formatting steps are active — the output matches your input." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未啟用任何格式化步驟 — 輸出與輸入相同。"
+          }
+        }
+      }
+    },
+    "Preview" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "預覽"
+          }
+        }
+      }
+    },
+    "Runs the whole text pipeline — Chinese conversion, then spacing, then your word replacements — on whatever you type, showing what each active step changes. The last line is the final inserted text." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "對你輸入的文字執行完整的文字 pipeline — 先中文轉換、再加空格、最後套用你的詞語替換 — 並顯示每個啟用步驟的變化。最後一行是最終插入的文字。"
+          }
+        }
+      }
+    },
+    "Replacements run last — after Chinese conversion and spacing — and the longest matching term wins. Write terms the way the text looks after those steps; use the Preview below to check. Longer, distinctive terms are safer; very short terms can fire inside unrelated words." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "替換在最後執行 — 在中文轉換與加空格之後 — 並由最長的相符詞勝出。請依照那些步驟後文字的樣子來填寫詞語,可用下方的「預覽」確認。較長、獨特的詞語較安全;非常短的詞語可能在不相關的字詞中被觸發。"
+          }
+        }
+      }
+    },
+    "Stop" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止"
+          }
+        }
+      }
+    },
+    "Try again" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重試"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
