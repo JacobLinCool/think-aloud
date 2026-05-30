@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		032055891C5EED38F3AF3D66 /* PopupWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9819738895DD86B9C69048E /* PopupWindowController.swift */; };
+		057C0528F6D114F7FF4E8005 /* DenoiseHeuristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B0B229A51F4E4EB28F3B2D /* DenoiseHeuristic.swift */; };
 		0731FFA20EEA16E1F5611BA1 /* KeyboardShortcutsNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D99F7391536188576A97AFB /* KeyboardShortcutsNames.swift */; };
 		07E71866CABAAD64EC67DE45 /* AudioResampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F10B2F51A84D36EA9FACBA /* AudioResampleTests.swift */; };
 		092EADF2E8E50B165059EABE /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B350172EB3CB9ED2D6E33C18 /* InfoPlist.xcstrings */; };
@@ -40,6 +41,7 @@
 		55899497E6B0AF36575F419E /* CJKLatinSpacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B26E18702F8954B19EA3E37 /* CJKLatinSpacer.swift */; };
 		578596FC2D2DB34BA5FEC72E /* PreEditConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912D567D84A8F1E55278D63F /* PreEditConfig.swift */; };
 		5E8A1D06B0F770C75F452639 /* ModelPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = E040FC35C1B4589359878E22 /* ModelPane.swift */; };
+		5F4582CE06291B6480343212 /* DenoiseHeuristicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDE6BF1019C103B08A5FF57 /* DenoiseHeuristicTests.swift */; };
 		60A406CE7AC5406848D7C716 /* AppIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0F32CD892DBA7F898E95E7 /* AppIcons.swift */; };
 		61429C5FFBF3E2DD3696003F /* SettingsHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8A9D524A1F544B967A35EB /* SettingsHelpers.swift */; };
 		63E2B88A4B129A1D3532DB11 /* RecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70EF1EB9E1FD9EC7C874D21 /* RecordDetailView.swift */; };
@@ -174,6 +176,7 @@
 		93F1CE83C842B76A5350F996 /* ThinkAloudApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThinkAloudApp.swift; sourceTree = "<group>"; };
 		98D852B22AA3C444B81E92F3 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		9A6D7F5933BC81068AABC808 /* AudioFileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileStore.swift; sourceTree = "<group>"; };
+		9BDE6BF1019C103B08A5FF57 /* DenoiseHeuristicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DenoiseHeuristicTests.swift; sourceTree = "<group>"; };
 		9D896850850E4159143C84A3 /* PermissionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsService.swift; sourceTree = "<group>"; };
 		9DA6AB7EEE3140CCF534A2A8 /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
 		A0904FB85BC2F1202982904D /* AudioPlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerController.swift; sourceTree = "<group>"; };
@@ -205,6 +208,7 @@
 		E9CBEFFBEE795B31CC292666 /* AudioFileStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileStoreTests.swift; sourceTree = "<group>"; };
 		F3063447DF7A70BF7F29DFCD /* SettingsScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScene.swift; sourceTree = "<group>"; };
 		F3B5DFB68730B66C6CE34035 /* DeepFilterNetRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFilterNetRuntime.swift; sourceTree = "<group>"; };
+		F6B0B229A51F4E4EB28F3B2D /* DenoiseHeuristic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DenoiseHeuristic.swift; sourceTree = "<group>"; };
 		F8BE5B9BD3F54BAFF1448F07 /* ThinkAloud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThinkAloud.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB0F2E0100280F5FD6ED1ECB /* FinishStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishStep.swift; sourceTree = "<group>"; };
 		FC28A17CB6F73A79386DFE39 /* DatasetStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasetStoreTests.swift; sourceTree = "<group>"; };
@@ -259,6 +263,7 @@
 				AFC5A1ED2D1DA66086AB39D3 /* CustomDictionaryTests.swift */,
 				FC28A17CB6F73A79386DFE39 /* DatasetStoreTests.swift */,
 				A0D31CA3AF6F28C5ABFCC25B /* DeepFilterNetLiveTest.swift */,
+				9BDE6BF1019C103B08A5FF57 /* DenoiseHeuristicTests.swift */,
 				1FBEE9EA0C10516A3F047225 /* HFKeychainTests.swift */,
 				2BD0C6CBBC80507827CB3766 /* JSONLExporterTests.swift */,
 				28E6B662BCB8C90F7D120950 /* LiveASRSmokeTest.swift */,
@@ -506,6 +511,7 @@
 			children = (
 				8CF2FD782983D1FFA2613DBF /* AudioRecorder.swift */,
 				F3B5DFB68730B66C6CE34035 /* DeepFilterNetRuntime.swift */,
+				F6B0B229A51F4E4EB28F3B2D /* DenoiseHeuristic.swift */,
 				912D567D84A8F1E55278D63F /* PreEditConfig.swift */,
 			);
 			path = Audio;
@@ -629,6 +635,7 @@
 				6972D5D9517B6D6175FD2C3D /* CustomDictionaryTests.swift in Sources */,
 				FDE8B40A8346E02547CA8952 /* DatasetStoreTests.swift in Sources */,
 				F3A33DAA22AC1593C3A7D02C /* DeepFilterNetLiveTest.swift in Sources */,
+				5F4582CE06291B6480343212 /* DenoiseHeuristicTests.swift in Sources */,
 				B4860A4B860C4E01FF05270A /* HFKeychainTests.swift in Sources */,
 				0B196E738896BA0EB42A0957 /* JSONLExporterTests.swift in Sources */,
 				7FC838117A06170EBB857CC7 /* LiveASRSmokeTest.swift in Sources */,
@@ -666,6 +673,7 @@
 				C682621D9FAE517E0268F325 /* DatasetPane.swift in Sources */,
 				717746A829426E48CD0996E1 /* DatasetStore.swift in Sources */,
 				4C26AA98000DFA780F0F84BF /* DeepFilterNetRuntime.swift in Sources */,
+				057C0528F6D114F7FF4E8005 /* DenoiseHeuristic.swift in Sources */,
 				7B3626D6B810336548D6391F /* FinishStep.swift in Sources */,
 				97E38EC23FC38EE5B665558E /* FocusContext.swift in Sources */,
 				EB645F06277F6649E633D1EC /* GeneralPane.swift in Sources */,

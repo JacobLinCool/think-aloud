@@ -68,15 +68,20 @@ struct ModelPane: View {
 
     private var preEditSection: some View {
         Section {
-            Toggle(isOn: Binding(
+            Picker(selection: Binding(
                 get: { container.modelManager.preEdit.denoise },
                 set: { container.modelManager.preEdit.denoise = $0 }
             )) {
+                ForEach(DenoiseMode.allCases) { mode in
+                    Text(mode.displayName).tag(mode)
+                }
+            } label: {
                 Text("Audio denoising")
-                Text("Suppress background noise with DeepFilterNet before transcription. Downloads a small model on first use.")
+                Text("Auto inspects each recording and denoises only noisy clips; On always denoises (DeepFilterNet). Downloads a small model on first use.")
             }
+            .pickerStyle(.segmented)
 
-            if container.modelManager.preEdit.denoise {
+            if container.modelManager.preEdit.denoise != .off {
                 HStack {
                     Text("Denoiser")
                     Spacer()
@@ -106,7 +111,7 @@ struct ModelPane: View {
         } header: {
             Text("Auto Pre-Edit")
         } footer: {
-            Text("Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Best for noisy environments; may not help (or slightly hurt) clean recordings — use Benchmark to compare.")
+            Text("Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Auto only denoises clips it detects as noisy (and loads the model lazily on the first such clip); On always denoises. Use Benchmark to compare Off / Auto / On.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

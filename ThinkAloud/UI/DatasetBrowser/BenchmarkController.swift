@@ -96,7 +96,9 @@ final class BenchmarkController {
                 }
 
                 // Transient denoiser, created only when denoise is enabled, unloaded after the run.
-                let dfn = preEdit.denoise ? DeepFilterNetRuntime(modelsDirectory: modelsDirectory) : nil
+                // Build the transient denoiser for .on and .auto (the per-record heuristic decides
+                // whether it actually runs); skip it entirely for .off.
+                let dfn = preEdit.denoise != .off ? DeepFilterNetRuntime(modelsDirectory: modelsDirectory) : nil
 
                 let runner = BenchmarkRunner()
                 let report: BenchmarkReport
