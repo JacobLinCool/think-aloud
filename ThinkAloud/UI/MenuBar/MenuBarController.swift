@@ -26,7 +26,7 @@ final class MenuBarController: NSObject {
         let menu = NSMenu()
         // SF Symbols mirror the matching Settings tabs so the menu reads consistently with the
         // Settings window (Dataset → tray.full, Updates → arrow.down.circle, Settings → gearshape).
-        menu.addItem(makeItem(title: String(localized: "Start Voice Input"), action: #selector(invokePopup), keyEquivalent: "", systemImage: "mic.fill"))
+        menu.addItem(makeItem(title: String(localized: "Start recording"), action: #selector(invokePopup), keyEquivalent: "", systemImage: "mic.fill"))
         menu.addItem(.separator())
         menu.addItem(makeItem(title: String(localized: "Browse Dataset…"), action: #selector(openDatasetBrowser), keyEquivalent: "d", systemImage: "tray.full"))
         menu.addItem(makeItem(title: String(localized: "Settings…"), action: #selector(openSettings), keyEquivalent: ",", systemImage: "gearshape"))

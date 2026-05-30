@@ -23,7 +23,15 @@ struct TutorialStep: View {
                     icon: "mic.fill",
                     title: "Press \(shortcut) to start recording",
                     detail: "A small popup appears. Start talking."
-                )
+                ) {
+                    HStack(spacing: 8) {
+                        KeyboardShortcuts.Recorder("", name: .startRecording)
+                        Text("Change it if it clashes with another app.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.top, 4)
+                }
                 stepRow(
                     number: 2,
                     icon: "waveform",
@@ -51,7 +59,13 @@ struct TutorialStep: View {
         }
     }
 
-    private func stepRow(number: Int, icon: String, title: LocalizedStringKey, detail: LocalizedStringKey) -> some View {
+    private func stepRow<Accessory: View>(
+        number: Int,
+        icon: String,
+        title: LocalizedStringKey,
+        detail: LocalizedStringKey,
+        @ViewBuilder accessory: () -> Accessory = { EmptyView() }
+    ) -> some View {
         OnboardingCard {
             HStack(alignment: .top, spacing: 14) {
                 ZStack {
@@ -66,6 +80,7 @@ struct TutorialStep: View {
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
+                    accessory()
                 }
                 Spacer(minLength: 0)
             }

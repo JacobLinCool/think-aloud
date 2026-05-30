@@ -10,6 +10,8 @@ struct StartupPane: View {
     /// True once the picker is touched this session, so we surface the relaunch hint.
     @State private var languageChanged = false
 
+    @State private var launchAtLogin = LaunchAtLoginService()
+
     private var languageBinding: Binding<AppLanguage> {
         Binding(
             get: { AppLanguage(rawValue: languageSelection) ?? .system },
@@ -24,6 +26,31 @@ struct StartupPane: View {
 
     var body: some View {
         Form {
+            Section {
+                Toggle(isOn: Binding(
+                    get: { launchAtLogin.isEnabled },
+                    set: { launchAtLogin.setEnabled($0) }
+                )) {
+                    Text("Open at login")
+                }
+                if launchAtLogin.requiresApproval {
+                    Text("Approve ThinkAloud in System Settings → General → Login Items to enable this.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                if let err = launchAtLogin.lastError {
+                    Text(err)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
+            } header: {
+                Text("Login")
+            } footer: {
+                Text("Start ThinkAloud automatically when you log in, so the dictation hotkey is ready without launching it by hand.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section {
                 Picker("App language", selection: languageBinding) {
                     ForEach(AppLanguage.allCases) { lang in
@@ -51,6 +78,7 @@ struct StartupPane: View {
             }
         }
         .formStyle(.grouped)
+        .onAppear { launchAtLogin.refresh() }
     }
 }
 

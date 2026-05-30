@@ -36,6 +36,7 @@
 		4370F0FAA9B4B925195A8509 /* DatasetBrowserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FEC5C3DD11986BF41639484 /* DatasetBrowserController.swift */; };
 		46CF21F29DFC428ABB043BD4 /* HuggingFaceMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD5402FFD4396D2084D4EF3 /* HuggingFaceMetadata.swift */; };
 		476D5A75B70D12E9444CDB8F /* SettingsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903CBA7516B03389D65445F6 /* SettingsRouter.swift */; };
+		4773CA84B2C93B6D1256578C /* PermissionsSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A148036336F909F8BDC27E6 /* PermissionsSectionView.swift */; };
 		4AB5B36298968D39A1EA40AF /* BenchmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57BA40FA160BE92667DB9A1 /* BenchmarkView.swift */; };
 		4C26AA98000DFA780F0F84BF /* DeepFilterNetRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3B5DFB68730B66C6CE34035 /* DeepFilterNetRuntime.swift */; };
 		4D7348C935CF29F73BD31F35 /* DatasetBrowserRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D0F76DD4C401A217F44E2E9 /* DatasetBrowserRootView.swift */; };
@@ -104,6 +105,7 @@
 		DE137FC9A1F4BE1B53AFE251 /* OnboardingWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DD086E6D4C6CB457BB24F58 /* OnboardingWindowController.swift */; };
 		E3E14200810DA77C4BE9018F /* TutorialStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69F5E99642CD0775486809A /* TutorialStep.swift */; };
 		EB0F92B99E4F8EE4AB32C7D5 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A39DD3579672781CD31E47B /* SettingsWindowController.swift */; };
+		EC0CA30870A29E04BBEDC2D4 /* LaunchAtLoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144340D8B02270591FD8E150 /* LaunchAtLoginService.swift */; };
 		EE1B1EE967EF9DCA2B0E7A29 /* BenchmarkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725A8E3A12BB296B2C9CB12F /* BenchmarkController.swift */; };
 		F1DB95EEB827B4BB60747401 /* WelcomeStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F130EF3484186A77EB8375 /* WelcomeStep.swift */; };
 		F3A33DAA22AC1593C3A7D02C /* DeepFilterNetLiveTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D31CA3AF6F28C5ABFCC25B /* DeepFilterNetLiveTest.swift */; };
@@ -128,8 +130,10 @@
 		01F10B2F51A84D36EA9FACBA /* AudioResampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioResampleTests.swift; sourceTree = "<group>"; };
 		03C653890C518AC74AC443D7 /* ASRTypesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASRTypesTests.swift; sourceTree = "<group>"; };
 		068B6C7059D1C5F1764A315A /* PopupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupCoordinator.swift; sourceTree = "<group>"; };
+		0A148036336F909F8BDC27E6 /* PermissionsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsSectionView.swift; sourceTree = "<group>"; };
 		0ADF2851C1A2C091D980FE15 /* TextMetricsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMetricsTests.swift; sourceTree = "<group>"; };
 		0FEC5C3DD11986BF41639484 /* DatasetBrowserController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasetBrowserController.swift; sourceTree = "<group>"; };
+		144340D8B02270591FD8E150 /* LaunchAtLoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginService.swift; sourceTree = "<group>"; };
 		1596C1E543109923CB7CC003 /* ThinkAloudTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThinkAloudTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		16408ECB6DBBBF061C5E3C66 /* DatasetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasetStore.swift; sourceTree = "<group>"; };
 		1A39DD3579672781CD31E47B /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
@@ -391,6 +395,7 @@
 				E5B73E67C1612442FD986BF9 /* Insertion */,
 				4693F20C76E0F9D65F1290D6 /* Onboarding */,
 				8765C744C2B925FB8DB4563B /* Permissions */,
+				AA38610945360D83C3C634CA /* Startup */,
 				496BAEA36F52799A574BC5BA /* Updater */,
 			);
 			path = Core;
@@ -438,6 +443,7 @@
 				2341BF822B847651143977EF /* Onboarding */,
 				4714EF07DF64942E93057CA4 /* Popup */,
 				C978AAAF132B8D7C7B5F9A22 /* Settings */,
+				D39A3D228F6CD86D6F4CEB5D /* Shared */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -479,6 +485,14 @@
 			path = Dataset;
 			sourceTree = "<group>";
 		};
+		AA38610945360D83C3C634CA /* Startup */ = {
+			isa = PBXGroup;
+			children = (
+				144340D8B02270591FD8E150 /* LaunchAtLoginService.swift */,
+			);
+			path = Startup;
+			sourceTree = "<group>";
+		};
 		B976474BB99F0FC5C67278A8 /* Steps */ = {
 			isa = PBXGroup;
 			children = (
@@ -510,6 +524,14 @@
 				C03621137776497554827947 /* UpdatesPane.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		D39A3D228F6CD86D6F4CEB5D /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				0A148036336F909F8BDC27E6 /* PermissionsSectionView.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		E5B73E67C1612442FD986BF9 /* Insertion */ = {
@@ -702,6 +724,7 @@
 				A83E3CA0FE52C02AD4CC74DE /* InsertionFeedback.swift in Sources */,
 				D7C72F43BC3E72B81C66E6A1 /* JSONLExporter.swift in Sources */,
 				0731FFA20EEA16E1F5611BA1 /* KeyboardShortcutsNames.swift in Sources */,
+				EC0CA30870A29E04BBEDC2D4 /* LaunchAtLoginService.swift in Sources */,
 				2A4E08C89755C06D2E2DBAC8 /* MLXAudioQwenRuntime.swift in Sources */,
 				736D4285300436C47995A996 /* MLXAudioWhisperRuntime.swift in Sources */,
 				6D0D4A4E47E2EFAD6B1C27B3 /* MenuBarController.swift in Sources */,
@@ -715,6 +738,7 @@
 				DE137FC9A1F4BE1B53AFE251 /* OnboardingWindowController.swift in Sources */,
 				0CB9DA16731A97E00E4C8B05 /* OutputPane.swift in Sources */,
 				CC7534D568B17E43E5B94339 /* PermissionsPane.swift in Sources */,
+				4773CA84B2C93B6D1256578C /* PermissionsSectionView.swift in Sources */,
 				71061E2A259A538D2EE324CA /* PermissionsService.swift in Sources */,
 				C39B4E098327E0C3FD0C17AC /* PermissionsStep.swift in Sources */,
 				C492CCCB5E53CF5AF9D900EE /* PopupCoordinator.swift in Sources */,
