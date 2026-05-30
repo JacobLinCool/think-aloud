@@ -34,7 +34,7 @@ struct ModelDownloadList: View {
             }
         } header: {
             HStack {
-                Text("ASR Model")
+                Text("Model")
                 Spacer()
                 RevealInFinderButton(url: container.modelManager.modelCacheURL)
             }

@@ -18,7 +18,7 @@ struct OutputPane: View {
         .formStyle(.grouped)
     }
 
-    // MARK: - Auto Pre-Edit
+    // MARK: - Audio cleanup
 
     private var preEditSection: some View {
         Section {
@@ -30,48 +30,20 @@ struct OutputPane: View {
                     Text(mode.displayName).tag(mode)
                 }
             } label: {
-                Text("Audio denoising")
-                Text("Auto inspects each recording and denoises only noisy clips; On always denoises (DeepFilterNet). Downloads a small model on first use.")
+                Text("Clean up recordings")
+                Text("Auto cleans only clips it detects as noisy; On always cleans (DeepFilterNet).")
             }
             .pickerStyle(.segmented)
-
-            if container.modelManager.preEdit.denoise != .off {
-                HStack {
-                    Text("Denoiser")
-                    Spacer()
-                    StatusBadge(tone: container.modelManager.dfnStatus.badge,
-                                text: container.modelManager.dfnStatus.displayLabel)
-                }
-                if container.modelManager.dfnStatus.isLoading {
-                    ProgressView()
-                }
-                HStack {
-                    Button(String(localized: "Load denoiser")) {
-                        container.modelManager.preloadDFN()
-                    }
-                    .disabled(container.modelManager.dfnStatus.isLoading || container.modelManager.dfnStatus == .ready)
-
-                    if container.modelManager.dfnStatus == .ready {
-                        DestructiveButton(
-                            "Unload denoiser",
-                            confirmMessage: "Free the denoiser weights from memory? It will reload on next use.",
-                            confirmLabel: "Unload"
-                        ) {
-                            container.modelManager.unloadDFNNow()
-                        }
-                    }
-                }
-            }
         } header: {
-            Text("Auto Pre-Edit")
+            Text("Audio cleanup")
         } footer: {
-            Text("Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Auto only denoises clips it detects as noisy (and loads the model lazily on the first such clip); On always denoises. Use Benchmark to compare Off / Auto / On.")
+            Text("Removes background noise before transcription. Auto only cleans clips it detects as noisy, and downloads a small model on first use. Manage the denoiser in Advanced; compare Off / Auto / On in Benchmark.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
     }
 
-    // MARK: - Auto Post-Edit
+    // MARK: - Text formatting
 
     private var postEditSection: some View {
         Section {
@@ -89,11 +61,11 @@ struct OutputPane: View {
                 get: { container.modelManager.postEdit.cjkLatinSpacing },
                 set: { container.modelManager.postEdit.cjkLatinSpacing = $0 }
             )) {
-                Text("CJK–Latin spacing")
+                Text("Space between Chinese and English/numbers")
                 Text("Insert a space between Chinese and adjacent English / numbers.")
             }
         } header: {
-            Text("Auto Post-Edit")
+            Text("Text formatting")
         }
     }
 
@@ -159,9 +131,9 @@ struct OutputPane: View {
                 }
             }
         } header: {
-            Text("Custom Dictionary")
+            Text("Word replacements")
         } footer: {
-            Text("Replacements run last — after Chinese conversion and CJK–Latin spacing — and the longest matching term wins. Write terms the way the text looks after those steps. Longer, distinctive terms are safer; very short terms can fire inside unrelated words.")
+            Text("Replacements run last — after Chinese conversion and spacing — and the longest matching term wins. Write terms the way the text looks after those steps. Longer, distinctive terms are safer; very short terms can fire inside unrelated words.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

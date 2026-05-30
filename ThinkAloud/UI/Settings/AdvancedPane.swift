@@ -1,128 +1,193 @@
 import AppKit
 import SwiftUI
 
+/// Settings → Advanced: power and troubleshooting tools a normal user never needs — memory tuning
+/// and diagnostics. The model-file management moved to Model; the Hugging Face token moved to
+/// Dataset (its only job is pushing the dataset).
 struct AdvancedPane: View {
     @Environment(AppContainer.self) private var container
 
-    @State private var hfTokenDraft: String = ""
-    @State private var hfStatus: HFStatus = .idle
-
-    enum HFStatus: Equatable {
-        case idle
-        case testing
-        case verified(String)
-        case failed(String)
-    }
+    @State private var smokeReport: SmokeTestReport?
+    @State private var smokeRunning: Bool = false
+    @State private var smokeError: String?
 
     var body: some View {
         Form {
-            huggingFaceSection
+            memorySection
+            diagnosticsSection
         }
         .formStyle(.grouped)
-        .onAppear {
-            // Don't pre-fill the actual token — show empty field so a fresh save replaces it.
-            hfTokenDraft = ""
-            if let v = container.hfTokenStore.verifiedUsername {
-                hfStatus = .verified(v)
-            }
-        }
     }
 
-    // MARK: - HF section
+    // MARK: - Memory & performance
 
-    private var huggingFaceSection: some View {
+    private var memorySection: some View {
         Section {
-            HStack {
-                Text("Token")
-                Spacer()
-                if container.hfTokenStore.hasToken {
-                    StatusBadge(tone: .ok, text: String(localized: "Saved"))
-                } else {
-                    StatusBadge(tone: .neutral, text: String(localized: "Not set"))
+            Picker(String(localized: "Auto-unload when idle"), selection: Binding(
+                get: { container.modelManager.idleTimeout },
+                set: { container.modelManager.idleTimeout = $0 }
+            )) {
+                ForEach(IdleTimeout.allCases) { t in
+                    Text(t.displayName).tag(t)
                 }
             }
-            SecureField(String(localized: "hf_… (paste here, then Save)"), text: $hfTokenDraft)
-                .textFieldStyle(.roundedBorder)
+            .pickerStyle(.menu)
+
             HStack {
-                Button(String(localized: "Save token")) {
-                    saveToken()
+                Button(String(localized: "Load model")) {
+                    container.modelManager.preloadNow()
                 }
-                .disabled(hfTokenDraft.isEmpty)
-                Button(String(localized: "Test connection")) {
-                    testConnection()
+                .disabled(container.modelManager.runtimeStatus.isLoading || container.modelManager.runtimeStatus == .ready)
+
+                // Reversible — a plain button, no scary confirmation dialog.
+                Button(String(localized: "Unload model")) {
+                    container.modelManager.unloadNow()
                 }
-                .disabled(!container.hfTokenStore.hasToken)
-                Spacer()
-                if container.hfTokenStore.hasToken {
-                    Button(role: .destructive) {
-                        clearToken()
-                    } label: {
-                        Text(String(localized: "Clear"))
+                .disabled(container.modelManager.runtimeStatus != .ready)
+            }
+
+            if container.modelManager.preEdit.denoise != .off {
+                HStack {
+                    Text("Denoiser")
+                    Spacer()
+                    StatusBadge(tone: container.modelManager.dfnStatus.badge,
+                                text: container.modelManager.dfnStatus.displayLabel)
+                }
+                HStack {
+                    Button(String(localized: "Load denoiser")) {
+                        container.modelManager.preloadDFN()
                     }
-                    .controlSize(.small)
+                    .disabled(container.modelManager.dfnStatus.isLoading || container.modelManager.dfnStatus == .ready)
+
+                    Button(String(localized: "Unload denoiser")) {
+                        container.modelManager.unloadDFNNow()
+                    }
+                    .disabled(container.modelManager.dfnStatus != .ready)
                 }
-            }
-            switch hfStatus {
-            case .idle:
-                EmptyView()
-            case .testing:
-                HStack(spacing: 6) {
-                    ProgressView().controlSize(.mini)
-                    Text("Testing…")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            case .verified(let user):
-                Text("Signed in as **\(user)**")
-                    .font(.caption)
-                    .foregroundStyle(.green)
-            case .failed(let msg):
-                Text(msg)
-                    .font(.caption)
-                    .foregroundStyle(.red)
-                    .lineLimit(2)
             }
         } header: {
-            Text("Hugging Face")
+            HStack {
+                Text("Memory & performance")
+                Spacer()
+                RefreshButton { container.modelManager.refreshStatus() }
+            }
         } footer: {
-            Text("Used to push the dataset from the browser window. Token is stored in macOS Keychain.")
+            Text("Load keeps the model in memory for instant transcription; Unload frees it. Auto-unload releases the weights after the chosen idle time and reloads on next use.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
     }
 
-    private func saveToken() {
-        do {
-            try container.hfTokenStore.save(token: hfTokenDraft)
-            hfTokenDraft = ""
-            hfStatus = .idle
-        } catch {
-            hfStatus = .failed(String(localized: "Keychain save failed: \(error.localizedDescription)"))
+    // MARK: - Diagnostics
+
+    private var diagnosticsSection: some View {
+        Section {
+            DisclosureGroup {
+                HStack {
+                    Button(smokeRunning ? String(localized: "Running…") : String(localized: "Run test")) {
+                        runSmokeTest()
+                    }
+                    .disabled(smokeRunning)
+                    if smokeRunning {
+                        ProgressView().controlSize(.small)
+                    }
+                }
+                if let report = smokeReport {
+                    SmokeReportView(report: report)
+                }
+                if let smokeError {
+                    Text(smokeError)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
+            } label: {
+                Text("Test the model")
+            }
+
+            Button(String(localized: "Run Setup Assistant again")) {
+                container.openOnboarding()
+            }
+        } header: {
+            Text("Diagnostics")
+        } footer: {
+            Text("“Test the model” downloads three short clips from JacobLinCool/audio-testing (~5 MB) and runs them through the current model to verify it works.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 
-    private func clearToken() {
-        do {
-            try container.hfTokenStore.clear()
-            hfTokenDraft = ""
-            hfStatus = .idle
-        } catch {
-            hfStatus = .failed(String(localized: "Keychain clear failed: \(error.localizedDescription)"))
-        }
-    }
-
-    private func testConnection() {
-        guard let token = container.hfTokenStore.token else { return }
-        hfStatus = .testing
+    private func runSmokeTest() {
+        smokeRunning = true
+        smokeError = nil
+        let runtime = container.modelManager.runtime
+        let postEdit = container.modelManager.postEdit
+        let cacheDir = AppPaths.applicationSupportDirectory().appendingPathComponent("smoke-test-cache", isDirectory: true)
         Task { @MainActor in
-            let client = HFHubClient(token: token)
             do {
-                let me = try await client.whoami()
-                container.hfTokenStore.verifiedUsername = me.name
-                hfStatus = .verified(me.name)
+                let runner = SmokeTestRunner(cacheDirectory: cacheDir)
+                let report = try await runner.run(using: runtime, postEdit: postEdit)
+                self.smokeReport = report
             } catch {
-                hfStatus = .failed(String(localized: "Connection failed: \(error.localizedDescription)"))
+                self.smokeError = String(describing: error)
+            }
+            self.smokeRunning = false
+        }
+    }
+}
+
+private struct SmokeReportView: View {
+    let report: SmokeTestReport
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Model: \(report.modelID)")
+                .font(.caption)
+            Text("Output style: \(report.postEdit.summary)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text("Passed: \(report.passed) / \(report.total) · Average latency: \(report.averageLatencyMs) ms")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Divider()
+            ForEach(report.results) { result in
+                resultRow(result)
             }
         }
+    }
+
+    @ViewBuilder
+    private func resultRow(_ result: SmokeTestResult) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 4) {
+                Image(systemName: result.passed ? "checkmark.circle.fill" : "xmark.circle.fill")
+                    .foregroundStyle(result.passed ? .green : .orange)
+                    .imageScale(.small)
+                Text(result.sample.id)
+                    .font(.caption.weight(.medium))
+                Spacer()
+                Text("\(result.durationMs) ms")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            if let err = result.error {
+                Text(err)
+                    .font(.caption2)
+                    .foregroundStyle(.red)
+                    .lineLimit(2)
+            } else {
+                Text(verbatim: "Raw: \(result.transcript)")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                // Only show the edited line when post-processing actually changed something.
+                if result.editedTranscript != result.transcript {
+                    Text(verbatim: "Edited: \(result.editedTranscript)")
+                        .font(.caption2)
+                        .foregroundStyle(.primary)
+                        .lineLimit(2)
+                }
+            }
+        }
+        .padding(.vertical, 2)
     }
 }

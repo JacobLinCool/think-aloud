@@ -4,8 +4,6 @@ import SwiftUI
 /// Settings → Startup: app-level "set once" preferences (interface language; Open at login arrives
 /// in a later phase). Lifted verbatim from the old General pane — same @AppStorage key and bindings.
 struct StartupPane: View {
-    @Environment(AppContainer.self) private var container
-
     /// Persists the user's explicit language choice. Kept separate from `AppleLanguages` (which
     /// always carries a resolved list, so it can't tell "user picked system" from "no choice yet").
     @AppStorage(AppLanguage.storageKey) private var languageSelection = AppLanguage.system.rawValue
@@ -48,18 +46,6 @@ struct StartupPane: View {
                 Text("Language")
             } footer: {
                 Text("Sets the app's interface language — not the transcription output. Automatic follows your system language. Changes take effect after relaunch.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Section {
-                Button(String(localized: "Run Setup Assistant again")) {
-                    container.openOnboarding()
-                }
-            } header: {
-                Text("Setup")
-            } footer: {
-                Text("Revisit the welcome flow to grant permissions or download a model.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

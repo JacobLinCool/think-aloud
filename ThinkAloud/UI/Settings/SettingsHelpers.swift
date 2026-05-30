@@ -92,6 +92,22 @@ struct DestructiveButton: View {
     }
 }
 
+/// Canonical refresh affordance: a borderless `arrow.clockwise` icon meant to sit at a Section
+/// header's trailing edge. One pattern everywhere — replaces the three different ad-hoc refreshers
+/// that used to live in Permissions, Model→Memory, and Dataset→Actions.
+struct RefreshButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "arrow.clockwise")
+                .imageScale(.medium)
+        }
+        .buttonStyle(.borderless)
+        .help(String(localized: "Refresh status"))
+    }
+}
+
 /// Read-only key/value row inside a settings Form. Keeps label primary, value secondary, right-aligned.
 struct InfoRow<Trailing: View>: View {
     let label: LocalizedStringKey
