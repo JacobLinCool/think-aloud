@@ -3406,6 +3406,336 @@
           }
         }
       }
+    },
+    "Startup" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟動"
+          }
+        }
+      }
+    },
+    "Shortcuts" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷鍵"
+          }
+        }
+      }
+    },
+    "Software Update" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "軟體更新"
+          }
+        }
+      }
+    },
+    "Output" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸出"
+          }
+        }
+      }
+    },
+    "Open at login" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登入時開啟"
+          }
+        }
+      }
+    },
+    "Login" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登入"
+          }
+        }
+      }
+    },
+    "Approve ThinkAloud in System Settings → General → Login Items to enable this." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請在「系統設定 → 一般 → 登入項目」中允許 ThinkAloud 以啟用此功能。"
+          }
+        }
+      }
+    },
+    "Start ThinkAloud automatically when you log in, so the dictation hotkey is ready without launching it by hand." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登入時自動啟動 ThinkAloud,這樣不必手動開啟就能使用聽寫快捷鍵。"
+          }
+        }
+      }
+    },
+    "Sets the app's interface language — not the transcription output. Automatic follows your system language. Changes take effect after relaunch." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定 app 的介面語言,而非轉錄輸出。「自動」會跟隨系統語言。變更會在重新啟動後生效。"
+          }
+        }
+      }
+    },
+    "Reset all 3 shortcuts" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重設全部 3 個快捷鍵"
+          }
+        }
+      }
+    },
+    "Start recording fires from anywhere to open the popup. Stop & transcribe and Insert & save both default to ⌥Space — the popup phase decides which one fires." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「開始錄音」可在任何地方觸發以開啟彈出視窗。「停止並轉錄」與「插入並儲存」皆預設為 ⌥Space — 由彈出視窗當下的階段決定觸發哪一個。"
+          }
+        }
+      }
+    },
+    "Reset Start recording, Stop & transcribe, and Insert & save to ⌥Space?" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將「開始錄音」、「停止並轉錄」與「插入並儲存」重設為 ⌥Space?"
+          }
+        }
+      }
+    },
+    "Pick the transcription engine — tap a model to make it active. Larger models are more accurate but slower and bigger on disk. The active model downloads on first use; download or remove variants here." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇轉錄引擎 — 點一下模型即設為使用中。較大的模型更準確,但較慢、佔用更多磁碟空間。使用中的模型會在首次使用時下載;可在此下載或移除各種模型。"
+          }
+        }
+      }
+    },
+    "Audio cleanup" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音訊清理"
+          }
+        }
+      }
+    },
+    "Clean up recordings" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清理錄音"
+          }
+        }
+      }
+    },
+    "Auto cleans only clips it detects as noisy; On always cleans (DeepFilterNet)." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「自動」只清理偵測到有噪音的片段;「開啟」則一律清理(DeepFilterNet)。"
+          }
+        }
+      }
+    },
+    "Removes background noise before transcription. Auto only cleans clips it detects as noisy, and downloads a small model on first use. Manage the denoiser in Advanced; compare Off / Auto / On in Benchmark." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在轉錄前移除背景噪音。「自動」只清理偵測到有噪音的片段,並於首次使用時下載一個小型模型。可在「進階」中管理降噪器;在 Benchmark 中比較關閉 / 自動 / 開啟。"
+          }
+        }
+      }
+    },
+    "Text formatting" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字格式"
+          }
+        }
+      }
+    },
+    "Space between Chinese and English/numbers" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中英文/數字間加空格"
+          }
+        }
+      }
+    },
+    "Word replacements" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詞語替換"
+          }
+        }
+      }
+    },
+    "Replacements run last — after Chinese conversion and spacing — and the longest matching term wins. Write terms the way the text looks after those steps. Longer, distinctive terms are safer; very short terms can fire inside unrelated words." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "替換在最後執行 — 在中文轉換與加空格之後 — 並由最長的相符詞勝出。請依照那些步驟後文字的樣子來填寫詞語。較長、獨特的詞語較安全;非常短的詞語可能在不相關的字詞中被觸發。"
+          }
+        }
+      }
+    },
+    "Memory & performance" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記憶體與效能"
+          }
+        }
+      }
+    },
+    "Load keeps the model in memory for instant transcription; Unload frees it. Auto-unload releases the weights after the chosen idle time and reloads on next use." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「載入」會將模型保留在記憶體中以便即時轉錄;「卸載」則釋放它。「閒置時自動釋放」會在所選的閒置時間後釋放權重,並於下次使用時重新載入。"
+          }
+        }
+      }
+    },
+    "Run test" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "執行測試"
+          }
+        }
+      }
+    },
+    "Test the model" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "測試模型"
+          }
+        }
+      }
+    },
+    "Diagnostics" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "診斷"
+          }
+        }
+      }
+    },
+    "“Test the model” downloads three short clips from JacobLinCool/audio-testing (~5 MB) and runs them through the current model to verify it works." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「測試模型」會從 JacobLinCool/audio-testing 下載三段短音訊(約 5 MB),並以目前的模型執行以確認運作正常。"
+          }
+        }
+      }
+    },
+    "Delete all %lld records and %@ of audio? This cannot be undone." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除全部 %lld 筆記錄與 %@ 的音訊?此動作無法復原。"
+          }
+        }
+      }
+    },
+    "A token is saved. Paste a new one to replace it." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已儲存 Token。貼上新的 Token 即可取代。"
+          }
+        }
+      }
+    },
+    "Remove the saved Hugging Face token from the macOS Keychain?" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從 macOS Keychain 移除已儲存的 Hugging Face Token?"
+          }
+        }
+      }
+    },
+    "Sync / Upload" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同步 / 上傳"
+          }
+        }
+      }
+    },
+    "A Hugging Face token lets you push the dataset from the browser window. It is stored in the macOS Keychain." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugging Face Token 可讓你從瀏覽器視窗推送資料集。它儲存於 macOS Keychain。"
+          }
+        }
+      }
+    },
+    "Change it if it clashes with another app." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "若與其他 app 衝突,可在此更改。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
