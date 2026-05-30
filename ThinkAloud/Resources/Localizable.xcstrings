@@ -3226,6 +3226,106 @@
           }
         }
       }
+    },
+    "term" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詞"
+          }
+        }
+      }
+    },
+    "replacement" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取代為"
+          }
+        }
+      }
+    },
+    "Remove term" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除詞條"
+          }
+        }
+      }
+    },
+    "Add term" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新增詞條"
+          }
+        }
+      }
+    },
+    "Test — type to preview…" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "測試 — 輸入以預覽…"
+          }
+        }
+      }
+    },
+    "Custom Dictionary" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定義字典"
+          }
+        }
+      }
+    },
+    "Duplicate — only the first is used." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重複——只會套用第一筆。"
+          }
+        }
+      }
+    },
+    "Short terms may replace text you didn't mean to." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "太短的詞可能會誤改到其他不相關的文字。"
+          }
+        }
+      }
+    },
+    "Dictionary (%lld)" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字典（%lld）"
+          }
+        }
+      }
+    },
+    "Replacements run last — after Chinese conversion and CJK–Latin spacing — and the longest matching term wins. Write terms the way the text looks after those steps. Longer, distinctive terms are safer; very short terms can fire inside unrelated words." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取代會在最後執行——在中文轉換與中英排版之後——且最長的匹配詞優先。請依照經過那些步驟後的文字樣子來撰寫詞條。較長、獨特的詞比較安全；太短的詞可能會在不相關的字詞裡被誤觸發。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
