@@ -191,7 +191,7 @@ final class PopupCoordinator {
         // Streaming transcription: switch to .review as soon as the first token arrives so
         // the user sees tokens appear in the editor live.
         let runtime = modelManager.runtime
-        let style = modelManager.chinesePreference
+        let postEdit = modelManager.postEdit
         viewModel.rawTranscript = ""
         viewModel.editedTranscript = ""
         viewModel.isStreaming = true
@@ -199,8 +199,31 @@ final class PopupCoordinator {
         var receivedAny = false
         var finalResult: ASRResult?
 
+        // Auto Pre-Edit: optionally denoise (DeepFilterNet, 48 kHz), then resample to the 16 kHz
+        // the ASR runtimes require. Dataset save still uses the original `recordingResult` (48 kHz raw).
+        var asrSamples = recordingResult.samples
+        var asrSampleRate = recordingResult.sampleRate
+        if modelManager.preEdit.denoise {
+            do {
+                asrSamples = try await modelManager.denoise(asrSamples)
+            } catch {
+                NSLog("ThinkAloud: denoise failed, using original audio: \(error)")
+            }
+        }
+        if asrSampleRate != 16000 {
+            do {
+                asrSamples = try AudioRecorder.resample(asrSamples, from: asrSampleRate, to: 16000)
+                asrSampleRate = 16000
+            } catch {
+                // Never feed source-rate audio to the 16 kHz-only runtimes — abort instead.
+                viewModel.isStreaming = false
+                viewModel.phase = .error(String(describing: error))
+                return
+            }
+        }
+
         do {
-            for try await event in runtime.transcribeStream(samples: recordingResult.samples, sampleRate: recordingResult.sampleRate, options: ASROptions(language: nil)) {
+            for try await event in runtime.transcribeStream(samples: asrSamples, sampleRate: asrSampleRate, options: ASROptions(language: nil)) {
                 switch event {
                 case .token(let token):
                     accumulated += token
@@ -209,11 +232,11 @@ final class PopupCoordinator {
                         viewModel.phase = .review
                     }
                     viewModel.rawTranscript = accumulated
-                    viewModel.editedTranscript = TranscriptPostProcessor.apply(style, to: accumulated)
+                    viewModel.editedTranscript = TranscriptPostProcessor.apply(postEdit, to: accumulated)
                 case .result(let r):
                     finalResult = r
                     viewModel.rawTranscript = r.text
-                    viewModel.editedTranscript = TranscriptPostProcessor.apply(style, to: r.text)
+                    viewModel.editedTranscript = TranscriptPostProcessor.apply(postEdit, to: r.text)
                     viewModel.transcribeDurationMs = r.durationMs
                     viewModel.asrModelID = r.modelID
                     viewModel.phase = .review

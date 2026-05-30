@@ -204,8 +204,9 @@ actor MLXAudioQwenRuntime: ASRRuntime {
                 continuation.finish(throwing: ASRError.modelNotReady)
                 return
             }
-            // Qwen3-ASR expects 16 kHz mono. AudioRecorder is already producing exactly that,
-            // so we feed samples straight into an MLXArray with no resampling/decoding.
+            // Qwen3-ASR expects 16 kHz mono. The caller (PopupCoordinator / BenchmarkRunner)
+            // resamples to 16 kHz — from AudioRecorder's 48 kHz capture, after optional
+            // denoising — before getting here, so we feed samples straight into an MLXArray.
             precondition(sampleRate == 16000, "MLXAudioQwenRuntime expects 16 kHz samples")
             let audio = MLXArray(samples)
             let start = Date()

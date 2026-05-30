@@ -6,7 +6,8 @@ import Observation
 final class BenchmarkController {
     // Configuration (bound to UI pickers)
     var selectedProfile: ModelProfile
-    var selectedPreference: ChinesePreference
+    var selectedPostEdit: PostEditConfig
+    var selectedPreEdit: PreEditConfig
     /// When true, CER / exact-match read the aggressive-normalized fields (Whisper-style:
     /// lowercase, strip punctuation, full→half width). When false, they use the strict fields
     /// (whitespace-only normalization). Pure view toggle — both metrics are always computed.
@@ -39,13 +40,15 @@ final class BenchmarkController {
         audioFileStore: AudioFileStore,
         modelsDirectory: URL,
         initialProfile: ModelProfile,
-        initialPreference: ChinesePreference
+        initialPostEdit: PostEditConfig,
+        initialPreEdit: PreEditConfig
     ) {
         self.datasetStore = datasetStore
         self.audioFileStore = audioFileStore
         self.modelsDirectory = modelsDirectory
         self.selectedProfile = initialProfile
-        self.selectedPreference = initialPreference
+        self.selectedPostEdit = initialPostEdit
+        self.selectedPreEdit = initialPreEdit
     }
 
     var progressFraction: Double {
@@ -56,7 +59,8 @@ final class BenchmarkController {
     func run() {
         guard !isRunning else { return }
         let profile = selectedProfile
-        let preference = selectedPreference
+        let postEdit = selectedPostEdit
+        let preEdit = selectedPreEdit
         let datasetStore = datasetStore
         let audioFileStore = audioFileStore
         let modelsDirectory = modelsDirectory
@@ -91,16 +95,21 @@ final class BenchmarkController {
                     return
                 }
 
+                // Transient denoiser, created only when denoise is enabled, unloaded after the run.
+                let dfn = preEdit.denoise ? DeepFilterNetRuntime(modelsDirectory: modelsDirectory) : nil
+
                 let runner = BenchmarkRunner()
                 let report: BenchmarkReport
                 do {
                     report = try await runner.run(
                         records: records,
                         runtime: runtime,
-                        chinesePreference: preference,
+                        postEdit: postEdit,
+                        preEdit: preEdit,
                         audioURLProvider: { record in
                             await audioFileStore.absoluteURL(for: record.audioPath)
                         },
+                        denoise: dfn.map { d in { @Sendable (samples: [Float]) async throws -> [Float] in try await d.enhance(samples) } },
                         progress: { [weak self] p in
                             await MainActor.run {
                                 self?.progressCompleted = p.completed
@@ -110,14 +119,17 @@ final class BenchmarkController {
                     )
                 } catch is CancellationError {
                     await runtime.unload()
+                    await dfn?.unload()
                     self?.errorMessage = String(localized: "Cancelled.")
                     return
                 } catch {
                     await runtime.unload()
+                    await dfn?.unload()
                     self?.errorMessage = String(localized: "Benchmark failed: \(error.localizedDescription)")
                     return
                 }
                 await runtime.unload()
+                await dfn?.unload()
                 if let self {
                     self.history.insert(report, at: 0)
                     self.displayedRunAt = report.runAt

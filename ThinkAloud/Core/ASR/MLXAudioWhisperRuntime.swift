@@ -150,7 +150,8 @@ actor MLXAudioWhisperRuntime: ASRRuntime {
                 continuation.finish(throwing: ASRError.modelNotReady)
                 return
             }
-            // Whisper expects 16 kHz mono — same as AudioRecorder's output.
+            // Whisper expects 16 kHz mono. The caller resamples to 16 kHz (from AudioRecorder's
+            // 48 kHz capture, after optional denoising) before getting here.
             precondition(sampleRate == 16000, "MLXAudioWhisperRuntime expects 16 kHz samples")
             let audio = MLXArray(samples)
             let start = Date()

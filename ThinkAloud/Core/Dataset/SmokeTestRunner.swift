@@ -11,7 +11,7 @@ struct SmokeTestResult: Sendable, Identifiable, Equatable {
     let id: String
     let sample: SmokeTestSample
     let transcript: String         // raw output from the model
-    let editedTranscript: String   // after TranscriptPostProcessor (chinese preference applied)
+    let editedTranscript: String   // after TranscriptPostProcessor (Auto Post-Edit applied)
     let durationMs: Int
     let error: String?
     var passed: Bool { error == nil && !transcript.isEmpty }
@@ -19,7 +19,7 @@ struct SmokeTestResult: Sendable, Identifiable, Equatable {
 
 struct SmokeTestReport: Sendable {
     let modelID: String
-    let chinesePreference: ChinesePreference
+    let postEdit: PostEditConfig
     let results: [SmokeTestResult]
     var passed: Int { results.filter(\.passed).count }
     var total: Int { results.count }
@@ -41,22 +41,22 @@ actor SmokeTestRunner {
         try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
     }
 
-    /// Runs the full transcription pipeline: model inference + chinese-preference post-processing.
+    /// Runs the full transcription pipeline: model inference + Auto Post-Edit post-processing.
     /// Mirrors what the popup does after a real recording, so users can verify both stages from Settings.
-    func run(using runtime: any ASRRuntime, chinesePreference: ChinesePreference = .model) async throws -> SmokeTestReport {
+    func run(using runtime: any ASRRuntime, postEdit: PostEditConfig = .default) async throws -> SmokeTestReport {
         let samples = try await ensureSamples()
         var results: [SmokeTestResult] = []
         for sample in samples {
             do {
                 let result = try await runtime.transcribe(audioURL: sample.audioURL, options: ASROptions(language: sample.language))
-                let edited = TranscriptPostProcessor.apply(chinesePreference, to: result.text)
+                let edited = TranscriptPostProcessor.apply(postEdit, to: result.text)
                 results.append(SmokeTestResult(id: sample.id, sample: sample, transcript: result.text, editedTranscript: edited, durationMs: result.durationMs, error: nil))
             } catch {
                 results.append(SmokeTestResult(id: sample.id, sample: sample, transcript: "", editedTranscript: "", durationMs: 0, error: String(describing: error)))
             }
         }
         let modelID = await runtime.modelID
-        return SmokeTestReport(modelID: modelID, chinesePreference: chinesePreference, results: results)
+        return SmokeTestReport(modelID: modelID, postEdit: postEdit, results: results)
     }
 
     private func ensureSamples() async throws -> [SmokeTestSample] {

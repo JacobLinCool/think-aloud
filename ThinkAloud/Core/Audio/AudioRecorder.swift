@@ -15,6 +15,7 @@ actor AudioRecorder {
         case converterCreationFailed
         case formatUnsupported
         case writerFailed(String)
+        case resampleFailed(String)
         case notRecording
 
         var errorDescription: String? {
@@ -23,6 +24,7 @@ actor AudioRecorder {
             case .converterCreationFailed: return "Failed to create audio converter."
             case .formatUnsupported: return "Microphone audio format is unsupported."
             case .writerFailed(let msg): return "Failed to write WAV file: \(msg)"
+            case .resampleFailed(let msg): return "Failed to resample audio: \(msg)"
             case .notRecording: return "No active recording."
             }
         }
@@ -34,7 +36,13 @@ actor AudioRecorder {
         var timestamp: TimeInterval
     }
 
-    private let targetSampleRate: Double = 16000
+    // Capture at 48 kHz so the Auto Pre-Edit denoiser (DeepFilterNet, 48 kHz only) gets full-band
+    // audio. ASR needs 16 kHz, so PopupCoordinator resamples to 16 kHz (via `resample`) before
+    // transcribing. Saved dataset WAVs keep the 48 kHz fidelity; `loadAudioArray` resamples them
+    // back to 16 kHz on benchmark/playback.
+    // NOTE: 48 kHz makes saved WAVs ~3x larger than the old 16 kHz capture (16-bit mono:
+    // ~5.76 MB/min vs ~1.92 MB/min). Acceptable for short dictation clips.
+    private let targetSampleRate: Double = 48000
     private let engine = AVAudioEngine()
     private var outputBuffers: [Float] = []
     // Latest input level, overwritten on every tap buffer. Read (pulled) by the display loop
@@ -178,6 +186,54 @@ actor AudioRecorder {
         vDSP_maxmgv(samples, 1, &peak, vDSP_Length(count))
 
         return ConvertedChunk(samples: samples, rms: rms, peak: peak)
+    }
+
+    /// One-shot sample-rate conversion of an in-memory mono Float clip (e.g. 48 kHz → 16 kHz
+    /// before ASR). Returns the input unchanged only when the rates already match or the clip is
+    /// empty. **Throws** `RecorderError.resampleFailed` on any conversion failure — callers must
+    /// NOT proceed to feed the (still-source-rate) audio to the 16 kHz-only ASR runtimes.
+    /// Unlike the live tap converter, this flushes with `.endOfStream` to drain all output.
+    static func resample(_ samples: [Float], from sourceRate: Int, to targetRate: Int) throws -> [Float] {
+        guard sourceRate != targetRate, !samples.isEmpty else { return samples }
+        guard
+            let inFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(sourceRate), channels: 1, interleaved: false),
+            let outFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(targetRate), channels: 1, interleaved: false),
+            let converter = AVAudioConverter(from: inFormat, to: outFormat),
+            let inBuffer = AVAudioPCMBuffer(pcmFormat: inFormat, frameCapacity: AVAudioFrameCount(samples.count))
+        else {
+            throw RecorderError.resampleFailed("setup failed (\(sourceRate)->\(targetRate))")
+        }
+        inBuffer.frameLength = AVAudioFrameCount(samples.count)
+        if let channel = inBuffer.floatChannelData {
+            samples.withUnsafeBufferPointer { src in
+                channel[0].update(from: src.baseAddress!, count: samples.count)
+            }
+        }
+
+        let ratio = Double(targetRate) / Double(sourceRate)
+        let capacity = AVAudioFrameCount(Double(samples.count) * ratio + 1024)
+        guard let outBuffer = AVAudioPCMBuffer(pcmFormat: outFormat, frameCapacity: capacity) else {
+            throw RecorderError.resampleFailed("output buffer allocation failed")
+        }
+
+        var didProvide = false
+        var error: NSError?
+        let status = converter.convert(to: outBuffer, error: &error) { _, statusPointer in
+            if didProvide {
+                statusPointer.pointee = .endOfStream
+                return nil
+            }
+            didProvide = true
+            statusPointer.pointee = .haveData
+            return inBuffer
+        }
+        if status == .error || error != nil {
+            throw RecorderError.resampleFailed(error?.localizedDescription ?? "conversion error")
+        }
+        guard let channel = outBuffer.floatChannelData, outBuffer.frameLength > 0 else {
+            throw RecorderError.resampleFailed("no output produced")
+        }
+        return Array(UnsafeBufferPointer(start: channel[0], count: Int(outBuffer.frameLength)))
     }
 
     static func writeWavFile(samples: [Float], sampleRate: Double, to url: URL) throws {

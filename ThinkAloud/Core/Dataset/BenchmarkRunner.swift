@@ -56,7 +56,8 @@ struct BenchmarkResult: Sendable, Identifiable, Codable, Equatable {
 
 struct BenchmarkReport: Sendable, Codable {
     let modelID: String
-    let chinesePreference: ChinesePreference
+    let preEdit: PreEditConfig
+    let postEdit: PostEditConfig
     let runAt: String               // ISO8601 timestamp
     let results: [BenchmarkResult]
 
@@ -116,8 +117,10 @@ actor BenchmarkRunner {
     func run(
         records: [DatasetRecord],
         runtime: any ASRRuntime,
-        chinesePreference: ChinesePreference,
+        postEdit: PostEditConfig,
+        preEdit: PreEditConfig = .default,
         audioURLProvider: @Sendable (DatasetRecord) async -> URL,
+        denoise: (@Sendable ([Float]) async throws -> [Float])? = nil,
         progress: @Sendable (BenchmarkProgress) async -> Void = { _ in }
     ) async throws -> BenchmarkReport {
         var results: [BenchmarkResult] = []
@@ -128,7 +131,7 @@ actor BenchmarkRunner {
             await progress(BenchmarkProgress(completed: index, total: records.count, currentRecordID: record.id))
 
             let audioURL = await audioURLProvider(record)
-            let result = await transcribe(record: record, audioURL: audioURL, runtime: runtime, chinesePreference: chinesePreference)
+            let result = await transcribe(record: record, audioURL: audioURL, runtime: runtime, postEdit: postEdit, denoise: preEdit.denoise ? denoise : nil)
             results.append(result)
         }
 
@@ -137,20 +140,29 @@ actor BenchmarkRunner {
 
         let modelID = await runtime.modelID
         let runAt = ISO8601DateFormatter().string(from: Date())
-        return BenchmarkReport(modelID: modelID, chinesePreference: chinesePreference, runAt: runAt, results: results)
+        return BenchmarkReport(modelID: modelID, preEdit: preEdit, postEdit: postEdit, runAt: runAt, results: results)
     }
 
-    private func transcribe(record: DatasetRecord, audioURL: URL, runtime: any ASRRuntime, chinesePreference: ChinesePreference) async -> BenchmarkResult {
+    private func transcribe(record: DatasetRecord, audioURL: URL, runtime: any ASRRuntime, postEdit: PostEditConfig, denoise: (@Sendable ([Float]) async throws -> [Float])?) async -> BenchmarkResult {
         let groundTruth = record.editedTranscript
         let start = Date()
 
-        // Decode audio → [Float] mirroring production pipeline.
+        // Decode audio → [Float] mirroring production pipeline. When denoising, decode at 48 kHz
+        // (DeepFilterNet's rate), enhance, then resample to the 16 kHz the ASR model requires.
         let samples: [Float]
         let audioDurationMs: Int
         do {
-            let (sampleRate, mlxArray) = try loadAudioArray(from: audioURL, sampleRate: 16000)
-            samples = mlxArray.asArray(Float.self)
-            audioDurationMs = sampleRate > 0 ? Int(Double(samples.count) / Double(sampleRate) * 1000) : 0
+            if let denoise {
+                let (_, mlxArray) = try loadAudioArray(from: audioURL, sampleRate: 48000)
+                let full = mlxArray.asArray(Float.self)
+                audioDurationMs = Int(Double(full.count) / 48000.0 * 1000)
+                let enhanced = try await denoise(full)
+                samples = try AudioRecorder.resample(enhanced, from: 48000, to: 16000)
+            } else {
+                let (sampleRate, mlxArray) = try loadAudioArray(from: audioURL, sampleRate: 16000)
+                samples = mlxArray.asArray(Float.self)
+                audioDurationMs = sampleRate > 0 ? Int(Double(samples.count) / Double(sampleRate) * 1000) : 0
+            }
         } catch {
             return failure(record: record, groundTruth: groundTruth, error: error, start: start)
         }
@@ -171,7 +183,7 @@ actor BenchmarkRunner {
             return failure(record: record, groundTruth: groundTruth, error: error, start: start)
         }
 
-        let editedText = TranscriptPostProcessor.apply(chinesePreference, to: rawText)
+        let editedText = TranscriptPostProcessor.apply(postEdit, to: rawText)
         let elapsedMs = Int(Date().timeIntervalSince(start) * 1000)
 
         let lightRef = TextMetrics.normalize(groundTruth, mode: .light)

@@ -36,7 +36,8 @@ final class DatasetBrowserWindowController: NSObject, NSWindowDelegate {
             audioFileStore: container.audioFileStore,
             modelsDirectory: container.modelManager.modelCacheURL,
             initialProfile: container.modelManager.profile,
-            initialPreference: container.modelManager.chinesePreference
+            initialPostEdit: container.modelManager.postEdit,
+            initialPreEdit: container.modelManager.preEdit
         )
         let newPush = HFPushController(
             tokenStore: container.hfTokenStore,

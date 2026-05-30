@@ -94,7 +94,9 @@ enum TextMetrics {
 
     /// True for characters that stand alone as a "word" in CJK text: ideographs (incl.
     /// extensions A/B and compatibility forms) plus Japanese kana.
-    private static func isCJK(_ scalar: Unicode.Scalar) -> Bool {
+    /// Exposed (internal) so the Auto Post-Edit typography step (`CJKLatinSpacer`) can reuse
+    /// the same script classification instead of duplicating the Unicode ranges.
+    static func isCJK(_ scalar: Unicode.Scalar) -> Bool {
         switch scalar.value {
         case 0x3040...0x30FF,    // Hiragana + Katakana
              0x3400...0x4DBF,    // CJK Unified Ideographs Extension A

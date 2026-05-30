@@ -3076,6 +3076,156 @@
           }
         }
       }
+    },
+    "No preference" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無偏好"
+          }
+        }
+      }
+    },
+    "Auto Post-Edit" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動後製編輯"
+          }
+        }
+      }
+    },
+    "Chinese output" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中文輸出"
+          }
+        }
+      }
+    },
+    "CJK–Latin spacing" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中英自動空格"
+          }
+        }
+      }
+    },
+    "Insert a space between Chinese and adjacent English / numbers." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在中文與相鄰的英文／數字之間插入空格。"
+          }
+        }
+      }
+    },
+    "Auto Pre-Edit" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動前製編輯"
+          }
+        }
+      }
+    },
+    "Audio denoising" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音訊降噪"
+          }
+        }
+      }
+    },
+    "Suppress background noise with DeepFilterNet before transcription. Downloads a small model on first use." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "轉寫前以 DeepFilterNet 抑制背景雜訊。首次使用會下載一個小型模型。"
+          }
+        }
+      }
+    },
+    "Denoiser" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "降噪器"
+          }
+        }
+      }
+    },
+    "Load denoiser" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "載入降噪器"
+          }
+        }
+      }
+    },
+    "Unload denoiser" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卸載降噪器"
+          }
+        }
+      }
+    },
+    "Free the denoiser weights from memory? It will reload on next use." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要從記憶體釋放降噪器權重嗎？下次使用時會重新載入。"
+          }
+        }
+      }
+    },
+    "Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Best for noisy environments; may not help (or slightly hurt) clean recordings — use Benchmark to compare." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "降噪會在音訊被降採樣給 ASR 模型之前以 48 kHz 執行。最適合吵雜環境；對乾淨錄音可能無感（甚至略有損害）——可用 Benchmark 比較。"
+          }
+        }
+      }
+    },
+    "Denoise" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "降噪"
+          }
+        }
+      }
+    },
+    "Off" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
