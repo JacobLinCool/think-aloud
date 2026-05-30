@@ -2,6 +2,49 @@ import Foundation
 import Observation
 import Sparkle
 
+/// Auto-update channel. `stable` follows the tagged releases; `dev` follows the latest `main`
+/// build (a prerelease, less stable). Each points Sparkle at its own appcast feed.
+enum UpdateChannel: String, CaseIterable, Identifiable, Sendable {
+    case stable
+    case dev
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .stable: return String(localized: "Stable")
+        case .dev: return String(localized: "Dev (latest main)")
+        }
+    }
+
+    /// The Sparkle appcast URL for this channel. Stable resolves to the newest published (non-
+    /// prerelease) release; dev is the fixed `dev` prerelease, updated on every push to main.
+    var feedURLString: String {
+        switch self {
+        case .stable: return "https://github.com/JacobLinCool/think-aloud/releases/latest/download/appcast.xml"
+        case .dev:    return "https://github.com/JacobLinCool/think-aloud/releases/download/dev/appcast-dev.xml"
+        }
+    }
+}
+
+/// Supplies Sparkle the feed URL for the currently-selected channel. `SPUUpdaterDelegate` is
+/// `NS_SWIFT_UI_ACTOR` (main-actor), so this stays on the main actor. Sparkle reads
+/// `feedURLString(for:)` at the start of each check, so flipping `currentFeedURLString` switches
+/// channels on the next check with no updater restart.
+@MainActor
+final class ChannelFeedDelegate: NSObject, SPUUpdaterDelegate {
+    var currentFeedURLString: String
+
+    init(_ feedURLString: String) {
+        self.currentFeedURLString = feedURLString
+        super.init()
+    }
+
+    func feedURLString(for updater: SPUUpdater) -> String? {
+        currentFeedURLString
+    }
+}
+
 /// Owns Sparkle's updater for the app's lifetime.
 ///
 /// Standard Developer-ID, non-sandboxed configuration — no XPC installer services are needed
@@ -15,7 +58,9 @@ import Sparkle
 @Observable
 final class UpdaterController {
     @ObservationIgnored private let controller: SPUStandardUpdaterController
+    @ObservationIgnored private let feedDelegate: ChannelFeedDelegate
     @ObservationIgnored private var canCheckObservation: NSKeyValueObservation?
+    @ObservationIgnored private let channelKey = "ThinkAloud.updateChannel"
 
     /// True when a manual check can be started right now. Sparkle flips this to false while a
     /// check/download session is in flight; the menu item and the "Check Now" button observe it.
@@ -32,11 +77,26 @@ final class UpdaterController {
         didSet { controller.updater.automaticallyDownloadsUpdates = automaticallyDownloadsUpdates }
     }
 
+    /// Which appcast feed to follow. Switching takes effect on the next update check.
+    var channel: UpdateChannel {
+        didSet {
+            UserDefaults.standard.set(channel.rawValue, forKey: channelKey)
+            feedDelegate.currentFeedURLString = channel.feedURLString
+        }
+    }
+
     init() {
+        let storedChannel = UserDefaults.standard.string(forKey: channelKey)
+            .flatMap(UpdateChannel.init(rawValue:)) ?? .stable
+        self.channel = storedChannel
+
+        let feedDelegate = ChannelFeedDelegate(storedChannel.feedURLString)
+        self.feedDelegate = feedDelegate
+
         // startingUpdater: true launches the scheduled-check cycle once the app finishes launching.
         let controller = SPUStandardUpdaterController(
             startingUpdater: true,
-            updaterDelegate: nil,
+            updaterDelegate: feedDelegate,
             userDriverDelegate: nil
         )
         self.controller = controller

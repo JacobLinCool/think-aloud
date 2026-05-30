@@ -28,6 +28,11 @@ struct UpdatesPane: View {
             }
 
             Section {
+                Picker(String(localized: "Channel"), selection: $updater.channel) {
+                    ForEach(UpdateChannel.allCases) { channel in
+                        Text(channel.displayName).tag(channel)
+                    }
+                }
                 Toggle(String(localized: "Automatically check for updates"),
                        isOn: $updater.automaticallyChecksForUpdates)
                 Toggle(String(localized: "Automatically download and install updates"),
@@ -35,7 +40,7 @@ struct UpdatesPane: View {
                     // "Download & install" only makes sense once automatic checks are on.
                     .disabled(!updater.automaticallyChecksForUpdates)
             } footer: {
-                Text("Updates are downloaded from GitHub Releases and verified with a cryptographic signature before installing.")
+                Text("Updates are downloaded from GitHub Releases and verified with a cryptographic signature before installing. The Dev channel tracks the latest main build and may be less stable; switching back to Stable takes effect once Stable's build number catches up.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
