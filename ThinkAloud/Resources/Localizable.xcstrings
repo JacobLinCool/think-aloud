@@ -3326,6 +3326,46 @@
           }
         }
       }
+    },
+    "Channel" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新頻道"
+          }
+        }
+      }
+    },
+    "Stable" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正式版"
+          }
+        }
+      }
+    },
+    "Dev (latest main)" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開發版（最新 main）"
+          }
+        }
+      }
+    },
+    "Updates are downloaded from GitHub Releases and verified with a cryptographic signature before installing. The Dev channel tracks the latest main build and may be less stable; switching back to Stable takes effect once Stable's build number catches up." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新會從 GitHub Releases 下載，並在安裝前以密碼學簽章驗證。開發版頻道追蹤最新的 main 建置，可能較不穩定；切回正式版會在正式版的建置編號追上後才生效。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

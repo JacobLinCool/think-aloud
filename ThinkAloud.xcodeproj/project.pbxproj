@@ -22,6 +22,7 @@
 		1BAE2277270C1884D8796513 /* HFPushService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46476A9C0B62C359D2210696 /* HFPushService.swift */; };
 		1FFB55E8AE3E5D4FB22DF487 /* CJKLatinSpacerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90EB6647B54ADAA07D19B93D /* CJKLatinSpacerTests.swift */; };
 		20E9C18A8D64087C7A208B58 /* CustomDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54741E8DDB8F52829F6A186 /* CustomDictionary.swift */; };
+		25D9A2835618F8440C284B79 /* UpdateChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69A1C296E3B1106EABA5A451 /* UpdateChannelTests.swift */; };
 		2A4E08C89755C06D2E2DBAC8 /* MLXAudioQwenRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E611DB5A7151004CAF39404A /* MLXAudioQwenRuntime.swift */; };
 		2ABE019AF3A14CF7D2AE5AED /* DatasetBrowserWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A2E53397CC8258787D7AE1 /* DatasetBrowserWindowController.swift */; };
 		37547DF622FE7E32CD30D605 /* PopupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34010A84EE341A65F6353514 /* PopupViewModel.swift */; };
@@ -153,6 +154,7 @@
 		5D99F7391536188576A97AFB /* KeyboardShortcutsNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutsNames.swift; sourceTree = "<group>"; };
 		655DB4C52F250EBB3DE5EF3E /* TextDiff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDiff.swift; sourceTree = "<group>"; };
 		65B913C8B365185CF78DA8C5 /* InsertionFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsertionFeedback.swift; sourceTree = "<group>"; };
+		69A1C296E3B1106EABA5A451 /* UpdateChannelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChannelTests.swift; sourceTree = "<group>"; };
 		6C07E5343695A44A98537FD0 /* DatasetBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasetBrowserView.swift; sourceTree = "<group>"; };
 		6CC3CCDD6E8BC2FC491B247B /* SmokeTestRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTestRunnerTests.swift; sourceTree = "<group>"; };
 		725A8E3A12BB296B2C9CB12F /* BenchmarkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkController.swift; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				8A81C063E1C98EF7C651903C /* TextDiffTests.swift */,
 				0ADF2851C1A2C091D980FE15 /* TextMetricsTests.swift */,
 				3AF537972E108F14377815D3 /* TranscriptPostProcessorTests.swift */,
+				69A1C296E3B1106EABA5A451 /* UpdateChannelTests.swift */,
 			);
 			path = ThinkAloudTests;
 			sourceTree = "<group>";
@@ -630,6 +633,7 @@
 				9619D609802A8B3F9CC04E76 /* TextDiffTests.swift in Sources */,
 				9DFD3A92F05AAD1FAB14F65C /* TextMetricsTests.swift in Sources */,
 				7D81AB1C0DFD01190DC87D28 /* TranscriptPostProcessorTests.swift in Sources */,
+				25D9A2835618F8440C284B79 /* UpdateChannelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -862,7 +866,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 0.2.0;
+				MARKETING_VERSION = 0.2.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -922,7 +926,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 0.2.0;
+				MARKETING_VERSION = 0.2.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

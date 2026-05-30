@@ -60,10 +60,28 @@ jobs:
             TAG="${GITHUB_REF#refs/tags/}"
           fi
           VERSION="${TAG#v}"
+          # CFBundleVersion = commit count (monotonic on main, shared with the dev channel so the
+          # two feeds' build numbers are directly comparable). Needs fetch-depth: 0 (set above).
+          BUILD="$(git rev-list --count HEAD)"
           echo "tag=$TAG"                              >> "$GITHUB_OUTPUT"
           echo "version=$VERSION"                     >> "$GITHUB_OUTPUT"
-          echo "build=${GITHUB_RUN_NUMBER}"           >> "$GITHUB_OUTPUT"
-          echo "Building $TAG (MARKETING_VERSION=$VERSION, CFBundleVersion=$GITHUB_RUN_NUMBER)"
+          echo "build=$BUILD"                          >> "$GITHUB_OUTPUT"
+          echo "Building $TAG (MARKETING_VERSION=$VERSION, CFBundleVersion=$BUILD)"
+
+      - name: Guard against version regression
+        # Commit count is monotonic only while main stays linear and tags sit on the tip. If a tag
+        # is placed on an older commit (or history is rewritten), the count drops and Sparkle would
+        # refuse the "older-numbered" release for everyone. Fail loudly instead of shipping that.
+        run: |
+          set -euo pipefail
+          BUILD="${{ steps.version.outputs.build }}"
+          PREV=$(curl -sL "https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/appcast.xml" 2>/dev/null \
+            | grep -oE '<sparkle:version>[0-9]+' | grep -oE '[0-9]+' | head -1 || true)
+          if [[ -n "${PREV:-}" && "$BUILD" -lt "$PREV" ]]; then
+            echo "::error::CFBundleVersion regression: new build $BUILD < last published $PREV. Is the tag on main's tip / was history rewritten?"
+            exit 1
+          fi
+          echo "Build $BUILD >= last published stable ${PREV:-none} — OK"
 
       - name: Select latest Xcode
         run: |
