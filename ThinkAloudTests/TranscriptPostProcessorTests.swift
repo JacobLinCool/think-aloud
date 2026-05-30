@@ -61,9 +61,40 @@ final class TranscriptPostProcessorTests: XCTestCase {
     }
 
     func testCodableRoundTrip() throws {
-        let cfg = PostEditConfig(chinese: .simplified, cjkLatinSpacing: true)
+        let cfg = PostEditConfig(chinese: .simplified, cjkLatinSpacing: true,
+                                 dictionary: [DictionaryRule(from: "gpt四", to: "GPT-4")])
         let data = try JSONEncoder().encode(cfg)
         let decoded = try JSONDecoder().decode(PostEditConfig.self, from: data)
         XCTAssertEqual(cfg, decoded)
+    }
+
+    // MARK: - Dictionary as the last pipeline step
+
+    func testDictionaryRunsAfterChineseConversion() {
+        // Simplified conversion turns 歐拉 → 欧拉 first; the rule (authored in Simplified) then matches.
+        let cfg = PostEditConfig(chinese: .simplified, cjkLatinSpacing: false,
+                                 dictionary: [DictionaryRule(from: "欧拉", to: "Euler")])
+        XCTAssertEqual(TranscriptPostProcessor.apply(cfg, to: "歐拉公式"), "Euler公式")
+    }
+
+    func testSpacingSplitsDictionaryPatternWhenEnabled() {
+        // Documents the ordering trap: with spacing ON, 用gpt四 → 用 gpt 四 BEFORE the dictionary,
+        // so a rule `gpt四`→`GPT-4` no longer matches. A future apply() reorder would break this.
+        let cfg = PostEditConfig(chinese: .model, cjkLatinSpacing: true,
+                                 dictionary: [DictionaryRule(from: "gpt四", to: "GPT-4")])
+        XCTAssertEqual(TranscriptPostProcessor.apply(cfg, to: "用gpt四"), "用 gpt 四")
+        // With spacing OFF the same rule fires.
+        let off = PostEditConfig(chinese: .model, cjkLatinSpacing: false,
+                                 dictionary: [DictionaryRule(from: "gpt四", to: "GPT-4")])
+        XCTAssertEqual(TranscriptPostProcessor.apply(off, to: "用gpt四"), "用GPT-4")
+    }
+
+    func testDecodesLegacyJSONWithoutDictionaryKey() throws {
+        // Pre-dictionary persisted config must still load (no keyNotFound), preserving cjkLatinSpacing.
+        let legacy = #"{"chinese":"traditional","cjkLatinSpacing":true}"#.data(using: .utf8)!
+        let decoded = try JSONDecoder().decode(PostEditConfig.self, from: legacy)
+        XCTAssertEqual(decoded.chinese, .traditional)
+        XCTAssertTrue(decoded.cjkLatinSpacing)
+        XCTAssertTrue(decoded.dictionary.isEmpty)
     }
 }

@@ -192,6 +192,8 @@ final class PopupCoordinator {
         // the user sees tokens appear in the editor live.
         let runtime = modelManager.runtime
         let postEdit = modelManager.postEdit
+        // Compile the user dictionary once here, not per streaming token.
+        let compiledDict = CompiledDictionary(postEdit.dictionary)
         viewModel.rawTranscript = ""
         viewModel.editedTranscript = ""
         viewModel.isStreaming = true
@@ -232,11 +234,11 @@ final class PopupCoordinator {
                         viewModel.phase = .review
                     }
                     viewModel.rawTranscript = accumulated
-                    viewModel.editedTranscript = TranscriptPostProcessor.apply(postEdit, to: accumulated)
+                    viewModel.editedTranscript = TranscriptPostProcessor.apply(postEdit, dictionary: compiledDict, to: accumulated)
                 case .result(let r):
                     finalResult = r
                     viewModel.rawTranscript = r.text
-                    viewModel.editedTranscript = TranscriptPostProcessor.apply(postEdit, to: r.text)
+                    viewModel.editedTranscript = TranscriptPostProcessor.apply(postEdit, dictionary: compiledDict, to: r.text)
                     viewModel.transcribeDurationMs = r.durationMs
                     viewModel.asrModelID = r.modelID
                     viewModel.phase = .review
