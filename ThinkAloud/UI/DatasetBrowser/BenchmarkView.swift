@@ -62,7 +62,7 @@ struct BenchmarkView: View {
                     .pickerStyle(.menu)
                     .labelsHidden()
                 }
-                Toggle(String(localized: "CJK–Latin spacing"), isOn: $controller.selectedPostEdit.cjkLatinSpacing)
+                Toggle(String(localized: "Space between Chinese and English/numbers"), isOn: $controller.selectedPostEdit.cjkLatinSpacing)
                     .toggleStyle(.checkbox)
                 LabeledContent(String(localized: "Denoise")) {
                     Picker("", selection: $controller.selectedPreEdit.denoise) {

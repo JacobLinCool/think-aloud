@@ -193,7 +193,7 @@ struct ErrorPopupView: View {
                 .foregroundStyle(.secondary)
             Spacer()
             HStack {
-                Button("Open Settings") { coordinator.openSettings() }
+                Button("Open Settings") { coordinator.openSettings(.permissions) }
                 Spacer()
                 Button("Close") { coordinator.cancel() }
                     .keyboardShortcut(.escape, modifiers: [])

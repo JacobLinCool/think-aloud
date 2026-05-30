@@ -18,6 +18,9 @@ final class AppContainer {
     private(set) var onboardingWindow: OnboardingWindowController!
     let hfTokenStore: HFTokenStore
     let updater: UpdaterController
+    /// Owned here (not re-created per Settings render) so the toggle's SMAppService status read
+    /// happens once, not on every StartupPane init.
+    let launchAtLogin = LaunchAtLoginService()
 
     init() {
         let appSupport = AppPaths.applicationSupportDirectory()
@@ -61,13 +64,13 @@ final class AppContainer {
         self.settingsWindow = SettingsWindowController(container: self)
         self.datasetBrowserWindow = DatasetBrowserWindowController(container: self)
         self.onboardingWindow = OnboardingWindowController(container: self)
-        self.coordinator.settingsOpener = { [weak self] in
-            self?.openSettings()
+        self.coordinator.settingsOpener = { [weak self] category in
+            self?.openSettings(to: category)
         }
     }
 
-    func openSettings() {
-        settingsWindow.show()
+    func openSettings(to category: SettingsCategory? = nil) {
+        settingsWindow.show(category: category)
     }
 
     func openDatasetBrowser() {

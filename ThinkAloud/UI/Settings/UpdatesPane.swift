@@ -46,6 +46,5 @@ struct UpdatesPane: View {
             }
         }
         .formStyle(.grouped)
-        .padding(.horizontal)
     }
 }
