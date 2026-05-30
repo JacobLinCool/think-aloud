@@ -18,6 +18,9 @@ final class AppContainer {
     private(set) var onboardingWindow: OnboardingWindowController!
     let hfTokenStore: HFTokenStore
     let updater: UpdaterController
+    /// Owned here (not re-created per Settings render) so the toggle's SMAppService status read
+    /// happens once, not on every StartupPane init.
+    let launchAtLogin = LaunchAtLoginService()
 
     init() {
         let appSupport = AppPaths.applicationSupportDirectory()

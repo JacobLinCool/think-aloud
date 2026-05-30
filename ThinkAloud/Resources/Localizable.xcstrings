@@ -3736,6 +3736,36 @@
           }
         }
       }
+    },
+    "Lets ThinkAloud paste the transcription into the focused app. Optional — without it, text is copied to your clipboard instead (press ⌘V). After you enable it in System Settings, this updates on its own." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讓 ThinkAloud 將轉錄結果貼到目前使用中的 App。此為選用;若未授予,文字會改為複製到剪貼簿(按 ⌘V)。在「系統設定」中啟用後,這裡會自動更新。"
+          }
+        }
+      }
+    },
+    "Export JSON" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "匯出 JSON"
+          }
+        }
+      }
+    },
+    "· %@" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "· %@"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

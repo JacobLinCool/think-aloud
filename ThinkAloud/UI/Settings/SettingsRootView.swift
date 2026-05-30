@@ -5,7 +5,6 @@ import SwiftUI
 /// window title via `navigationTitle`; the window's static title is only a window-menu / a11y
 /// fallback (see `SettingsWindowController`).
 struct SettingsRootView: View {
-    @Environment(AppContainer.self) private var container
     let router: SettingsRouter
 
     var body: some View {

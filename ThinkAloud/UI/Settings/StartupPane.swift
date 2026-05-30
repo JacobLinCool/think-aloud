@@ -4,13 +4,13 @@ import SwiftUI
 /// Settings → Startup: app-level "set once" preferences (interface language; Open at login arrives
 /// in a later phase). Lifted verbatim from the old General pane — same @AppStorage key and bindings.
 struct StartupPane: View {
+    @Environment(AppContainer.self) private var container
+
     /// Persists the user's explicit language choice. Kept separate from `AppleLanguages` (which
     /// always carries a resolved list, so it can't tell "user picked system" from "no choice yet").
     @AppStorage(AppLanguage.storageKey) private var languageSelection = AppLanguage.system.rawValue
     /// True once the picker is touched this session, so we surface the relaunch hint.
     @State private var languageChanged = false
-
-    @State private var launchAtLogin = LaunchAtLoginService()
 
     private var languageBinding: Binding<AppLanguage> {
         Binding(
@@ -28,17 +28,17 @@ struct StartupPane: View {
         Form {
             Section {
                 Toggle(isOn: Binding(
-                    get: { launchAtLogin.isEnabled },
-                    set: { launchAtLogin.setEnabled($0) }
+                    get: { container.launchAtLogin.isEnabled },
+                    set: { container.launchAtLogin.setEnabled($0) }
                 )) {
                     Text("Open at login")
                 }
-                if launchAtLogin.requiresApproval {
+                if container.launchAtLogin.requiresApproval {
                     Text("Approve ThinkAloud in System Settings → General → Login Items to enable this.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                if let err = launchAtLogin.lastError {
+                if let err = container.launchAtLogin.lastError {
                     Text(err)
                         .font(.caption)
                         .foregroundStyle(.red)
@@ -78,7 +78,7 @@ struct StartupPane: View {
             }
         }
         .formStyle(.grouped)
-        .onAppear { launchAtLogin.refresh() }
+        .onAppear { container.launchAtLogin.refresh() }
     }
 }
 

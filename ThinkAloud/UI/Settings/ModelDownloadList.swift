@@ -19,6 +19,12 @@ struct ModelDownloadList: View {
     @State private var lowDiskPrompt: ModelProfile?
     @State private var availableBytes: Int64 = 0
 
+    /// Per-profile disk state, cached so the status pollers (which re-render this view ~4×/s during
+    /// a download/load) never trigger a synchronous full-tree `directorySize` walk on the main
+    /// thread. Recomputed only on appear and whenever `refreshToken` bumps (download/remove done).
+    @State private var sizes: [ModelProfile: Int64] = [:]
+    @State private var downloadedProfiles: Set<ModelProfile> = []
+
     /// Trigger the low-disk confirmation when free space on the models volume drops below this.
     private let lowDiskThresholdBytes: Int64 = 5 * 1_000_000_000
 
@@ -43,7 +49,8 @@ struct ModelDownloadList: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .id(refreshToken)  // Bumps after a download/remove so cacheSize and isDownloaded re-read from disk.
+        .onAppear { refreshDiskInfo() }
+        .onChange(of: refreshToken) { refreshDiskInfo() }
         .alert(
             String(localized: "Disk space low"),
             isPresented: Binding(
@@ -64,8 +71,8 @@ struct ModelDownloadList: View {
     @ViewBuilder
     private func modelRow(_ profile: ModelProfile) -> some View {
         let isCurrent = container.modelManager.profile == profile
-        let downloaded = container.modelManager.isDownloaded(profile)
-        let size = container.modelManager.cacheSize(for: profile)
+        let downloaded = downloadedProfiles.contains(profile)
+        let size = sizes[profile] ?? 0
         let isDownloading = inflightDownloads.contains(profile)
         let isRemoving = inflightRemovals.contains(profile)
 
@@ -214,5 +221,18 @@ struct ModelDownloadList: View {
         f.allowedUnits = [.useMB, .useGB]
         f.countStyle = .file
         return f.string(fromByteCount: bytes)
+    }
+
+    /// Stat the disk for every profile ONCE (on appear / after a download or remove), caching the
+    /// result so per-render reads in `modelRow` never touch the filesystem.
+    private func refreshDiskInfo() {
+        var newSizes: [ModelProfile: Int64] = [:]
+        var newDownloaded: Set<ModelProfile> = []
+        for profile in ModelProfile.allCases where container.modelManager.isDownloaded(profile) {
+            newDownloaded.insert(profile)
+            newSizes[profile] = container.modelManager.cacheSize(for: profile)
+        }
+        sizes = newSizes
+        downloadedProfiles = newDownloaded
     }
 }

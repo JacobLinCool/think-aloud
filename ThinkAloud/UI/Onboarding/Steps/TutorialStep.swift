@@ -2,8 +2,6 @@ import KeyboardShortcuts
 import SwiftUI
 
 struct TutorialStep: View {
-    @Environment(AppContainer.self) private var container
-
     /// Live binding to the user's actual shortcut (defaults to ⌥Space), so the tutorial
     /// stays correct even if they've rebound it in Settings.
     private var shortcut: String {
