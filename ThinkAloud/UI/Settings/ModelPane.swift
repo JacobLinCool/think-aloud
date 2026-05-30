@@ -19,7 +19,6 @@ struct ModelPane: View {
             smokeTestSection
         }
         .formStyle(.grouped)
-        .padding(.horizontal)
     }
 
     // MARK: - Model

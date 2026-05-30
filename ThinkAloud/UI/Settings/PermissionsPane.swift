@@ -38,7 +38,6 @@ struct PermissionsPane: View {
             }
         }
         .formStyle(.grouped)
-        .padding(.horizontal)
         .onAppear { container.permissions.refresh() }
     }
 

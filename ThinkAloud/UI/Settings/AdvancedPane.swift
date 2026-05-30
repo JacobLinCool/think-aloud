@@ -51,7 +51,6 @@ struct AdvancedPane: View {
             }
         }
         .formStyle(.grouped)
-        .padding(.horizontal)
         .alert(
             String(localized: "Disk space low"),
             isPresented: Binding(

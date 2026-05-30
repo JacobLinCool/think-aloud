@@ -61,13 +61,13 @@ final class AppContainer {
         self.settingsWindow = SettingsWindowController(container: self)
         self.datasetBrowserWindow = DatasetBrowserWindowController(container: self)
         self.onboardingWindow = OnboardingWindowController(container: self)
-        self.coordinator.settingsOpener = { [weak self] in
-            self?.openSettings()
+        self.coordinator.settingsOpener = { [weak self] category in
+            self?.openSettings(to: category)
         }
     }
 
-    func openSettings() {
-        settingsWindow.show()
+    func openSettings(to category: SettingsCategory? = nil) {
+        settingsWindow.show(category: category)
     }
 
     func openDatasetBrowser() {

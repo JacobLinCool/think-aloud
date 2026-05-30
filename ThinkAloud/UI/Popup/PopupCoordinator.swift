@@ -97,10 +97,10 @@ final class PopupCoordinator {
         }
     }
 
-    var settingsOpener: (() -> Void)?
+    var settingsOpener: ((SettingsCategory?) -> Void)?
 
-    func openSettings() {
-        settingsOpener?()
+    func openSettings(_ category: SettingsCategory? = nil) {
+        settingsOpener?(category)
     }
 
     private var canInsertNow: Bool {

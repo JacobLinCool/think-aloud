@@ -94,7 +94,6 @@ struct GeneralPane: View {
             }
         }
         .formStyle(.grouped)
-        .padding(.horizontal)
     }
 }
 

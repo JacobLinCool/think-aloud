@@ -19,7 +19,6 @@ struct DatasetPane: View {
             actionsSection
         }
         .formStyle(.grouped)
-        .padding(.horizontal)
         .task { await refresh() }
     }
 
