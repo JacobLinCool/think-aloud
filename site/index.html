@@ -107,8 +107,16 @@
         <p>Press <kbd>⌥Space</kbd> to record. Press it again to stop and transcribe — words stream into a preview you can fix. Press once more to insert.</p>
       </div>
       <figure class="feature__shot" data-reveal="right">
-        <img src="assets/onboard-4.png" alt="ThinkAloud's three-step guide: press to record, again to transcribe, again to insert." loading="lazy" width="1504" height="1488" />
+        <img src="assets/shot-flow.png" alt="ThinkAloud's setup guide: press the shortcut to record, again to transcribe, once more to insert — and rebind the key if it clashes." loading="lazy" width="1504" height="1488" />
       </figure>
+    </section>
+
+    <!-- ===================== STATEMENT BAND: OUTPUT ===================== -->
+    <section class="band" aria-label="Clean output">
+      <p data-reveal="up">
+        Cleaned up. Your way.
+        <span>Background noise is cleared before it listens, and the text comes out the way you write — right down to your own words.</span>
+      </p>
     </section>
 
     <!-- ===================== MOMENT: THE STUDIO ===================== -->
@@ -119,16 +127,20 @@
         <p>Keep your dictations as a labeled dataset. Edit transcripts, pit models against each other on your own audio, and push the whole set to Hugging Face when you’re ready.</p>
       </div>
       <figure class="feature__shot" data-reveal="left">
-        <img src="assets/dataset-benchmark.png" alt="ThinkAloud's benchmark view comparing a model against a saved dataset, with per-record diffs and CER." loading="lazy" width="1984" height="1488" />
+        <img src="assets/shot-benchmark.png" alt="ThinkAloud's benchmark view: a model scored against your saved dataset, with per-record diffs, CER/WER, and the active denoise and formatting settings." loading="lazy" width="1984" height="1488" />
       </figure>
     </section>
 
-    <!-- ===================== MODELS LINE ===================== -->
-    <section class="note">
-      <p data-reveal="up">
-        Runs SOTA models through
-        <a href="https://github.com/ml-explore/mlx-swift" target="_blank" rel="noopener">Apple MLX</a> — pick a model that fits your Mac, from fast and light to most accurate.
-      </p>
+    <!-- ===================== MOMENT: THE MODELS ===================== -->
+    <section class="feature">
+      <div class="feature__text" data-reveal="left">
+        <p class="kicker">The engine</p>
+        <h2>Pick a model that fits your Mac</h2>
+        <p>From fast and light to most accurate, every model runs on-device through <a href="https://github.com/ml-explore/mlx-swift" target="_blank" rel="noopener">Apple MLX</a>. Switch anytime.</p>
+      </div>
+      <figure class="feature__shot" data-reveal="right">
+        <img src="assets/shot-models.png" alt="ThinkAloud's model picker — Accurate, Balanced, and Fast Qwen3-ASR variants, Whisper Large v3 Turbo, and a Taiwanese-Mandarin model — each shown downloaded or with its size." loading="lazy" width="1504" height="1488" />
+      </figure>
     </section>
 
     <!-- ===================== DOWNLOAD ===================== -->
