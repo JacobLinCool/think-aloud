@@ -67,19 +67,19 @@ actor MLXAudioQwenRuntime: ASRRuntime {
         if alreadyDownloaded {
             currentStatus = .loading
         } else {
-            currentStatus = .downloading(progress: nil, downloadedBytes: directorySize(snapshotDir), totalBytes: expectedTotalBytes)
+            currentStatus = .downloading(progress: nil, downloadedBytes: ASRRuntimeFactory.downloadedBytes(for: modelID, snapshotDir: snapshotDir, cache: cache), totalBytes: expectedTotalBytes)
 
             if expectedTotalBytes == nil {
                 let modelID = modelID
                 let total = await HuggingFaceMetadata.totalRepoSize(modelID: modelID)
                 expectedTotalBytes = total
-                updateDownloadStatus(currentBytes: directorySize(snapshotDir))
+                updateDownloadStatus(currentBytes: ASRRuntimeFactory.downloadedBytes(for: modelID, snapshotDir: snapshotDir, cache: cache))
             }
 
             let runtimeRef = self
-            pollingTask = Task { [snapshotDir] in
+            pollingTask = Task { [snapshotDir, modelID, cache] in
                 while !Task.isCancelled {
-                    let bytes = directorySizeNonisolated(snapshotDir)
+                    let bytes = ASRRuntimeFactory.downloadedBytes(for: modelID, snapshotDir: snapshotDir, cache: cache)
                     await runtimeRef.updateDownloadStatus(currentBytes: bytes)
                     try? await Task.sleep(nanoseconds: 500_000_000)
                 }
@@ -123,28 +123,6 @@ actor MLXAudioQwenRuntime: ASRRuntime {
         default:
             break
         }
-    }
-
-    private func directorySize(_ url: URL) -> Int64 {
-        Self.directorySizeNonisolated(url)
-    }
-
-    nonisolated fileprivate func directorySizeNonisolated(_ url: URL) -> Int64 {
-        Self.directorySizeNonisolated(url)
-    }
-
-    nonisolated static func directorySizeNonisolated(_ url: URL) -> Int64 {
-        let fm = FileManager.default
-        guard fm.fileExists(atPath: url.path),
-              let enumerator = fm.enumerator(at: url, includingPropertiesForKeys: [.totalFileAllocatedSizeKey, .fileSizeKey]) else {
-            return 0
-        }
-        var total: Int64 = 0
-        for case let entry as URL in enumerator {
-            let values = try? entry.resourceValues(forKeys: [.totalFileAllocatedSizeKey, .fileSizeKey])
-            total += Int64(values?.totalFileAllocatedSize ?? values?.fileSize ?? 0)
-        }
-        return total
     }
 
     /// Mirrors `MLXAudioCore.ModelUtils.resolveOrDownloadModel`'s convention:

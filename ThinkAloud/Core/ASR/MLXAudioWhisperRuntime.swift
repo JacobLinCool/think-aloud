@@ -61,19 +61,19 @@ actor MLXAudioWhisperRuntime: ASRRuntime {
         if alreadyDownloaded {
             currentStatus = .loading
         } else {
-            currentStatus = .downloading(progress: nil, downloadedBytes: ASRRuntimeFactory.directorySize(snapshotDir), totalBytes: expectedTotalBytes)
+            currentStatus = .downloading(progress: nil, downloadedBytes: ASRRuntimeFactory.downloadedBytes(for: modelID, snapshotDir: snapshotDir, cache: cache), totalBytes: expectedTotalBytes)
 
             if expectedTotalBytes == nil {
                 let modelID = modelID
                 let total = await HuggingFaceMetadata.totalRepoSize(modelID: modelID)
                 expectedTotalBytes = total
-                updateDownloadStatus(currentBytes: ASRRuntimeFactory.directorySize(snapshotDir))
+                updateDownloadStatus(currentBytes: ASRRuntimeFactory.downloadedBytes(for: modelID, snapshotDir: snapshotDir, cache: cache))
             }
 
             let runtimeRef = self
-            pollingTask = Task { [snapshotDir] in
+            pollingTask = Task { [snapshotDir, modelID, cache] in
                 while !Task.isCancelled {
-                    let bytes = ASRRuntimeFactory.directorySize(snapshotDir)
+                    let bytes = ASRRuntimeFactory.downloadedBytes(for: modelID, snapshotDir: snapshotDir, cache: cache)
                     await runtimeRef.updateDownloadStatus(currentBytes: bytes)
                     try? await Task.sleep(nanoseconds: 500_000_000)
                 }
