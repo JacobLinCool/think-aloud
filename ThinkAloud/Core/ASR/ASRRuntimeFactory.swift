@@ -23,6 +23,27 @@ enum ASRRuntimeFactory {
             .appendingPathComponent(subdir)
     }
 
+    /// The Hugging Face Hub blob store where the downloader streams in-progress files,
+    /// e.g. `<cache>/models--openai--whisper-large/blobs/`. Each file (including the
+    /// multi-GB weights) lands here as a `<etag>.incomplete` blob and is only *copied*
+    /// into `snapshotDirectory` once finished — so this is where bytes actually grow
+    /// during a download.
+    static func blobsDirectory(for modelID: String, cache: HubCache) -> URL {
+        let repoDir = "models--" + modelID.replacingOccurrences(of: "/", with: "--")
+        return cache.cacheDirectory
+            .appendingPathComponent(repoDir)
+            .appendingPathComponent("blobs")
+    }
+
+    /// Bytes downloaded so far for an in-progress model fetch. We poll *both* the blob
+    /// store (where the big weight file streams in smoothly) and the snapshot dir (where
+    /// finished files are copied out) and take the larger. Polling the snapshot alone made
+    /// progress jump file-by-file and stall for the entire duration of the big weight
+    /// download; the blob store grows byte-by-byte so the percentage tracks real size.
+    static func downloadedBytes(for modelID: String, snapshotDir: URL, cache: HubCache) -> Int64 {
+        max(directorySize(snapshotDir), directorySize(blobsDirectory(for: modelID, cache: cache)))
+    }
+
     /// Heuristic shared with both runtimes: a snapshot directory is "downloaded" once any
     /// `*.safetensors` weight file is present. mlx-audio downloads weights last so partial
     /// downloads don't trip this check.
