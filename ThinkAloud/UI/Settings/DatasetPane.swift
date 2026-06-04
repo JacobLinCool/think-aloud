@@ -6,6 +6,7 @@ struct DatasetPane: View {
 
     @State private var recordCount: Int = 0
     @State private var totalAudioBytes: Int64 = 0
+    @State private var stats: DatasetStatistics?
     @State private var statusMessage: String?
     @State private var lastExportURL: URL?
     @State private var showClearConfirm = false
@@ -26,6 +27,7 @@ struct DatasetPane: View {
             if recordCount == 0 {
                 emptyStateSection
             } else {
+                insightsSection
                 storageSection
             }
             actionsSection
@@ -65,6 +67,29 @@ struct DatasetPane: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
+        }
+    }
+
+    private var insightsSection: some View {
+        Section {
+            if let stats, !stats.isEmpty {
+                InfoRow("Dictated", value: String(localized: "\(StatFmt.count(stats.text.totalEditedChars)) characters"))
+                if stats.editing.eligibleCount > 0 {
+                    InfoRow("Came out clean", value: StatFmt.percent(stats.editing.cleanRate))
+                }
+                InfoRow("Time saved", value: "~\(StatFmt.duration(seconds: stats.productivity.timeSavedSeconds))")
+            }
+            Button {
+                container.openDatasetBrowser()
+            } label: {
+                Label(String(localized: "View insights"), systemImage: "chart.bar.xaxis")
+            }
+        } header: {
+            Text("Insights")
+        } footer: {
+            Text("Your time saved, accuracy, and dataset shape — open the dataset window for the full breakdown.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -221,6 +246,11 @@ struct DatasetPane: View {
             let bytes = await container.datasetStore.totalAudioBytes(rootDirectory: audioRoot)
             self.recordCount = count
             self.totalAudioBytes = bytes
+            if count > 0 {
+                self.stats = try? await container.datasetStore.computeStatistics()
+            } else {
+                self.stats = nil
+            }
         } catch {
             self.statusMessage = String(localized: "Refresh failed: \(error.localizedDescription)")
         }

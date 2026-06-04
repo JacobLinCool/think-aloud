@@ -61,6 +61,14 @@ actor DatasetStore {
             }
             try db.create(index: "records_created_at", on: "records", columns: ["created_at"])
         }
+        // v0.4.0: capture the post-Auto-Post-Edit / pre-manual-edit transcript so statistics can
+        // tell automatic formatting apart from real human corrections. Nullable + no backfill —
+        // older rows keep NULL and the stats engine falls back to `raw_transcript` for them.
+        m.registerMigration("addAutoEditedTranscript") { db in
+            try db.alter(table: "records") { t in
+                t.add(column: "auto_edited_transcript", .text)
+            }
+        }
         return m
     }
 
@@ -97,6 +105,24 @@ actor DatasetStore {
                 .limit(limit, offset: offset)
                 .fetchAll(db)
         }
+    }
+
+    /// Aggregate statistics over saved records. Reads once inside the actor, then runs the O(n·m)
+    /// edit-distance compute on a detached task so it never serializes behind a live save while the
+    /// user is dictating. Defense-in-depth: only `saved_to_dataset` rows feed the stats/publish path,
+    /// so a future "review later" state can't silently widen what gets aggregated (and republished).
+    func computeStatistics() async throws -> DatasetStatistics {
+        guard let pool else { throw StoreError.notSetup }
+        // In this async context GRDB resolves `read` to its async overload (runs on a reader queue,
+        // off the actor). The Levenshtein compute then runs on a detached task so it never resumes
+        // on — and serializes behind — the actor's executor mid-dictation.
+        let records = try await pool.read { db in
+            try DatasetRecord
+                .filter(Column("saved_to_dataset") == true)
+                .order(Column("created_at").desc)
+                .fetchAll(db)
+        }
+        return await Task.detached { DatasetStatistics.compute(from: records) }.value
     }
 
     func fetch(id: String) throws -> DatasetRecord? {

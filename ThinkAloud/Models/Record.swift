@@ -29,6 +29,14 @@ struct DatasetRecord: Codable, FetchableRecord, PersistableRecord, Sendable, Equ
     var language: String?
     var metadataJSON: String?
 
+    /// The transcript after the Auto Post-Edit pipeline ran (Chinese conversion, spacing, custom
+    /// dictionary) but BEFORE any manual human correction. Lets us separate automatic formatting
+    /// from real human edits: `raw → autoEdited` is the auto-format delta, `autoEdited → edited`
+    /// is what the person actually fixed. `nil` for records saved before v0.4.0 (no migration
+    /// backfill is possible — the intermediate text was never captured); stats fall back to `raw`.
+    /// Appended last + defaulted so the synthesized memberwise init keeps existing call sites valid.
+    var autoEditedTranscript: String? = nil
+
     enum CodingKeys: String, CodingKey {
         case id
         case createdAt = "created_at"
@@ -48,6 +56,7 @@ struct DatasetRecord: Codable, FetchableRecord, PersistableRecord, Sendable, Equ
         case savedToDataset = "saved_to_dataset"
         case language
         case metadataJSON = "metadata_json"
+        case autoEditedTranscript = "auto_edited_transcript"
     }
 }
 

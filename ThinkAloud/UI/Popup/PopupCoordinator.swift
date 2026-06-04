@@ -19,6 +19,10 @@ final class PopupCoordinator {
     private var recordingStartedAt: Date?
     private var lastResult: ASRResult?
     private var lastRecording: RecordingResult?
+    /// The Auto-Post-Edit output captured at the end of the ASR stream, before the user has had a
+    /// chance to manually edit. Persisted as `autoEditedTranscript` so stats can separate automatic
+    /// formatting from human corrections. Snapshotted in `performInsert` alongside the other state.
+    private var lastAutoEditedTranscript: String?
 
     init(
         permissions: PermissionsService,
@@ -78,6 +82,7 @@ final class PopupCoordinator {
             self.recordingStartedAt = nil
             self.lastRecording = nil
             self.lastResult = nil
+            self.lastAutoEditedTranscript = nil
             self.viewModel.reset()
             self.windowController.close()
         }
@@ -258,6 +263,10 @@ final class PopupCoordinator {
             }
             viewModel.isStreaming = false
             lastResult = finalResult
+            // The editor now shows the pure Auto-Post-Edit output; the user hasn't touched it yet.
+            // Capture it before manual edits so we can later attribute the raw→edited delta to
+            // automatic formatting vs human correction.
+            lastAutoEditedTranscript = viewModel.editedTranscript
             modelManager.recordActivity()
             if !receivedAny && finalResult == nil {
                 viewModel.phase = .error(String(localized: "No transcription produced."))
@@ -274,6 +283,7 @@ final class PopupCoordinator {
         // closing the popup will reset state.
         let editedText = viewModel.editedTranscript
         let rawText = viewModel.rawTranscript
+        let autoEditedText = lastAutoEditedTranscript
         let focus = viewModel.focusContext
         let recording = lastRecording
         let result = lastResult
@@ -315,7 +325,8 @@ final class PopupCoordinator {
                     inserted: outcome.inserted,
                     savedToDataset: true,
                     language: result.language,
-                    metadataJSON: nil
+                    metadataJSON: nil,
+                    autoEditedTranscript: autoEditedText
                 )
                 try await datasetStore.save(record)
             } catch {
@@ -325,5 +336,6 @@ final class PopupCoordinator {
 
         lastRecording = nil
         lastResult = nil
+        lastAutoEditedTranscript = nil
     }
 }

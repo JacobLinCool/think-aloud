@@ -28,6 +28,7 @@ final class MenuBarController: NSObject {
         // Settings window (Dataset → tray.full, Updates → arrow.down.circle, Settings → gearshape).
         menu.addItem(makeItem(title: String(localized: "Start recording"), action: #selector(invokePopup), keyEquivalent: "", systemImage: "mic.fill"))
         menu.addItem(.separator())
+        menu.addItem(makeItem(title: String(localized: "Insights…"), action: #selector(openInsights), keyEquivalent: "i", systemImage: "chart.bar.xaxis"))
         menu.addItem(makeItem(title: String(localized: "Browse Dataset…"), action: #selector(openDatasetBrowser), keyEquivalent: "d", systemImage: "tray.full"))
         menu.addItem(makeItem(title: String(localized: "Settings…"), action: #selector(openSettings), keyEquivalent: ",", systemImage: "gearshape"))
         menu.addItem(makeItem(title: String(localized: "Check for Updates…"), action: #selector(checkForUpdates), keyEquivalent: "", systemImage: "arrow.down.circle"))
@@ -56,6 +57,12 @@ final class MenuBarController: NSObject {
     }
 
     @objc private func openDatasetBrowser() {
+        container.openDatasetBrowser()
+    }
+
+    /// Opens the dataset window, which lands on the Records tab and shows the overview/insights when
+    /// no record is selected (a fresh open, or after the reload that clears selection).
+    @objc private func openInsights() {
         container.openDatasetBrowser()
     }
 

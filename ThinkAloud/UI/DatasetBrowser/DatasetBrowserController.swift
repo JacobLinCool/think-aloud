@@ -12,6 +12,11 @@ final class DatasetBrowserController {
     private(set) var hasMore: Bool = true
     private(set) var isLoading: Bool = false
     private(set) var errorMessage: String?
+
+    /// Aggregate statistics for the overview pane. Computed over ALL saved records (not just the
+    /// loaded page) on a background task, then cached here — never recomputed per render.
+    private(set) var statistics: DatasetStatistics?
+    private(set) var statisticsLoading: Bool = false
     /// One-shot indicator pulses for ~1.5s after a successful edit save. Lets the detail view
     /// show "已儲存 ✓" briefly without us threading a separate callback.
     private(set) var lastSaveTick: Date?
@@ -53,6 +58,20 @@ final class DatasetBrowserController {
         selectedIDs = []
         errorMessage = nil
         await loadMore()
+        await loadStatistics()
+    }
+
+    /// Recomputes the overview statistics over all saved records (background compute, cached).
+    /// Idempotent-ish: safe to call on appear and after mutations; skips if already in flight.
+    func loadStatistics() async {
+        if statisticsLoading { return }
+        statisticsLoading = true
+        defer { statisticsLoading = false }
+        do {
+            statistics = try await datasetStore.computeStatistics()
+        } catch {
+            errorMessage = String(localized: "Failed to compute statistics: \(error.localizedDescription)")
+        }
     }
 
     /// Loads the next page. Idempotent if already loading or no more data.
@@ -94,6 +113,7 @@ final class DatasetBrowserController {
                 return
             }
         }
+        await loadStatistics()
     }
 
     /// Overwrites just the edited transcript. raw is preserved.
@@ -121,7 +141,8 @@ final class DatasetBrowserController {
                     inserted: r.inserted,
                     savedToDataset: r.savedToDataset,
                     language: r.language,
-                    metadataJSON: r.metadataJSON
+                    metadataJSON: r.metadataJSON,
+                    autoEditedTranscript: r.autoEditedTranscript
                 )
             }
             lastSaveTick = Date()

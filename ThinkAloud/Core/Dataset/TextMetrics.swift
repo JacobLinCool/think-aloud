@@ -14,9 +14,17 @@ enum TextMetrics {
         case aggressive
     }
 
-    /// Character-level Levenshtein distance.
+    /// Character-level (grapheme) Levenshtein distance. Used by the benchmark CER/WER paths.
     static func editDistance(_ a: String, _ b: String) -> Int {
         editDistance(Array(a), Array(b))
+    }
+
+    /// Unicode-scalar Levenshtein distance. This is the canonical unit for ThinkAloud's dataset
+    /// statistics: `isCJK`, `wordTokens`, and the per-script char split all iterate `unicodeScalars`,
+    /// so measuring edit distance over scalars too keeps every stat on one axis (a grapheme-based
+    /// distance would disagree with the scalar char counts for combining marks / emoji / ZWJ).
+    static func editDistanceScalars(_ a: String, _ b: String) -> Int {
+        editDistance(Array(a.unicodeScalars), Array(b.unicodeScalars))
     }
 
     /// Generic Levenshtein distance over any equatable token sequence — used both for

@@ -1,4062 +1,4592 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "%lld records" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 筆"
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ characters": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 字元"
           }
         }
       }
     },
-    "%lld records selected" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已選 %lld 筆紀錄"
+    "%lld active days": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活躍 %lld 天"
           }
         }
       }
     },
-    "%lld selected" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已選 %lld 筆"
+    "%lld min": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 分鐘"
           }
         }
       }
     },
-    "(empty)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "（空）"
+    "%lld of %lld inserted with no edits": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld／%lld 筆未經編輯即插入"
           }
         }
       }
     },
-    "(your namespace)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "（留空使用個人帳號）"
+    "%lld recordings": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 筆錄音"
           }
         }
       }
     },
-    "0.1–0.3" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0.1–0.3"
+    "%lld records": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 筆"
           }
         }
       }
     },
-    "1 hour" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1 小時"
+    "%lld records selected": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已選 %lld 筆紀錄"
           }
         }
       }
     },
-    "10 minutes" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "10 分鐘"
+    "%lld sec": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 秒"
           }
         }
       }
     },
-    "100% local. Your audio never leaves your Mac." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "100% 本機運算，音訊絕不離開你的 Mac。"
+    "%lld selected": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已選 %lld 筆"
           }
         }
       }
     },
-    "30 minutes" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 分鐘"
+    "%lld sessions": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 次"
           }
         }
       }
     },
-    "5 minutes" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "5 分鐘"
+    "%lld timed · %lld without a length": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 筆有長度 · %lld 筆無長度"
           }
         }
       }
     },
-    "> 0.3" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "> 0.3"
+    "%lld to %@ sessions": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再 %lld 次達到 %@"
           }
         }
       }
     },
-    "A few things are still pending — you can finish them now or later in Settings." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "還有幾項尚未完成，你可以現在處理，或之後在「設定」中完成。"
+    "(empty)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "（空）"
           }
         }
       }
     },
-    "A small popup appears. Start talking." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "會出現一個小視窗，開始說話即可。"
+    "(your namespace)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "（留空使用個人帳號）"
           }
         }
       }
     },
-    "A solid middle ground between speed and accuracy." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在速度與準確度間取得良好平衡。"
+    "0 sec": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0 秒"
           }
         }
       }
     },
-    "ASR Model" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ASR 模型"
+    "0.1–0.3": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0.1–0.3"
           }
         }
       }
     },
-    "Accessibility" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輔助使用"
+    "1 hour": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 小時"
           }
         }
       }
     },
-    "Accessibility off — text will be copied to the clipboard" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未開啟輔助使用，文字將複製到剪貼簿"
+    "10 minutes": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 分鐘"
           }
         }
       }
     },
-    "Accessibility permission missing. Text copied to clipboard — please paste manually." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "缺少輔助使用權限。文字已複製到剪貼簿，請手動貼上。"
+    "100% local. Your audio never leaves your Mac.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100% 本機運算，音訊絕不離開你的 Mac。"
           }
         }
       }
     },
-    "Accurate" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "精準"
+    "30 minutes": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 分鐘"
           }
         }
       }
     },
-    "Accurate (Qwen3-ASR-1.7B-8bit)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "精準 (Qwen3-ASR-1.7B-8bit)"
+    "5 minutes": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 分鐘"
           }
         }
       }
     },
-    "Actions" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "動作"
+    "90th pct": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 90 百分位"
           }
         }
       }
     },
-    "Advanced" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "進階"
+    "> 0.3": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "> 0.3"
           }
         }
       }
     },
-    "After you enable it in System Settings, this updates on its own." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在「系統設定」中啟用後，這裡會自動更新。"
+    "A Hugging Face token lets you push the dataset from the browser window. It is stored in the macOS Keychain.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face Token 可讓你從瀏覽器視窗推送資料集。它儲存於 macOS Keychain。"
           }
         }
       }
     },
-    "All records deleted." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已刪除所有紀錄。"
+    "A few things are still pending — you can finish them now or later in Settings.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "還有幾項尚未完成，你可以現在處理，或之後在「設定」中完成。"
           }
         }
       }
     },
-    "Already downloaded" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已下載"
+    "A small popup appears. Start talking.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "會出現一個小視窗，開始說話即可。"
           }
         }
       }
     },
-    "Audio size" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "音訊大小"
+    "A solid middle ground between speed and accuracy.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在速度與準確度間取得良好平衡。"
           }
         }
       }
     },
-    "Auth failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "驗證失敗：%@"
+    "A token is saved. Paste a new one to replace it.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存 Token。貼上新的 Token 即可取代。"
           }
         }
       }
     },
-    "Auto-unload when idle" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "閒置時自動釋放"
+    "ASR Model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ASR 模型"
           }
         }
       }
     },
-    "Automatically check for updates" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動檢查更新"
+    "Accessibility": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輔助使用"
           }
         }
       }
     },
-    "Automatically download and install updates" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動下載並安裝更新"
+    "Accessibility off — text will be copied to the clipboard": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未開啟輔助使用，文字將複製到剪貼簿"
           }
         }
       }
     },
-    "Average latency: %lld ms" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "平均延遲：%lld 毫秒"
+    "Accessibility permission missing. Text copied to clipboard — please paste manually.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "缺少輔助使用權限。文字已複製到剪貼簿，請手動貼上。"
           }
         }
       }
     },
-    "App language" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "介面語言"
+    "Accurate": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "精準"
           }
         }
       }
     },
-    "Automatic (system)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動（跟隨系統）"
+    "Accurate (Qwen3-ASR-1.7B-8bit)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "精準 (Qwen3-ASR-1.7B-8bit)"
           }
         }
       }
     },
-    "Automatic follows your system language. Changes take effect after relaunch." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「自動」會跟隨系統語言。變更需重新啟動後才會完整生效。"
+    "Actions": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "動作"
           }
         }
       }
     },
-    "Avg CER" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "平均 CER"
+    "Activity": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活動"
           }
         }
       }
     },
-    "Avg RTF" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "平均 RTF"
+    "Add term": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新增詞條"
           }
         }
       }
     },
-    "Avg WER" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "平均 WER"
+    "Advanced": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "進階"
           }
         }
       }
     },
-    "Avg latency" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "平均延遲"
+    "After you enable it in System Settings, this updates on its own.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在「系統設定」中啟用後，這裡會自動更新。"
           }
         }
       }
     },
-    "Back" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上一步"
+    "All records deleted.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已刪除所有紀錄。"
           }
         }
       }
     },
-    "Balanced" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "均衡"
+    "Already downloaded": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已下載"
           }
         }
       }
     },
-    "Balanced (Qwen3-ASR-1.7B-4bit)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "均衡 (Qwen3-ASR-1.7B-4bit)"
+    "Analyzing & cleaning… (the first run downloads the denoiser)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分析與清理中…(首次執行會下載降噪器)"
           }
         }
       }
     },
-    "Benchmark" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Benchmark"
+    "App language": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "介面語言"
           }
         }
       }
     },
-    "Benchmark failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Benchmark 失敗：%@"
+    "Approve ThinkAloud in System Settings → General → Login Items to enable this.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請在「系統設定 → 一般 → 登入項目」中允許 ThinkAloud 以啟用此功能。"
           }
         }
       }
     },
-    "Best accuracy. Recommended for most modern Macs." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "準確度最佳，推薦給多數較新的 Mac。"
+    "Audio cleanup": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音訊清理"
           }
         }
       }
     },
-    "Both default to ⌥Space — popup phase decides which fires." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "兩者預設皆為 ⌥Space，依 popup 目前階段觸發。"
+    "Audio denoising": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音訊降噪"
           }
         }
       }
     },
-    "Breeze-ASR" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Breeze-ASR"
+    "Audio size": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音訊大小"
           }
         }
       }
     },
-    "Breeze-ASR-25 (Mandarin)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Breeze-ASR-25（中文）"
+    "Auth failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "驗證失敗：%@"
           }
         }
       }
     },
-    "Browse Dataset…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "瀏覽資料集…"
+    "Auto": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動"
           }
         }
       }
     },
-    "Browse records" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "瀏覽紀錄"
+    "Auto Post-Edit": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動後製編輯"
           }
         }
       }
     },
-    "CER < 0.1" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CER < 0.1"
+    "Auto Pre-Edit": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動前製編輯"
           }
         }
       }
     },
-    "Cache Size" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "快取大小"
+    "Auto cleans only clips it detects as noisy; On always cleans (DeepFilterNet).": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「自動」只清理偵測到有噪音的片段;「開啟」則一律清理(DeepFilterNet)。"
           }
         }
       }
     },
-    "Cache size" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "快取大小"
+    "Auto inspects each recording and denoises only noisy clips; On always denoises (DeepFilterNet). Downloads a small model on first use.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動會檢查每段錄音、只對吵雜的片段降噪；開啟則一律降噪（DeepFilterNet）。首次使用會下載一個小型模型。"
           }
         }
       }
     },
-    "Cancel" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取消"
+    "Auto would clean this clip": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto 會清理這段錄音"
           }
         }
       }
     },
-    "Cancelled." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已取消。"
+    "Auto would leave this clip as-is": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto 會維持這段錄音原樣"
           }
         }
       }
     },
-    "Character Error Rate — 0 means perfect, lower is better." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "字元錯誤率（CER）—— 0 為完美，越低越好。"
+    "Auto-unload when idle": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閒置時自動釋放"
           }
         }
       }
     },
-    "Word Error Rate — CJK ideographs count as words; 0 means perfect, lower is better." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "詞錯誤率（WER）—— 中日韓表意字各算一個詞；0 為完美，越低越好。"
+    "Automatic (system)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動（跟隨系統）"
           }
         }
       }
     },
-    "Real-Time Factor — processing time ÷ audio length. Below 1.0× is faster than real time." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "即時因子（RTF）—— 處理時間 ÷ 音訊長度；低於 1.0× 代表快於即時。"
+    "Automatic follows your system language. Changes take effect after relaunch.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「自動」會跟隨系統語言。變更需重新啟動後才會完整生效。"
           }
         }
       }
     },
-    "Check for Updates…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "檢查更新…"
+    "Automatically check for updates": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動檢查更新"
           }
         }
       }
     },
-    "Checking which files need LFS…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "檢查哪些檔案需要 LFS…"
+    "Automatically download and install updates": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動下載並安裝更新"
           }
         }
       }
     },
-    "Choose a speech model" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇語音模型"
+    "Average latency: %lld ms": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平均延遲：%lld 毫秒"
           }
         }
       }
     },
-    "Clear" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "清除"
+    "Avg CER": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平均 CER"
           }
         }
       }
     },
-    "Clear All" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "清除全部"
+    "Avg RTF": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平均 RTF"
           }
         }
       }
     },
-    "Clear all" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "清除全部"
+    "Avg WER": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平均 WER"
           }
         }
       }
     },
-    "Clear cache" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "清除快取"
+    "Avg latency": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平均延遲"
           }
         }
       }
     },
-    "Close" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "關閉"
+    "Back": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上一步"
           }
         }
       }
     },
-    "Committing…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Commit 中…"
+    "Balanced": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "均衡"
           }
         }
       }
     },
-    "Compares the model's post-processed output with the saved edited transcript. Reports CER, exact-match rate, and average latency." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "把模型經過後處理的輸出與儲存的編輯版做比較。回報 CER、完全相符率、平均延遲。"
+    "Balanced (Qwen3-ASR-1.7B-4bit)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "均衡 (Qwen3-ASR-1.7B-4bit)"
           }
         }
       }
     },
-    "Connection failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "連線失敗：%@"
+    "Based on %lld recordings with a measured length.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "根據 %lld 筆有長度記錄的錄音。"
           }
         }
       }
     },
-    "Continue" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "繼續"
+    "Benchmark": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benchmark"
           }
         }
       }
     },
-    "Copied to clipboard — paste manually" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已複製到剪貼簿，請手動貼上"
+    "Benchmark failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benchmark 失敗：%@"
           }
         }
       }
     },
-    "Copy ID" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "複製 ID"
+    "Best accuracy. Recommended for most modern Macs.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "準確度最佳，推薦給多數較新的 Mac。"
           }
         }
       }
     },
-    "Could not insert text" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法插入文字"
+    "Both default to ⌥Space — popup phase decides which fires.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "兩者預設皆為 ⌥Space，依 popup 目前階段觸發。"
           }
         }
       }
     },
-    "Created" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "建立於"
+    "Breeze-ASR": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breeze-ASR"
           }
         }
       }
     },
-    "Creating repository…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "建立 repository…"
+    "Breeze-ASR-25 (Mandarin)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breeze-ASR-25（中文）"
           }
         }
       }
     },
-    "Current" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "目前使用"
+    "Browse Dataset…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "瀏覽資料集…"
           }
         }
       }
     },
-    "Current Model" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "目前模型"
+    "Browse records": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "瀏覽紀錄"
           }
         }
       }
     },
-    "Current version" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "目前版本"
+    "CER < 0.1": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CER < 0.1"
           }
         }
       }
     },
-    "Current: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "目前：%@"
+    "CJK–Latin spacing": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中英自動空格"
           }
         }
       }
     },
-    "Database" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "資料庫"
+    "Cache Size": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快取大小"
           }
         }
       }
     },
-    "Dataset" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "資料集"
+    "Cache size": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快取大小"
           }
         }
       }
     },
-    "Dataset Browser" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "資料集瀏覽器"
+    "Came out clean": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "免修正"
           }
         }
       }
     },
-    "Dataset is empty — nothing to benchmark." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "資料集為空，無法 benchmark。"
+    "Cancel": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
           }
         }
       }
     },
-    "Delete" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除"
+    "Cancelled.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已取消。"
           }
         }
       }
     },
-    "Delete %lld records and their audio files? This cannot be undone." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除 %lld 筆紀錄與對應音訊檔？無法復原。"
+    "Change it if it clashes with another app.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "若與其他 app 衝突,可在此更改。"
           }
         }
       }
     },
-    "Delete all dataset records and their audio files? This cannot be undone." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除所有資料集紀錄與音訊檔？無法復原。"
+    "Channel": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新頻道"
           }
         }
       }
     },
-    "Delete all downloaded model files? The model will re-download on next use." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除已下載的模型檔？下次使用時會重新下載。"
+    "Character Error Rate — 0 means perfect, lower is better.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字元錯誤率（CER）—— 0 為完美，越低越好。"
           }
         }
       }
     },
-    "Delete failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除失敗：%@"
+    "Check for Updates…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "檢查更新…"
           }
         }
       }
     },
-    "Delete record" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除紀錄"
+    "Checking which files need LFS…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "檢查哪些檔案需要 LFS…"
           }
         }
       }
     },
-    "Delete selected (⌘⌫)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除所選（⌘⌫）"
+    "Chinese": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中文"
           }
         }
       }
     },
-    "Delete this model from disk? It will need to re-download next time you select it." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "從磁碟刪除此模型？下次選擇時需重新下載。"
+    "Chinese conversion": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中文轉換"
           }
         }
       }
     },
-    "Delete this record? The audio file is removed too. This cannot be undone." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除此筆紀錄？對應的音訊檔也會一起移除，無法復原。"
+    "Chinese output": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中文輸出"
           }
         }
       }
     },
-    "Diff" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "差異"
+    "Choose a speech model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選擇語音模型"
           }
         }
       }
     },
-    "Disk space low" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "可用空間不足"
+    "Clean up recordings": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清理錄音"
           }
         }
       }
     },
-    "Done." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完成。"
+    "Cleaned": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清理後"
           }
         }
       }
     },
-    "Download" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "下載"
+    "Clear": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除"
           }
         }
       }
     },
-    "Download & load model" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "下載並載入模型"
+    "Clear All": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除全部"
           }
         }
       }
     },
-    "Download additional variants ahead of time, or remove ones you no longer use to reclaim disk space." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "預先下載其他變體，或移除不再使用的以釋放磁碟空間。"
+    "Clear all": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除全部"
           }
         }
       }
     },
-    "Download anyway" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "仍然下載"
+    "Clear cache": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除快取"
           }
         }
       }
     },
-    "Download failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "下載失敗：%@"
+    "Close": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "關閉"
           }
         }
       }
     },
-    "Download later" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "稍後下載"
+    "Committing…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Commit 中…"
           }
         }
       }
     },
-    "Downloaded" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已下載"
+    "Compares the model's post-processed output with the saved edited transcript. Reports CER, exact-match rate, and average latency.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把模型經過後處理的輸出與儲存的編輯版做比較。回報 CER、完全相符率、平均延遲。"
           }
         }
       }
     },
-    "Downloaded · %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已下載 · %@"
+    "Connection failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "連線失敗：%@"
           }
         }
       }
     },
-    "Downloading %lld%% (%@ / %@)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "下載中 %lld%% (%@ / %@)"
+    "Continue": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "繼續"
           }
         }
       }
     },
-    "Downloading…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "下載中…"
+    "Copied to clipboard — paste manually": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已複製到剪貼簿，請手動貼上"
           }
         }
       }
     },
-    "Downloading… (%@)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "下載中… (%@)"
+    "Copy ID": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "複製 ID"
           }
         }
       }
     },
-    "Downloads three short clips from JacobLinCool/audio-testing and runs them through the current model. ~5 MB." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "從 JacobLinCool/audio-testing 下載三段短音訊以目前模型試跑。約 5 MB。"
+    "Could not insert text": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法插入文字"
           }
         }
       }
     },
-    "Edit" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "編輯"
+    "Created": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "建立於"
           }
         }
       }
     },
-    "Edit (⌘E)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "編輯（⌘E）"
+    "Creating repository…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "建立 repository…"
           }
         }
       }
     },
-    "Edited" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "編輯版"
+    "Crunching your numbers…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在計算你的數據…"
           }
         }
       }
     },
-    "Error" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "錯誤"
+    "Current": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前使用"
           }
         }
       }
     },
-    "Error: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "錯誤：%@"
+    "Current Model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前模型"
           }
         }
       }
     },
-    "Exact" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完全相符"
+    "Current version": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前版本"
           }
         }
       }
     },
-    "Exact match" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完全相符"
+    "Current: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前：%@"
           }
         }
       }
     },
-    "Export JSONL" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "匯出 JSONL"
+    "Custom Dictionary": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自定義字典"
           }
         }
       }
     },
-    "Export failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "匯出失敗：%@"
+    "Database": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "資料庫"
           }
         }
       }
     },
-    "Exported" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已匯出"
+    "Dataset": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "資料集"
           }
         }
       }
     },
-    "Exported %lld records." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已匯出 %lld 筆紀錄。"
+    "Dataset Browser": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "資料集瀏覽器"
           }
         }
       }
     },
-    "Extra (model hallucinated)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "多餘字（模型多說了）"
+    "Dataset is empty — nothing to benchmark.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "資料集為空，無法 benchmark。"
           }
         }
       }
     },
-    "Failed" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "失敗"
+    "Delete": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除"
           }
         }
       }
     },
-    "Failed to load records: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "載入紀錄失敗：%@"
+    "Delete %lld records and their audio files? This cannot be undone.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除 %lld 筆紀錄與對應音訊檔？無法復原。"
           }
         }
       }
     },
-    "Failed to send paste event. Text copied — please paste manually." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "傳送貼上事件失敗。文字已複製，請手動貼上。"
+    "Delete all %lld records and %@ of audio? This cannot be undone.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除全部 %lld 筆記錄與 %@ 的音訊?此動作無法復原。"
           }
         }
       }
     },
-    "Failed to write to clipboard." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "寫入剪貼簿失敗。"
+    "Delete all dataset records and their audio files? This cannot be undone.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除所有資料集紀錄與音訊檔？無法復原。"
           }
         }
       }
     },
-    "Fast" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "快速"
+    "Delete all downloaded model files? The model will re-download on next use.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除已下載的模型檔？下次使用時會重新下載。"
           }
         }
       }
     },
-    "Fast (Qwen3-ASR-0.6B-4bit)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "快速 (Qwen3-ASR-0.6B-4bit)"
+    "Delete failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除失敗：%@"
           }
         }
       }
     },
-    "Fires from anywhere to open the popup and start recording." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在任何 app 都能觸發，開啟 popup 並開始錄音。"
+    "Delete record": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除紀錄"
           }
         }
       }
     },
-    "Fix" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "前往處理"
+    "Delete selected (⌘⌫)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除所選（⌘⌫）"
           }
         }
       }
     },
-    "Free model weights from memory? It will reload on next use." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "從記憶體釋放模型權重？下次使用時會重新載入。"
+    "Delete this model from disk? It will need to re-download next time you select it.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "從磁碟刪除此模型？下次選擇時需重新下載。"
           }
         }
       }
     },
-    "General" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "一般"
+    "Delete this record? The audio file is removed too. This cannot be undone.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除此筆紀錄？對應的音訊檔也會一起移除，無法復原。"
           }
         }
       }
     },
-    "Get Started" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開始設定"
+    "Denoise": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "降噪"
           }
         }
       }
     },
-    "Global" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全域"
+    "Denoiser": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "降噪器"
           }
         }
       }
     },
-    "Grant permissions" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "授予權限"
+    "Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Auto only denoises clips it detects as noisy (and loads the model lazily on the first such clip); On always denoises. Use Benchmark to compare Off / Auto / On.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "降噪會在音訊降採樣給 ASR 模型之前以 48 kHz 執行。自動只對偵測為吵雜的片段降噪（並在第一個這種片段時才延遲載入模型）；開啟則一律降噪。可用 Benchmark 比較 關閉／自動／開啟。"
           }
         }
       }
     },
-    "Granted" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已授權"
+    "Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Best for noisy environments; may not help (or slightly hurt) clean recordings — use Benchmark to compare.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "降噪會在音訊被降採樣給 ASR 模型之前以 48 kHz 執行。最適合吵雜環境；對乾淨錄音可能無感（甚至略有損害）——可用 Benchmark 比較。"
           }
         }
       }
     },
-    "Hotkey" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "快捷鍵"
+    "Dev (latest main)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開發版（最新 main）"
           }
         }
       }
     },
-    "How to use ThinkAloud" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "如何使用 ThinkAloud"
+    "Diagnostics": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "診斷"
           }
         }
       }
     },
-    "Hugging Face" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugging Face"
+    "Dictated": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已口述"
           }
         }
       }
     },
-    "ID" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ID"
+    "Dictionary (%lld)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字典（%lld）"
           }
         }
       }
     },
-    "Identifier" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "識別碼"
+    "Diff": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "差異"
           }
         }
       }
     },
-    "Idle" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "閒置"
+    "Disk space low": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可用空間不足"
           }
         }
       }
     },
-    "Include audio files" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "包含音訊檔"
+    "Done.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成。"
           }
         }
       }
     },
-    "Insert" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "插入"
+    "Download": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載"
           }
         }
       }
     },
-    "Insert & Save" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "插入並儲存"
+    "Download & load model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載並載入模型"
           }
         }
       }
     },
-    "Insert & save" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "插入並儲存"
+    "Download additional variants ahead of time, or remove ones you no longer use to reclaim disk space.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預先下載其他變體，或移除不再使用的以釋放磁碟空間。"
           }
         }
       }
     },
-    "Inserted." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已插入。"
+    "Download anyway": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仍然下載"
           }
         }
       }
     },
-    "Keychain clear failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keychain 清除失敗：%@"
+    "Download failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載失敗：%@"
           }
         }
       }
     },
-    "Keychain save failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keychain 儲存失敗：%@"
+    "Download later": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "稍後下載"
           }
         }
       }
     },
-    "Language" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "語言"
+    "Downloaded": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已下載"
           }
         }
       }
     },
-    "Relaunch now" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "立即重新啟動"
+    "Downloaded · %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已下載 · %@"
           }
         }
       }
     },
-    "Restart to apply the new language." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新啟動以套用新語言。"
+    "Downloading %lld%% (%@ / %@)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載中 %lld%% (%@ / %@)"
           }
         }
       }
     },
-    "Last export: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最後一次匯出：%@"
+    "Downloading…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載中…"
           }
         }
       }
     },
-    "Lets ThinkAloud paste the transcription into the focused app. Optional — without it, text is copied to your clipboard instead." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "讓 ThinkAloud 將轉錄結果貼到目前使用中的 App。此為選用；若未授予，文字會改為複製到剪貼簿。"
+    "Downloading… (%@)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載中… (%@)"
           }
         }
       }
     },
-    "Load model" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "載入模型"
+    "Downloads three short clips from JacobLinCool/audio-testing and runs them through the current model. ~5 MB.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "從 JacobLinCool/audio-testing 下載三段短音訊以目前模型試跑。約 5 MB。"
           }
         }
       }
     },
-    "Loaded" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已載入"
+    "Duplicate — only the first is used.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重複——只會套用第一筆。"
           }
         }
       }
     },
-    "Loading model" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "載入模型中"
+    "Edit": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "編輯"
           }
         }
       }
     },
-    "Lowest latency and RAM. Good on older or low-power Macs." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "延遲與記憶體最低，適合較舊或低功耗的 Mac。"
+    "Edit (⌘E)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "編輯（⌘E）"
           }
         }
       }
     },
-    "Memory" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "記憶體"
+    "Edited": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "編輯版"
           }
         }
       }
     },
-    "Microphone" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "麥克風"
+    "Error": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錯誤"
           }
         }
       }
     },
-    "Microphone access not granted" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "尚未授予麥克風權限"
+    "Error: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錯誤：%@"
           }
         }
       }
     },
-    "Microphone permission is required. Open Settings to grant access, then try again." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要麥克風權限。請開啟設定授權後再試。"
+    "Exact": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完全相符"
           }
         }
       }
     },
-    "Missing" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未授權"
+    "Exact match": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完全相符"
           }
         }
       }
     },
-    "Missing (model omitted)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "漏字（模型沒說）"
+    "Export JSON": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "匯出 JSON"
           }
         }
       }
     },
-    "Model" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模型"
+    "Export JSONL": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "匯出 JSONL"
           }
         }
       }
     },
-    "Model error: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模型錯誤：%@"
+    "Export failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "匯出失敗：%@"
           }
         }
       }
     },
-    "Model is loading — your recording is ready. Transcribing as soon as the model is ready." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模型載入中 — 錄音已完成。模型就緒後立即轉錄。"
+    "Exported": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已匯出"
           }
         }
       }
     },
-    "Model preload failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模型載入失敗：%@"
+    "Exported %lld records.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已匯出 %lld 筆紀錄。"
           }
         }
       }
     },
-    "Model ready" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模型就緒"
+    "Extra (model hallucinated)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "多餘字（模型多說了）"
           }
         }
       }
     },
-    "Model: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模型：%@"
+    "Failed": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "失敗"
           }
         }
       }
     },
-    "Model: %@ · %lld ms" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模型：%@ · %lld 毫秒"
+    "Failed to compute statistics: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "計算統計失敗：%@"
           }
         }
       }
     },
-    "Models" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模型"
+    "Failed to load records: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "載入紀錄失敗：%@"
           }
         }
       }
     },
-    "Never (keep loaded)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "永不（保持載入）"
+    "Failed to send paste event. Text copied — please paste manually.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "傳送貼上事件失敗。文字已複製，請手動貼上。"
           }
         }
       }
     },
-    "No records to push." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "沒有可推送的紀錄。"
+    "Failed to write to clipboard.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "寫入剪貼簿失敗。"
           }
         }
       }
     },
-    "No records yet" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "尚未有任何紀錄"
+    "Fast": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快速"
           }
         }
       }
     },
-    "No transcription produced." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未產生轉錄結果。"
+    "Fast (Qwen3-ASR-0.6B-4bit)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快速 (Qwen3-ASR-0.6B-4bit)"
           }
         }
       }
     },
-    "Normalize (lowercase + strip punctuation + 全→半形)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正規化（小寫 + 去標點 + 全→半形）"
+    "Fires from anywhere to open the popup and start recording.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在任何 app 都能觸發，開啟 popup 並開始錄音。"
           }
         }
       }
     },
-    "Not downloaded" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未下載"
+    "Fix": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前往處理"
           }
         }
       }
     },
-    "Not loaded" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未載入"
+    "Free model weights from memory? It will reload on next use.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "從記憶體釋放模型權重？下次使用時會重新載入。"
           }
         }
       }
     },
-    "Not requested" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未請求"
+    "Free the denoiser weights from memory? It will reload on next use.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要從記憶體釋放降噪器權重嗎？下次使用時會重新載入。"
           }
         }
       }
     },
-    "Not set" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未設定"
+    "General": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一般"
           }
         }
       }
     },
-    "One hotkey to record, transcribe, and insert." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "一個快捷鍵完成錄音、轉錄、插入。"
+    "Get Started": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開始設定"
           }
         }
       }
     },
-    "One shortcut does everything. Press it three times in a row:" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "一個快捷鍵搞定一切，連續按三次："
+    "Global": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全域"
           }
         }
       }
     },
-    "Only %@ free on the models volume. Continue downloading?" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模型所在磁碟僅剩 %@ 可用，仍要下載嗎？"
+    "Grant permissions": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "授予權限"
           }
         }
       }
     },
-    "Open Folder" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟資料夾"
+    "Granted": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已授權"
           }
         }
       }
     },
-    "Open Settings" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟設定"
+    "Hotkey": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快捷鍵"
           }
         }
       }
     },
-    "Open System Settings" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟系統設定"
+    "How is this estimated?": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這是如何估算的？"
           }
         }
       }
     },
-    "Open Voice Input" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟語音輸入"
+    "How to use ThinkAloud": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如何使用 ThinkAloud"
           }
         }
       }
     },
-    "Open folder" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟資料夾"
+    "Hugging Face": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face"
           }
         }
       }
     },
-    "Open in browser" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在瀏覽器開啟"
+    "ID": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID"
           }
         }
       }
     },
-    "OpenAI Whisper, strong for multilingual audio." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI Whisper，多語音訊表現出色。"
+    "Identifier": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "識別碼"
           }
         }
       }
     },
-    "Organization" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Organization"
+    "Idle": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閒置"
           }
         }
       }
     },
-    "Output style" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸出樣式"
+    "Include audio files": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "包含音訊檔"
           }
         }
       }
     },
-    "Output style: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸出樣式：%@"
+    "Include source-app names": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "包含來源 App 名稱"
           }
         }
       }
     },
-    "Passed: %lld / %lld" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "通過：%lld / %lld"
+    "Input": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸入"
           }
         }
       }
     },
-    "Passed: %lld / %lld · Average latency: %lld ms" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "通過：%lld / %lld · 平均延遲：%lld ms"
+    "Insert": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "插入"
           }
         }
       }
     },
-    "Permissions" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "權限"
+    "Insert & Save": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "插入並儲存"
           }
         }
       }
     },
-    "Pick the model that fits your Mac. It downloads once and runs on-device. You can switch anytime in Settings." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "挑選適合你 Mac 的模型。只需下載一次，並在本機執行。你隨時可在「設定」中切換。"
+    "Insert & save": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "插入並儲存"
           }
         }
       }
     },
-    "Popup" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Popup"
+    "Insert a space between Chinese and adjacent English / numbers.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在中文與相鄰的英文／數字之間插入空格。"
           }
         }
       }
     },
-    "Prefer Simplified (简体)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "偏好簡體"
+    "Inserted.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已插入。"
           }
         }
       }
     },
-    "Prefer Traditional (正體)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "偏好正體"
+    "Insights": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "統計"
           }
         }
       }
     },
-    "Preference" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "偏好"
+    "Insights…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "統計…"
           }
         }
       }
     },
-    "Preload" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "載入"
+    "Keychain clear failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keychain 清除失敗：%@"
           }
         }
       }
     },
-    "Preparing files…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "準備檔案中…"
+    "Keychain save failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keychain 儲存失敗：%@"
           }
         }
       }
     },
-    "Preparing…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "準備中…"
+    "Language": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "語言"
           }
         }
       }
     },
-    "Press %@ again to stop & transcribe" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "再按一次 %@ 停止並轉錄"
+    "Languages": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "語言"
           }
         }
       }
     },
-    "Press %@ anywhere to start talking. ThinkAloud lives in your menu bar." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在任何地方按 %@ 即可開始說話。ThinkAloud 常駐於選單列。"
+    "Last export: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最後一次匯出：%@"
           }
         }
       }
     },
-    "Press %@ once more to insert" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "再按一次 %@ 插入文字"
+    "Lets ThinkAloud paste the transcription into the focused app. Optional — without it, text is copied to your clipboard instead (press ⌘V). After you enable it in System Settings, this updates on its own.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "讓 ThinkAloud 將轉錄結果貼到目前使用中的 App。此為選用;若未授予,文字會改為複製到剪貼簿(按 ⌘V)。在「系統設定」中啟用後,這裡會自動更新。"
           }
         }
       }
     },
-    "Press %@ to start recording" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "按 %@ 開始錄音"
+    "Lets ThinkAloud paste the transcription into the focused app. Optional — without it, text is copied to your clipboard instead.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "讓 ThinkAloud 將轉錄結果貼到目前使用中的 App。此為選用；若未授予，文字會改為複製到剪貼簿。"
           }
         }
       }
     },
-    "Press ⌥Space, dictate, then choose Insert & save to add the first record." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "按 ⌥Space 講話，再選「插入並儲存」即可新增第一筆紀錄。"
+    "Load denoiser": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "載入降噪器"
           }
         }
       }
     },
-    "Private" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "私人"
+    "Load keeps the model in memory for instant transcription; Unload frees it. Auto-unload releases the weights after the chosen idle time and reloads on next use.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「載入」會將模型保留在記憶體中以便即時轉錄;「卸載」則釋放它。「閒置時自動釋放」會在所選的閒置時間後釋放權重,並於下次使用時重新載入。"
           }
         }
       }
     },
-    "Profile" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "配置"
+    "Load model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "載入模型"
           }
         }
       }
     },
-    "Prompt" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請求授權"
+    "Loaded": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已載入"
           }
         }
       }
     },
-    "Push" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "推送"
+    "Loading model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "載入模型中"
           }
         }
       }
     },
-    "Push complete" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "推送完成"
+    "Login": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登入"
           }
         }
       }
     },
-    "Push failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "推送失敗：%@"
+    "Longest": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最長"
           }
         }
       }
     },
-    "Push now" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "立即推送"
+    "Lowest latency and RAM. Good on older or low-power Macs.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "延遲與記憶體最低，適合較舊或低功耗的 Mac。"
           }
         }
       }
     },
-    "Push to Hugging Face Hub" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "推送到 Hugging Face Hub"
+    "Median": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中位數"
           }
         }
       }
     },
-    "Quality" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "品質"
+    "Memory": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體"
           }
         }
       }
     },
-    "Quit ThinkAloud" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "結束 ThinkAloud"
+    "Memory & performance": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體與效能"
           }
         }
       }
     },
-    "Raw" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "原始"
+    "Microphone": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "麥克風"
           }
         }
       }
     },
-    "Raw (model output)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "原始（模型輸出）"
+    "Microphone access is needed to record a test sample.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要麥克風權限才能錄製測試樣本。"
           }
         }
       }
     },
-    "Raw: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "原始：%@"
+    "Microphone access is off. Enable it to record a test sample.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "麥克風權限已關閉。開啟後才能錄製測試樣本。"
           }
         }
       }
     },
-    "Ready to use" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已就緒"
+    "Microphone access not granted": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未授予麥克風權限"
           }
         }
       }
     },
-    "Reclaim disk" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "回收磁碟"
+    "Microphone permission is required. Open Settings to grant access, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要麥克風權限。請開啟設定授權後再試。"
           }
         }
       }
     },
-    "Record count" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "紀錄數"
+    "Missing": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未授權"
           }
         }
       }
     },
-    "Recording" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "錄音中"
+    "Missing (model omitted)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "漏字（模型沒說）"
           }
         }
       }
     },
-    "Records" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "紀錄"
+    "Model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型"
           }
         }
       }
     },
-    "Refresh" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新整理"
+    "Model error: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型錯誤：%@"
           }
         }
       }
     },
-    "Refresh failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新整理失敗：%@"
+    "Model is loading — your recording is ready. Transcribing as soon as the model is ready.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型載入中 — 錄音已完成。模型就緒後立即轉錄。"
           }
         }
       }
     },
-    "Refresh status" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新整理狀態"
+    "Model preload failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型載入失敗：%@"
           }
         }
       }
     },
-    "Remove" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "移除"
+    "Model ready": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型就緒"
           }
         }
       }
     },
-    "Remove failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "移除失敗：%@"
+    "Model: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型：%@"
           }
         }
       }
     },
-    "Removing…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "移除中…"
+    "Model: %@ · %lld ms": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型：%@ · %lld 毫秒"
           }
         }
       }
     },
-    "Repository" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Repository"
+    "Models": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型"
           }
         }
       }
     },
-    "Request" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "要求授權"
+    "Never (keep loaded)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "永不（保持載入）"
           }
         }
       }
     },
-    "Request access" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "要求授權"
+    "No clear speech detected (too little dynamic range). Try again and speak a full sentence.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未偵測到清晰的語音(動態範圍太小)。請重試並說完整一句話。"
           }
         }
       }
     },
-    "Required to paste the transcription into the focused app. macOS doesn't allow in-app prompts — grant it in System Settings." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用於將轉錄結果貼入目前 app。macOS 不允許 app 內請求，請至系統設定授權。"
+    "No formatting steps are active — the output matches your input.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未啟用任何格式化步驟 — 輸出與輸入相同。"
           }
         }
       }
     },
-    "Required to record your voice for local transcription." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用於錄製語音以在本機轉錄。"
+    "No preference": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無偏好"
           }
         }
       }
     },
-    "Reset all hotkeys" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重設全部快捷鍵"
+    "No records to push.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒有可推送的紀錄。"
           }
         }
       }
     },
-    "Reset to defaults" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重設為預設值"
+    "No records yet": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未有任何紀錄"
           }
         }
       }
     },
-    "Results" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "結果"
+    "No sessions in the last 30 days.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "近 30 天沒有錄音。"
           }
         }
       }
     },
-    "Reveal in Finder" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Finder 顯示"
+    "No transcription produced.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未產生轉錄結果。"
           }
         }
       }
     },
-    "Revisit the welcome flow to grant permissions or download a model." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新進入歡迎流程以授予權限或下載模型。"
+    "Normalize (lowercase + strip punctuation + 全→半形)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正規化（小寫 + 去標點 + 全→半形）"
           }
         }
       }
     },
-    "Run" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "回合"
+    "Not downloaded": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未下載"
           }
         }
       }
     },
-    "Run Setup Assistant again" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新執行設定精靈"
+    "Not loaded": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未載入"
           }
         }
       }
     },
-    "Run Smoke Test (audio-testing)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "執行 Smoke 測試 (audio-testing)"
+    "Not requested": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未請求"
           }
         }
       }
     },
-    "Run benchmark" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "執行 Benchmark"
+    "Not set": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未設定"
           }
         }
       }
     },
-    "Run smoke test" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "執行 smoke 測試"
+    "Off": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "關閉"
           }
         }
       }
     },
-    "Run the full pipeline against every record" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "對所有紀錄跑一次完整 pipeline"
+    "On": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟"
           }
         }
       }
     },
-    "Running" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "執行中"
+    "On this Mac only · never uploaded": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "僅在此 Mac · 不會上傳"
           }
         }
       }
     },
-    "Running…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "執行中…"
+    "One hotkey to record, transcribe, and insert.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一個快捷鍵完成錄音、轉錄、插入。"
           }
         }
       }
     },
-    "Runtime Status" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Runtime 狀態"
+    "One shortcut does everything. Press it three times in a row:": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一個快捷鍵搞定一切，連續按三次："
           }
         }
       }
     },
-    "Save" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "儲存"
+    "Only %@ free on the models volume. Continue downloading?": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型所在磁碟僅剩 %@ 可用，仍要下載嗎？"
           }
         }
       }
     },
-    "Save failed: %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "儲存失敗：%@"
+    "Open Folder": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟資料夾"
           }
         }
       }
     },
-    "Save token" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "儲存 Token"
+    "Open Settings": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟設定"
           }
         }
       }
     },
-    "Saved" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已儲存"
+    "Open System Settings": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟系統設定"
           }
         }
       }
     },
-    "Select a record" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇一筆紀錄"
+    "Open Voice Input": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟語音輸入"
           }
         }
       }
     },
-    "Set an HF token in Settings → Advanced first." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請先在「設定 → 進階」設定 HF token。"
+    "Open at login": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登入時開啟"
           }
         }
       }
     },
-    "Settings…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定…"
+    "Open folder": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟資料夾"
           }
         }
       }
     },
-    "Setup" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定"
+    "Open in browser": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在瀏覽器開啟"
           }
         }
       }
     },
-    "Setup Assistant…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定精靈…"
+    "OpenAI Whisper, strong for multilingual audio.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenAI Whisper，多語音訊表現出色。"
           }
         }
       }
     },
-    "Signed in as **%@**" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已登入為 **%@**"
+    "Organization": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Organization"
           }
         }
       }
     },
-    "Skip setup" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "略過設定"
+    "Original": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原始"
           }
         }
       }
     },
-    "Smoke Test" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Smoke 測試"
+    "Output": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸出"
           }
         }
       }
     },
-    "Smoke test" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Smoke 測試"
+    "Output style": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸出樣式"
           }
         }
       }
     },
-    "Something went wrong" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "出問題了"
+    "Output style: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸出樣式：%@"
           }
         }
       }
     },
-    "Source" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "來源"
+    "Passed: %lld / %lld": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通過：%lld / %lld"
           }
         }
       }
     },
-    "Speak anywhere on your Mac and ThinkAloud turns it into text — instantly, and entirely on-device." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Mac 上任何地方說話，ThinkAloud 立即在本機把它轉成文字。"
+    "Passed: %lld / %lld · Average latency: %lld ms": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通過：%lld / %lld · 平均延遲：%lld ms"
           }
         }
       }
     },
-    "Speech model not downloaded yet" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "語音模型尚未下載"
+    "Permissions": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "權限"
           }
         }
       }
     },
-    "Start Using ThinkAloud" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開始使用 ThinkAloud"
+    "Pick the model that fits your Mac. It downloads once and runs on-device. You can switch anytime in Settings.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑選適合你 Mac 的模型。只需下載一次，並在本機執行。你隨時可在「設定」中切換。"
           }
         }
       }
     },
-    "Start Voice Input" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開始語音輸入"
+    "Pick the transcription engine — tap a model to make it active. Larger models are more accurate but slower and bigger on disk. The active model downloads on first use; download or remove variants here.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選擇轉錄引擎 — 點一下模型即設為使用中。較大的模型更準確,但較慢、佔用更多磁碟空間。使用中的模型會在首次使用時下載;可在此下載或移除各種模型。"
           }
         }
       }
     },
-    "Start recording" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開始錄音"
+    "Popup": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popup"
           }
         }
       }
     },
-    "Status" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "狀態"
+    "Prefer Simplified (简体)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偏好簡體"
           }
         }
       }
     },
-    "Stop & Transcribe" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "停止並轉錄"
+    "Prefer Traditional (正體)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偏好正體"
           }
         }
       }
     },
-    "Stop & transcribe" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "停止並轉錄"
+    "Preference": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偏好"
           }
         }
       }
     },
-    "Storage" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "儲存"
+    "Preload": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "載入"
           }
         }
       }
     },
-    "Test connection" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "測試連線"
+    "Preparing files…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "準備檔案中…"
           }
         }
       }
     },
-    "Testing…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "測試中…"
+    "Preparing…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "準備中…"
           }
         }
       }
     },
-    "The text is pasted into whatever app had focus." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文字會貼入剛才使用中的 App。"
+    "Press %@ again to stop & transcribe": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再按一次 %@ 停止並轉錄"
           }
         }
       }
     },
-    "ThinkAloud Settings" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ThinkAloud 設定"
+    "Press %@ anywhere to start talking. ThinkAloud lives in your menu bar.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在任何地方按 %@ 即可開始說話。ThinkAloud 常駐於選單列。"
           }
         }
       }
     },
-    "ThinkAloud needs two macOS permissions. You can change these anytime in System Settings." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ThinkAloud 需要兩項 macOS 權限。你隨時可以在「系統設定」中變更。"
+    "Press %@ once more to insert": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再按一次 %@ 插入文字"
           }
         }
       }
     },
-    "This downloads the selected model now so your first transcription is instant." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "現在就下載所選模型，讓你第一次轉錄不需等待。"
+    "Press %@ to start recording": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按 %@ 開始錄音"
           }
         }
       }
     },
-    "This quick setup takes about a minute." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "這個快速設定大約只要一分鐘。"
+    "Press the hotkey, dictate, then choose Insert & save. Your time saved, accuracy, and dataset shape show up here.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按下快速鍵、口述，然後選擇「插入並儲存」。你節省的時間、正確率與資料集樣貌都會顯示在這裡。"
           }
         }
       }
     },
-    "Token" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Token"
+    "Press ⌥Space, dictate, then choose Insert & save to add the first record.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按 ⌥Space 講話，再選「插入並儲存」即可新增第一筆紀錄。"
           }
         }
       }
     },
-    "Total" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "總數"
+    "Preview": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預覽"
           }
         }
       }
     },
-    "Transcribing…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "轉錄中…"
+    "Private": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "私人"
           }
         }
       }
     },
-    "Transcribing… (streaming)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "轉錄中…（streaming）"
+    "Profile": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配置"
           }
         }
       }
     },
-    "Tuned for Mandarin and English." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "針對中文與英文最佳化。"
+    "Prompt": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請求授權"
           }
         }
       }
     },
-    "Tuned for Taiwanese Mandarin by MediaTek Research." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "由聯發科研究院針對台灣中文最佳化。"
+    "Push": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "推送"
           }
         }
       }
     },
-    "Unknown" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未知"
+    "Push complete": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "推送完成"
           }
         }
       }
     },
-    "Unload" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "釋放"
+    "Push failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "推送失敗：%@"
           }
         }
       }
     },
-    "Unload model" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卸載模型"
+    "Push now": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即推送"
           }
         }
       }
     },
-    "Updates" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更新"
+    "Push to Hugging Face Hub": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "推送到 Hugging Face Hub"
           }
         }
       }
     },
-    "Updates are downloaded from GitHub Releases and verified with a cryptographic signature before installing." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更新會從 GitHub Releases 下載，並在安裝前以密碼學簽章驗證。"
+    "Quality": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "品質"
           }
         }
       }
     },
-    "Uploaded %lld file(s) to %@." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已上傳 %lld 個檔案至 %@。"
+    "Quiet enough — clear gaps between speech (signal-to-noise ≈ %@ dB, at/above the %@ dB threshold).": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "夠安靜 — 語句間有明顯停頓(訊噪比約 %@ dB,達到或高於 %@ dB 門檻)。"
           }
         }
       }
     },
-    "Uploaded as `metadata.jsonl` + audio files (LFS). Audio is uploaded — only push if you've reviewed the contents." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上傳成 `metadata.jsonl` + 音訊檔（走 LFS）。音檔會一同上傳——推送前請確認沒有敏感內容。"
+    "Quit ThinkAloud": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "結束 ThinkAloud"
           }
         }
       }
     },
-    "Uploading large files…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上傳大檔案中…"
+    "README.md + statistics.json (aggregate stats)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "README.md ＋ statistics.json（彙總統計）"
           }
         }
       }
     },
-    "Use model default" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "依照模型"
+    "Raw": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原始"
           }
         }
       }
     },
-    "Use ⌘⌫ to delete the selection." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "可按 ⌘⌫ 刪除所選。"
+    "Raw (model output)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原始（模型輸出）"
           }
         }
       }
     },
-    "Used to push the dataset from the browser window. Token is stored in macOS Keychain." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在瀏覽器視窗用來推送資料集。Token 儲存於 macOS Keychain。"
+    "Raw: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原始：%@"
           }
         }
       }
     },
-    "Welcome to ThinkAloud" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歡迎使用 ThinkAloud"
+    "Ready to use": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已就緒"
           }
         }
       }
     },
-    "Whisper Large v3 Turbo" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Whisper Large v3 Turbo"
+    "Real-Time Factor — processing time ÷ audio length. Below 1.0× is faster than real time.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "即時因子（RTF）—— 處理時間 ÷ 音訊長度；低於 1.0× 代表快於即時。"
           }
         }
       }
     },
-    "Whisper Turbo" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Whisper Turbo"
+    "Reclaim disk": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回收磁碟"
           }
         }
       }
     },
-    "Without Accessibility access, ThinkAloud copies the text to your clipboard instead of pasting it — just press ⌘V." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "若未授予輔助使用權限，ThinkAloud 會改為將文字複製到剪貼簿，按 ⌘V 貼上即可。"
+    "Record a sample": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄製樣本"
           }
         }
       }
     },
-    "You're all set" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定完成"
+    "Record again": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新錄製"
           }
         }
       }
     },
-    "Your speech is transcribed on-device. Review and edit if needed." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你的語音會在本機轉錄。可視需要檢視與編輯。"
+    "Record count": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "紀錄數"
           }
         }
       }
     },
-    "hf_… (paste here, then Save)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "hf_…（貼上後按儲存）"
+    "Recording": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音中"
           }
         }
       }
     },
-    "repo-name" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "repo-name"
+    "Recording length": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音長度"
           }
         }
       }
     },
-    "中文偏好" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chinese preference"
+    "Recordings": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音數"
+          }
+        }
+      }
+    },
+    "Recording… %llds": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音中… %lld 秒"
+          }
+        }
+      }
+    },
+    "Records": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "紀錄"
+          }
+        }
+      }
+    },
+    "Records a few seconds so you can see whether Auto would clean it — speak a sentence as you normally would, then Stop.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄幾秒鐘,讓你看看 Auto 會不會清理它 — 像平常一樣說一句話,然後按停止。"
+          }
+        }
+      }
+    },
+    "Refresh": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新整理"
+          }
+        }
+      }
+    },
+    "Refresh failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新整理失敗：%@"
+          }
+        }
+      }
+    },
+    "Refresh status": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新整理狀態"
+          }
+        }
+      }
+    },
+    "Relaunch now": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即重新啟動"
+          }
+        }
+      }
+    },
+    "Remove": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除"
+          }
+        }
+      }
+    },
+    "Remove failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除失敗：%@"
+          }
+        }
+      }
+    },
+    "Remove term": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除詞條"
+          }
+        }
+      }
+    },
+    "Remove the saved Hugging Face token from the macOS Keychain?": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "從 macOS Keychain 移除已儲存的 Hugging Face Token?"
+          }
+        }
+      }
+    },
+    "Removes background noise before transcription. Auto only cleans clips it detects as noisy, and downloads a small model on first use. Manage the denoiser in Advanced; compare Off / Auto / On in Benchmark.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在轉錄前移除背景噪音。「自動」只清理偵測到有噪音的片段,並於首次使用時下載一個小型模型。可在「進階」中管理降噪器;在 Benchmark 中比較關閉 / 自動 / 開啟。"
+          }
+        }
+      }
+    },
+    "Removing…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除中…"
+          }
+        }
+      }
+    },
+    "Replacements run last — after Chinese conversion and CJK–Latin spacing — and the longest matching term wins. Write terms the way the text looks after those steps. Longer, distinctive terms are safer; very short terms can fire inside unrelated words.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取代會在最後執行——在中文轉換與中英排版之後——且最長的匹配詞優先。請依照經過那些步驟後的文字樣子來撰寫詞條。較長、獨特的詞比較安全；太短的詞可能會在不相關的字詞裡被誤觸發。"
+          }
+        }
+      }
+    },
+    "Replacements run last — after Chinese conversion and spacing — and the longest matching term wins. Write terms the way the text looks after those steps. Longer, distinctive terms are safer; very short terms can fire inside unrelated words.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "替換在最後執行 — 在中文轉換與加空格之後 — 並由最長的相符詞勝出。請依照那些步驟後文字的樣子來填寫詞語。較長、獨特的詞語較安全;非常短的詞語可能在不相關的字詞中被觸發。"
+          }
+        }
+      }
+    },
+    "Replacements run last — after Chinese conversion and spacing — and the longest matching term wins. Write terms the way the text looks after those steps; use the Preview below to check. Longer, distinctive terms are safer; very short terms can fire inside unrelated words.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "替換在最後執行 — 在中文轉換與加空格之後 — 並由最長的相符詞勝出。請依照那些步驟後文字的樣子來填寫詞語,可用下方的「預覽」確認。較長、獨特的詞語較安全;非常短的詞語可能在不相關的字詞中被觸發。"
+          }
+        }
+      }
+    },
+    "Repository": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repository"
+          }
+        }
+      }
+    },
+    "Request": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要求授權"
+          }
+        }
+      }
+    },
+    "Request access": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要求授權"
+          }
+        }
+      }
+    },
+    "Required to paste the transcription into the focused app. macOS doesn't allow in-app prompts — grant it in System Settings.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用於將轉錄結果貼入目前 app。macOS 不允許 app 內請求，請至系統設定授權。"
+          }
+        }
+      }
+    },
+    "Required to record your voice for local transcription.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用於錄製語音以在本機轉錄。"
+          }
+        }
+      }
+    },
+    "Reset Start recording, Stop & transcribe, and Insert & save to ⌥Space?": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "將「開始錄音」、「停止並轉錄」與「插入並儲存」重設為 ⌥Space?"
+          }
+        }
+      }
+    },
+    "Reset all 3 shortcuts": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重設全部 3 個快捷鍵"
+          }
+        }
+      }
+    },
+    "Reset all hotkeys": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重設全部快捷鍵"
+          }
+        }
+      }
+    },
+    "Reset to defaults": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重設為預設值"
+          }
+        }
+      }
+    },
+    "Restart to apply the new language.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新啟動以套用新語言。"
+          }
+        }
+      }
+    },
+    "Results": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "結果"
+          }
+        }
+      }
+    },
+    "Reveal in Finder": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 Finder 顯示"
+          }
+        }
+      }
+    },
+    "Revisit the welcome flow to grant permissions or download a model.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新進入歡迎流程以授予權限或下載模型。"
+          }
+        }
+      }
+    },
+    "Run": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回合"
+          }
+        }
+      }
+    },
+    "Run Setup Assistant again": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新執行設定精靈"
+          }
+        }
+      }
+    },
+    "Run Smoke Test (audio-testing)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "執行 Smoke 測試 (audio-testing)"
+          }
+        }
+      }
+    },
+    "Run benchmark": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "執行 Benchmark"
+          }
+        }
+      }
+    },
+    "Run smoke test": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "執行 smoke 測試"
+          }
+        }
+      }
+    },
+    "Run test": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "執行測試"
+          }
+        }
+      }
+    },
+    "Run the full pipeline against every record": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "對所有紀錄跑一次完整 pipeline"
+          }
+        }
+      }
+    },
+    "Running": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "執行中"
+          }
+        }
+      }
+    },
+    "Running…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "執行中…"
+          }
+        }
+      }
+    },
+    "Runs the whole text pipeline — Chinese conversion, then spacing, then your word replacements — on whatever you type, showing what each active step changes. The last line is the final inserted text.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "對你輸入的文字執行完整的文字 pipeline — 先中文轉換、再加空格、最後套用你的詞語替換 — 並顯示每個啟用步驟的變化。最後一行是最終插入的文字。"
+          }
+        }
+      }
+    },
+    "Runtime Status": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runtime 狀態"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "儲存"
+          }
+        }
+      }
+    },
+    "Save failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "儲存失敗：%@"
+          }
+        }
+      }
+    },
+    "Save token": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "儲存 Token"
+          }
+        }
+      }
+    },
+    "Saved": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存"
+          }
+        }
+      }
+    },
+    "Select a record": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選擇一筆紀錄"
+          }
+        }
+      }
+    },
+    "Set an HF token in Settings → Advanced first.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請先在「設定 → 進階」設定 HF token。"
+          }
+        }
+      }
+    },
+    "Sets the app's interface language — not the transcription output. Automatic follows your system language. Changes take effect after relaunch.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定 app 的介面語言,而非轉錄輸出。「自動」會跟隨系統語言。變更會在重新啟動後生效。"
+          }
+        }
+      }
+    },
+    "Settings…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定…"
+          }
+        }
+      }
+    },
+    "Setup": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定"
+          }
+        }
+      }
+    },
+    "Setup Assistant…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定精靈…"
+          }
+        }
+      }
+    },
+    "Short terms may replace text you didn't mean to.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "太短的詞可能會誤改到其他不相關的文字。"
+          }
+        }
+      }
+    },
+    "Shortcuts": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快捷鍵"
+          }
+        }
+      }
+    },
+    "Shown for recordings made in v0.4.0+": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "僅顯示 v0.4.0 之後的錄音"
+          }
+        }
+      }
+    },
+    "Signed in as **%@**": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已登入為 **%@**"
+          }
+        }
+      }
+    },
+    "Skip setup": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "略過設定"
+          }
+        }
+      }
+    },
+    "Smoke Test": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smoke 測試"
+          }
+        }
+      }
+    },
+    "Smoke test": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smoke 測試"
+          }
+        }
+      }
+    },
+    "Software Update": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "軟體更新"
+          }
+        }
+      }
+    },
+    "Something went wrong": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "出問題了"
+          }
+        }
+      }
+    },
+    "Source": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "來源"
+          }
+        }
+      }
+    },
+    "Source-app names **are** included.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**會**包含來源 App 名稱。"
+          }
+        }
+      }
+    },
+    "Source-app names are **not** included.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**不會**包含來源 App 名稱。"
+          }
+        }
+      }
+    },
+    "Space between Chinese and English/numbers": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中英文/數字間加空格"
+          }
+        }
+      }
+    },
+    "Spacing": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加空格"
+          }
+        }
+      }
+    },
+    "Speak anywhere on your Mac and ThinkAloud turns it into text — instantly, and entirely on-device.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 Mac 上任何地方說話，ThinkAloud 立即在本機把它轉成文字。"
+          }
+        }
+      }
+    },
+    "Speech": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "語音時長"
+          }
+        }
+      }
+    },
+    "Speech model not downloaded yet": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "語音模型尚未下載"
+          }
+        }
+      }
+    },
+    "Stable": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正式版"
+          }
+        }
+      }
+    },
+    "Start ThinkAloud automatically when you log in, so the dictation hotkey is ready without launching it by hand.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登入時自動啟動 ThinkAloud,這樣不必手動開啟就能使用聽寫快捷鍵。"
+          }
+        }
+      }
+    },
+    "Start Using ThinkAloud": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開始使用 ThinkAloud"
+          }
+        }
+      }
+    },
+    "Start Voice Input": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開始語音輸入"
+          }
+        }
+      }
+    },
+    "Start recording": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開始錄音"
+          }
+        }
+      }
+    },
+    "Start recording fires from anywhere to open the popup. Stop & transcribe and Insert & save both default to ⌥Space — the popup phase decides which one fires.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「開始錄音」可在任何地方觸發以開啟彈出視窗。「停止並轉錄」與「插入並儲存」皆預設為 ⌥Space — 由彈出視窗當下的階段決定觸發哪一個。"
+          }
+        }
+      }
+    },
+    "Startup": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟動"
+          }
+        }
+      }
+    },
+    "Status": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "狀態"
+          }
+        }
+      }
+    },
+    "Steady background noise detected (signal-to-noise ≈ %@ dB, below the %@ dB threshold).": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偵測到穩定的背景噪音(訊噪比約 %@ dB,低於 %@ dB 門檻)。"
+          }
+        }
+      }
+    },
+    "Stop": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止"
+          }
+        }
+      }
+    },
+    "Stop & Transcribe": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止並轉錄"
+          }
+        }
+      }
+    },
+    "Stop & transcribe": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止並轉錄"
+          }
+        }
+      }
+    },
+    "Storage": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "儲存"
+          }
+        }
+      }
+    },
+    "Suppress background noise with DeepFilterNet before transcription. Downloads a small model on first use.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉寫前以 DeepFilterNet 抑制背景雜訊。首次使用會下載一個小型模型。"
+          }
+        }
+      }
+    },
+    "Sync / Upload": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同步 / 上傳"
+          }
+        }
+      }
+    },
+    "Test connection": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "測試連線"
+          }
+        }
+      }
+    },
+    "Test my environment": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "測試我的環境"
+          }
+        }
+      }
+    },
+    "Test the model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "測試模型"
+          }
+        }
+      }
+    },
+    "Test — type to preview…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "測試 — 輸入以預覽…"
+          }
+        }
+      }
+    },
+    "Testing…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "測試中…"
+          }
+        }
+      }
+    },
+    "Text formatting": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字格式"
+          }
+        }
+      }
+    },
+    "The audio is clipping (too loud) — cleaning is forced. Move back from the mic or lower the input level.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音訊發生削峰(太大聲)— 會強制清理。請離麥克風遠一點或調低輸入音量。"
+          }
+        }
+      }
+    },
+    "The clip was too short to judge. Record a couple of seconds.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音太短,無法判斷。請錄幾秒鐘。"
+          }
+        }
+      }
+    },
+    "The text is pasted into whatever app had focus.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字會貼入剛才使用中的 App。"
+          }
+        }
+      }
+    },
+    "ThinkAloud Settings": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 設定"
+          }
+        }
+      }
+    },
+    "ThinkAloud needs two macOS permissions. You can change these anytime in System Settings.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 需要兩項 macOS 權限。你隨時可以在「系統設定」中變更。"
+          }
+        }
+      }
+    },
+    "This downloads the selected model now so your first transcription is instant.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在就下載所選模型，讓你第一次轉錄不需等待。"
+          }
+        }
+      }
+    },
+    "This push writes:": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這次上傳會寫入："
+          }
+        }
+      }
+    },
+    "This quick setup takes about a minute.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這個快速設定大約只要一分鐘。"
+          }
+        }
+      }
+    },
+    "This week: %lld sessions": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本週：%lld 次"
+          }
+        }
+      }
+    },
+    "Time saved": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "節省時間"
+          }
+        }
+      }
+    },
+    "Token": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token"
+          }
+        }
+      }
+    },
+    "Total": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "總數"
+          }
+        }
+      }
+    },
+    "Transcribing…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉錄中…"
+          }
+        }
+      }
+    },
+    "Transcribing… (streaming)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉錄中…（streaming）"
+          }
+        }
+      }
+    },
+    "Try again": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重試"
+          }
+        }
+      }
+    },
+    "Tuned for Mandarin and English.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "針對中文與英文最佳化。"
+          }
+        }
+      }
+    },
+    "Tuned for Taiwanese Mandarin by MediaTek Research.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "由聯發科研究院針對台灣中文最佳化。"
+          }
+        }
+      }
+    },
+    "Type to preview the formatting…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸入文字以預覽格式化結果…"
+          }
+        }
+      }
+    },
+    "Unknown": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知"
+          }
+        }
+      }
+    },
+    "Unload": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "釋放"
+          }
+        }
+      }
+    },
+    "Unload denoiser": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "卸載降噪器"
+          }
+        }
+      }
+    },
+    "Unload model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "卸載模型"
+          }
+        }
+      }
+    },
+    "Updates": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新"
+          }
+        }
+      }
+    },
+    "Updates are downloaded from GitHub Releases and verified with a cryptographic signature before installing.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新會從 GitHub Releases 下載，並在安裝前以密碼學簽章驗證。"
+          }
+        }
+      }
+    },
+    "Updates are downloaded from GitHub Releases and verified with a cryptographic signature before installing. The Dev channel tracks the latest main build and may be less stable; switching back to Stable takes effect once Stable's build number catches up.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新會從 GitHub Releases 下載，並在安裝前以密碼學簽章驗證。開發版頻道追蹤最新的 main 建置，可能較不穩定；切回正式版會在正式版的建置編號追上後才生效。"
+          }
+        }
+      }
+    },
+    "Uploaded %lld file(s) to %@.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已上傳 %lld 個檔案至 %@。"
+          }
+        }
+      }
+    },
+    "Uploaded as `metadata.jsonl` + audio files (LFS). Audio is uploaded — only push if you've reviewed the contents.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳成 `metadata.jsonl` + 音訊檔（走 LFS）。音檔會一同上傳——推送前請確認沒有敏感內容。"
+          }
+        }
+      }
+    },
+    "Uploading large files…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳大檔案中…"
+          }
+        }
+      }
+    },
+    "Use model default": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "依照模型"
+          }
+        }
+      }
+    },
+    "Use ⌘⌫ to delete the selection.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可按 ⌘⌫ 刪除所選。"
+          }
+        }
+      }
+    },
+    "Used to push the dataset from the browser window. Token is stored in macOS Keychain.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在瀏覽器視窗用來推送資料集。Token 儲存於 macOS Keychain。"
+          }
+        }
+      }
+    },
+    "View insights": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看統計"
+          }
+        }
+      }
+    },
+    "We compare the time it would take to **type** your final text against the time you actually spent **speaking**, minus the time spent fixing the transcript.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我們以**打出**最終文字所需的時間，對比你實際**口述**的時間，再扣除修正逐字稿的時間。"
+          }
+        }
+      }
+    },
+    "Welcome to ThinkAloud": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "歡迎使用 ThinkAloud"
+          }
+        }
+      }
+    },
+    "Where you dictate": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你在哪裡口述"
+          }
+        }
+      }
+    },
+    "Whisper Large v3 Turbo": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Whisper Large v3 Turbo"
+          }
+        }
+      }
+    },
+    "Whisper Turbo": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Whisper Turbo"
+          }
+        }
+      }
+    },
+    "Without Accessibility access, ThinkAloud copies the text to your clipboard instead of pasting it — just press ⌘V.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "若未授予輔助使用權限，ThinkAloud 會改為將文字複製到剪貼簿，按 ⌘V 貼上即可。"
+          }
+        }
+      }
+    },
+    "Word Error Rate — CJK ideographs count as words; 0 means perfect, lower is better.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "詞錯誤率（WER）—— 中日韓表意字各算一個詞；0 為完美，越低越好。"
+          }
+        }
+      }
+    },
+    "Word replacements": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "詞語替換"
+          }
+        }
+      }
+    },
+    "You're all set": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定完成"
+          }
+        }
+      }
+    },
+    "Your current mode is Off, so no recording is cleaned. Switch to Auto or On to use this.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你目前的模式是「關閉」,因此不會清理任何錄音。切換到「自動」或「開啟」才會作用。"
+          }
+        }
+      }
+    },
+    "Your current mode is On, so every recording is cleaned regardless.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你目前的模式是「開啟」,因此每段錄音都會被清理。"
+          }
+        }
+      }
+    },
+    "Your dictation": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的口述"
+          }
+        }
+      }
+    },
+    "Your insights appear after your first save": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成第一次儲存後即可看到統計"
+          }
+        }
+      }
+    },
+    "Your speech is transcribed on-device. Review and edit if needed.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的語音會在本機轉錄。可視需要檢視與編輯。"
+          }
+        }
+      }
+    },
+    "Your time saved, accuracy, and dataset shape — open the dataset window for the full breakdown.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你節省的時間、正確率與資料集樣貌 — 開啟資料集視窗查看完整分析。"
+          }
+        }
+      }
+    },
+    "audio/… — your 16 kHz recordings (LFS)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "audio/… — 你的 16 kHz 錄音（LFS）"
+          }
+        }
+      }
+    },
+    "came out clean": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "免修正"
+          }
+        }
+      }
+    },
+    "characters dictated": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字元已口述"
+          }
+        }
+      }
+    },
+    "estimated vs. typing": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "相較打字的估算"
+          }
+        }
+      }
+    },
+    "hf_… (paste here, then Save)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hf_…（貼上後按儲存）"
+          }
+        }
+      }
+    },
+    "hr": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "小時"
+          }
+        }
+      }
+    },
+    "last 30 days": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "近 30 天"
+          }
+        }
+      }
+    },
+    "metadata.jsonl — one row per recording, with transcripts + derived counts": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "metadata.jsonl — 每筆錄音一列，含逐字稿與衍生統計"
+          }
+        }
+      }
+    },
+    "replacement": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取代為"
+          }
+        }
+      }
+    },
+    "repo-name": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "repo-name"
+          }
+        }
+      }
+    },
+    "term": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "詞"
+          }
+        }
+      }
+    },
+    "time saved": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "節省時間"
+          }
+        }
+      }
+    },
+    "~%@ tokens": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~%@ 個 token"
+          }
+        }
+      }
+    },
+    "· %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· %@"
+          }
+        }
+      }
+    },
+    "“Test the model” downloads three short clips from JacobLinCool/audio-testing (~5 MB) and runs them through the current model to verify it works.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「測試模型」會從 JacobLinCool/audio-testing 下載三段短音訊(約 5 MB),並以目前的模型執行以確認運作正常。"
+          }
+        }
+      }
+    },
+    "中文偏好": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chinese preference"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "中文偏好"
-          }
-        }
-      }
-    },
-    "No preference" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無偏好"
-          }
-        }
-      }
-    },
-    "Auto Post-Edit" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動後製編輯"
-          }
-        }
-      }
-    },
-    "Chinese output" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "中文輸出"
-          }
-        }
-      }
-    },
-    "CJK–Latin spacing" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "中英自動空格"
-          }
-        }
-      }
-    },
-    "Insert a space between Chinese and adjacent English / numbers." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在中文與相鄰的英文／數字之間插入空格。"
-          }
-        }
-      }
-    },
-    "Auto Pre-Edit" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動前製編輯"
-          }
-        }
-      }
-    },
-    "Audio denoising" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "音訊降噪"
-          }
-        }
-      }
-    },
-    "Suppress background noise with DeepFilterNet before transcription. Downloads a small model on first use." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "轉寫前以 DeepFilterNet 抑制背景雜訊。首次使用會下載一個小型模型。"
-          }
-        }
-      }
-    },
-    "Denoiser" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "降噪器"
-          }
-        }
-      }
-    },
-    "Load denoiser" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "載入降噪器"
-          }
-        }
-      }
-    },
-    "Unload denoiser" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卸載降噪器"
-          }
-        }
-      }
-    },
-    "Free the denoiser weights from memory? It will reload on next use." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "要從記憶體釋放降噪器權重嗎？下次使用時會重新載入。"
-          }
-        }
-      }
-    },
-    "Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Best for noisy environments; may not help (or slightly hurt) clean recordings — use Benchmark to compare." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "降噪會在音訊被降採樣給 ASR 模型之前以 48 kHz 執行。最適合吵雜環境；對乾淨錄音可能無感（甚至略有損害）——可用 Benchmark 比較。"
-          }
-        }
-      }
-    },
-    "Denoise" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "降噪"
-          }
-        }
-      }
-    },
-    "Off" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "關閉"
-          }
-        }
-      }
-    },
-    "term" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "詞"
-          }
-        }
-      }
-    },
-    "replacement" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取代為"
-          }
-        }
-      }
-    },
-    "Remove term" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "移除詞條"
-          }
-        }
-      }
-    },
-    "Add term" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "新增詞條"
-          }
-        }
-      }
-    },
-    "Test — type to preview…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "測試 — 輸入以預覽…"
-          }
-        }
-      }
-    },
-    "Custom Dictionary" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自定義字典"
-          }
-        }
-      }
-    },
-    "Duplicate — only the first is used." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重複——只會套用第一筆。"
-          }
-        }
-      }
-    },
-    "Short terms may replace text you didn't mean to." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "太短的詞可能會誤改到其他不相關的文字。"
-          }
-        }
-      }
-    },
-    "Dictionary (%lld)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "字典（%lld）"
-          }
-        }
-      }
-    },
-    "Replacements run last — after Chinese conversion and CJK–Latin spacing — and the longest matching term wins. Write terms the way the text looks after those steps. Longer, distinctive terms are safer; very short terms can fire inside unrelated words." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取代會在最後執行——在中文轉換與中英排版之後——且最長的匹配詞優先。請依照經過那些步驟後的文字樣子來撰寫詞條。較長、獨特的詞比較安全；太短的詞可能會在不相關的字詞裡被誤觸發。"
-          }
-        }
-      }
-    },
-    "Channel" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更新頻道"
-          }
-        }
-      }
-    },
-    "Stable" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正式版"
-          }
-        }
-      }
-    },
-    "Dev (latest main)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開發版（最新 main）"
-          }
-        }
-      }
-    },
-    "Updates are downloaded from GitHub Releases and verified with a cryptographic signature before installing. The Dev channel tracks the latest main build and may be less stable; switching back to Stable takes effect once Stable's build number catches up." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更新會從 GitHub Releases 下載，並在安裝前以密碼學簽章驗證。開發版頻道追蹤最新的 main 建置，可能較不穩定；切回正式版會在正式版的建置編號追上後才生效。"
-          }
-        }
-      }
-    },
-    "Auto" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動"
-          }
-        }
-      }
-    },
-    "On" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟"
-          }
-        }
-      }
-    },
-    "Auto inspects each recording and denoises only noisy clips; On always denoises (DeepFilterNet). Downloads a small model on first use." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動會檢查每段錄音、只對吵雜的片段降噪；開啟則一律降噪（DeepFilterNet）。首次使用會下載一個小型模型。"
-          }
-        }
-      }
-    },
-    "Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Auto only denoises clips it detects as noisy (and loads the model lazily on the first such clip); On always denoises. Use Benchmark to compare Off / Auto / On." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "降噪會在音訊降採樣給 ASR 模型之前以 48 kHz 執行。自動只對偵測為吵雜的片段降噪（並在第一個這種片段時才延遲載入模型）；開啟則一律降噪。可用 Benchmark 比較 關閉／自動／開啟。"
-          }
-        }
-      }
-    },
-    "Startup" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟動"
-          }
-        }
-      }
-    },
-    "Shortcuts" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "快捷鍵"
-          }
-        }
-      }
-    },
-    "Software Update" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "軟體更新"
-          }
-        }
-      }
-    },
-    "Output" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸出"
-          }
-        }
-      }
-    },
-    "Open at login" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "登入時開啟"
-          }
-        }
-      }
-    },
-    "Login" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "登入"
-          }
-        }
-      }
-    },
-    "Approve ThinkAloud in System Settings → General → Login Items to enable this." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請在「系統設定 → 一般 → 登入項目」中允許 ThinkAloud 以啟用此功能。"
-          }
-        }
-      }
-    },
-    "Start ThinkAloud automatically when you log in, so the dictation hotkey is ready without launching it by hand." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "登入時自動啟動 ThinkAloud,這樣不必手動開啟就能使用聽寫快捷鍵。"
-          }
-        }
-      }
-    },
-    "Sets the app's interface language — not the transcription output. Automatic follows your system language. Changes take effect after relaunch." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定 app 的介面語言,而非轉錄輸出。「自動」會跟隨系統語言。變更會在重新啟動後生效。"
-          }
-        }
-      }
-    },
-    "Reset all 3 shortcuts" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重設全部 3 個快捷鍵"
-          }
-        }
-      }
-    },
-    "Start recording fires from anywhere to open the popup. Stop & transcribe and Insert & save both default to ⌥Space — the popup phase decides which one fires." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「開始錄音」可在任何地方觸發以開啟彈出視窗。「停止並轉錄」與「插入並儲存」皆預設為 ⌥Space — 由彈出視窗當下的階段決定觸發哪一個。"
-          }
-        }
-      }
-    },
-    "Reset Start recording, Stop & transcribe, and Insert & save to ⌥Space?" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "將「開始錄音」、「停止並轉錄」與「插入並儲存」重設為 ⌥Space?"
-          }
-        }
-      }
-    },
-    "Pick the transcription engine — tap a model to make it active. Larger models are more accurate but slower and bigger on disk. The active model downloads on first use; download or remove variants here." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇轉錄引擎 — 點一下模型即設為使用中。較大的模型更準確,但較慢、佔用更多磁碟空間。使用中的模型會在首次使用時下載;可在此下載或移除各種模型。"
-          }
-        }
-      }
-    },
-    "Audio cleanup" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "音訊清理"
-          }
-        }
-      }
-    },
-    "Clean up recordings" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "清理錄音"
-          }
-        }
-      }
-    },
-    "Auto cleans only clips it detects as noisy; On always cleans (DeepFilterNet)." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「自動」只清理偵測到有噪音的片段;「開啟」則一律清理(DeepFilterNet)。"
-          }
-        }
-      }
-    },
-    "Removes background noise before transcription. Auto only cleans clips it detects as noisy, and downloads a small model on first use. Manage the denoiser in Advanced; compare Off / Auto / On in Benchmark." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在轉錄前移除背景噪音。「自動」只清理偵測到有噪音的片段,並於首次使用時下載一個小型模型。可在「進階」中管理降噪器;在 Benchmark 中比較關閉 / 自動 / 開啟。"
-          }
-        }
-      }
-    },
-    "Text formatting" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文字格式"
-          }
-        }
-      }
-    },
-    "Space between Chinese and English/numbers" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "中英文/數字間加空格"
-          }
-        }
-      }
-    },
-    "Word replacements" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "詞語替換"
-          }
-        }
-      }
-    },
-    "Replacements run last — after Chinese conversion and spacing — and the longest matching term wins. Write terms the way the text looks after those steps. Longer, distinctive terms are safer; very short terms can fire inside unrelated words." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "替換在最後執行 — 在中文轉換與加空格之後 — 並由最長的相符詞勝出。請依照那些步驟後文字的樣子來填寫詞語。較長、獨特的詞語較安全;非常短的詞語可能在不相關的字詞中被觸發。"
-          }
-        }
-      }
-    },
-    "Memory & performance" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "記憶體與效能"
-          }
-        }
-      }
-    },
-    "Load keeps the model in memory for instant transcription; Unload frees it. Auto-unload releases the weights after the chosen idle time and reloads on next use." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「載入」會將模型保留在記憶體中以便即時轉錄;「卸載」則釋放它。「閒置時自動釋放」會在所選的閒置時間後釋放權重,並於下次使用時重新載入。"
-          }
-        }
-      }
-    },
-    "Run test" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "執行測試"
-          }
-        }
-      }
-    },
-    "Test the model" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "測試模型"
-          }
-        }
-      }
-    },
-    "Diagnostics" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "診斷"
-          }
-        }
-      }
-    },
-    "“Test the model” downloads three short clips from JacobLinCool/audio-testing (~5 MB) and runs them through the current model to verify it works." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「測試模型」會從 JacobLinCool/audio-testing 下載三段短音訊(約 5 MB),並以目前的模型執行以確認運作正常。"
-          }
-        }
-      }
-    },
-    "Delete all %lld records and %@ of audio? This cannot be undone." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除全部 %lld 筆記錄與 %@ 的音訊?此動作無法復原。"
-          }
-        }
-      }
-    },
-    "A token is saved. Paste a new one to replace it." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已儲存 Token。貼上新的 Token 即可取代。"
-          }
-        }
-      }
-    },
-    "Remove the saved Hugging Face token from the macOS Keychain?" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "從 macOS Keychain 移除已儲存的 Hugging Face Token?"
-          }
-        }
-      }
-    },
-    "Sync / Upload" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "同步 / 上傳"
-          }
-        }
-      }
-    },
-    "A Hugging Face token lets you push the dataset from the browser window. It is stored in the macOS Keychain." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugging Face Token 可讓你從瀏覽器視窗推送資料集。它儲存於 macOS Keychain。"
-          }
-        }
-      }
-    },
-    "Change it if it clashes with another app." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "若與其他 app 衝突,可在此更改。"
-          }
-        }
-      }
-    },
-    "Lets ThinkAloud paste the transcription into the focused app. Optional — without it, text is copied to your clipboard instead (press ⌘V). After you enable it in System Settings, this updates on its own." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "讓 ThinkAloud 將轉錄結果貼到目前使用中的 App。此為選用;若未授予,文字會改為複製到剪貼簿(按 ⌘V)。在「系統設定」中啟用後,這裡會自動更新。"
-          }
-        }
-      }
-    },
-    "Export JSON" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "匯出 JSON"
-          }
-        }
-      }
-    },
-    "· %@" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "· %@"
-          }
-        }
-      }
-    },
-    "Test my environment" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "測試我的環境"
-          }
-        }
-      }
-    },
-    "Microphone access is needed to record a test sample." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要麥克風權限才能錄製測試樣本。"
-          }
-        }
-      }
-    },
-    "Microphone access is off. Enable it to record a test sample." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "麥克風權限已關閉。開啟後才能錄製測試樣本。"
-          }
-        }
-      }
-    },
-    "Records a few seconds so you can see whether Auto would clean it — speak a sentence as you normally would, then Stop." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "錄幾秒鐘,讓你看看 Auto 會不會清理它 — 像平常一樣說一句話,然後按停止。"
-          }
-        }
-      }
-    },
-    "Record a sample" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "錄製樣本"
-          }
-        }
-      }
-    },
-    "Recording… %llds" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "錄音中… %lld 秒"
-          }
-        }
-      }
-    },
-    "Analyzing & cleaning… (the first run downloads the denoiser)" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "分析與清理中…(首次執行會下載降噪器)"
-          }
-        }
-      }
-    },
-    "Auto would clean this clip" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto 會清理這段錄音"
-          }
-        }
-      }
-    },
-    "Auto would leave this clip as-is" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto 會維持這段錄音原樣"
-          }
-        }
-      }
-    },
-    "Your current mode is On, so every recording is cleaned regardless." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你目前的模式是「開啟」,因此每段錄音都會被清理。"
-          }
-        }
-      }
-    },
-    "Your current mode is Off, so no recording is cleaned. Switch to Auto or On to use this." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你目前的模式是「關閉」,因此不會清理任何錄音。切換到「自動」或「開啟」才會作用。"
-          }
-        }
-      }
-    },
-    "Original" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "原始"
-          }
-        }
-      }
-    },
-    "Cleaned" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "清理後"
-          }
-        }
-      }
-    },
-    "Record again" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新錄製"
-          }
-        }
-      }
-    },
-    "Steady background noise detected (signal-to-noise ≈ %@ dB, below the %@ dB threshold)." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "偵測到穩定的背景噪音(訊噪比約 %@ dB,低於 %@ dB 門檻)。"
-          }
-        }
-      }
-    },
-    "Quiet enough — clear gaps between speech (signal-to-noise ≈ %@ dB, at/above the %@ dB threshold)." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "夠安靜 — 語句間有明顯停頓(訊噪比約 %@ dB,達到或高於 %@ dB 門檻)。"
-          }
-        }
-      }
-    },
-    "No clear speech detected (too little dynamic range). Try again and speak a full sentence." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未偵測到清晰的語音(動態範圍太小)。請重試並說完整一句話。"
-          }
-        }
-      }
-    },
-    "The audio is clipping (too loud) — cleaning is forced. Move back from the mic or lower the input level." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "音訊發生削峰(太大聲)— 會強制清理。請離麥克風遠一點或調低輸入音量。"
-          }
-        }
-      }
-    },
-    "The clip was too short to judge. Record a couple of seconds." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "錄音太短,無法判斷。請錄幾秒鐘。"
-          }
-        }
-      }
-    },
-    "Type to preview the formatting…" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸入文字以預覽格式化結果…"
-          }
-        }
-      }
-    },
-    "Input" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸入"
-          }
-        }
-      }
-    },
-    "Chinese conversion" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "中文轉換"
-          }
-        }
-      }
-    },
-    "Spacing" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "加空格"
-          }
-        }
-      }
-    },
-    "No formatting steps are active — the output matches your input." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未啟用任何格式化步驟 — 輸出與輸入相同。"
-          }
-        }
-      }
-    },
-    "Preview" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "預覽"
-          }
-        }
-      }
-    },
-    "Runs the whole text pipeline — Chinese conversion, then spacing, then your word replacements — on whatever you type, showing what each active step changes. The last line is the final inserted text." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "對你輸入的文字執行完整的文字 pipeline — 先中文轉換、再加空格、最後套用你的詞語替換 — 並顯示每個啟用步驟的變化。最後一行是最終插入的文字。"
-          }
-        }
-      }
-    },
-    "Replacements run last — after Chinese conversion and spacing — and the longest matching term wins. Write terms the way the text looks after those steps; use the Preview below to check. Longer, distinctive terms are safer; very short terms can fire inside unrelated words." : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "替換在最後執行 — 在中文轉換與加空格之後 — 並由最長的相符詞勝出。請依照那些步驟後文字的樣子來填寫詞語,可用下方的「預覽」確認。較長、獨特的詞語較安全;非常短的詞語可能在不相關的字詞中被觸發。"
-          }
-        }
-      }
-    },
-    "Stop" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "停止"
-          }
-        }
-      }
-    },
-    "Try again" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重試"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中文偏好"
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }
