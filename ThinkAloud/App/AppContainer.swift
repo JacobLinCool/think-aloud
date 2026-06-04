@@ -18,6 +18,7 @@ final class AppContainer {
     private(set) var onboardingWindow: OnboardingWindowController!
     let hfTokenStore: HFTokenStore
     let updater: UpdaterController
+    let achievements: AchievementService
     /// Owned here (not re-created per Settings render) so the toggle's SMAppService status read
     /// happens once, not on every StartupPane init.
     let launchAtLogin = LaunchAtLoginService()
@@ -41,6 +42,7 @@ final class AppContainer {
         let insertion = TextInsertionManager()
         let hfTokenStore = HFTokenStore()
         let updater = UpdaterController()
+        let achievements = AchievementService(datasetStore: datasetStore)
         let onboardingState = OnboardingState()
 
         self.permissions = permissions
@@ -52,6 +54,7 @@ final class AppContainer {
         self.insertion = insertion
         self.hfTokenStore = hfTokenStore
         self.updater = updater
+        self.achievements = achievements
         self.onboardingState = onboardingState
         self.coordinator = PopupCoordinator(
             permissions: permissions,
@@ -66,6 +69,9 @@ final class AppContainer {
         self.onboardingWindow = OnboardingWindowController(container: self)
         self.coordinator.settingsOpener = { [weak self] category in
             self?.openSettings(to: category)
+        }
+        self.coordinator.onRecordSaved = { [weak self] in
+            Task { @MainActor in await self?.achievements.refresh() }
         }
     }
 

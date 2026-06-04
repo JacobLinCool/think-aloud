@@ -121,6 +121,16 @@
         }
       }
     },
+    "%lld-day streak": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "連續 %lld 天"
+          }
+        }
+      }
+    },
     "(empty)": {
       "localizations": {
         "zh-Hant": {
@@ -337,6 +347,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "精準 (Qwen3-ASR-1.7B-8bit)"
+          }
+        }
+      }
+    },
+    "Achievement unlocked 🎉": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "解鎖成就 🎉"
+          }
+        }
+      }
+    },
+    "Achievements": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "成就"
           }
         }
       }
@@ -1351,6 +1381,76 @@
         }
       }
     },
+    "Dictate 1,000 characters": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "口述 1,000 字元"
+          }
+        }
+      }
+    },
+    "Dictate 1,000 times": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "口述 1,000 次"
+          }
+        }
+      }
+    },
+    "Dictate 10 times": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "口述 10 次"
+          }
+        }
+      }
+    },
+    "Dictate 100 times": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "口述 100 次"
+          }
+        }
+      }
+    },
+    "Dictate 25,000 characters": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "口述 25,000 字元"
+          }
+        }
+      }
+    },
+    "Dictate 250,000 characters": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "口述 250,000 字元"
+          }
+        }
+      }
+    },
+    "Dictate into 5 different apps": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 5 個不同 App 中口述"
+          }
+        }
+      }
+    },
     "Dictated": {
       "localizations": {
         "zh-Hant": {
@@ -1561,6 +1661,16 @@
         }
       }
     },
+    "Editor": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "編輯達人"
+          }
+        }
+      }
+    },
     "Error": {
       "localizations": {
         "zh-Hant": {
@@ -1581,6 +1691,16 @@
         }
       }
     },
+    "Everywhere": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無所不在"
+          }
+        }
+      }
+    },
     "Exact": {
       "localizations": {
         "zh-Hant": {
@@ -1597,6 +1717,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "完全相符"
+          }
+        }
+      }
+    },
+    "Explorer": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "探索者"
           }
         }
       }
@@ -1731,12 +1861,32 @@
         }
       }
     },
+    "Finding Your Voice": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "漸入佳境"
+          }
+        }
+      }
+    },
     "Fires from anywhere to open the popup and start recording.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "在任何 app 都能觸發，開啟 popup 並開始錄音。"
+          }
+        }
+      }
+    },
+    "First Words": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "牛刀小試"
           }
         }
       }
@@ -1821,6 +1971,16 @@
         }
       }
     },
+    "Habit Forming": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "養成習慣"
+          }
+        }
+      }
+    },
     "Hotkey": {
       "localizations": {
         "zh-Hant": {
@@ -1887,6 +2047,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "閒置"
+          }
+        }
+      }
+    },
+    "In the Flow": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "渾然忘我"
           }
         }
       }
@@ -2137,6 +2307,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "延遲與記憶體最低，適合較舊或低功耗的 Mac。"
+          }
+        }
+      }
+    },
+    "Marathon Speaker": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "馬拉松講者"
           }
         }
       }
@@ -2451,6 +2631,16 @@
         }
       }
     },
+    "Novelist": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "小說家"
+          }
+        }
+      }
+    },
     "Off": {
       "localizations": {
         "zh-Hant": {
@@ -2691,6 +2881,16 @@
         }
       }
     },
+    "Polish 50 transcripts": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "潤飾 50 篇逐字稿"
+          }
+        }
+      }
+    },
     "Popup": {
       "localizations": {
         "zh-Hant": {
@@ -2851,6 +3051,16 @@
         }
       }
     },
+    "Prolific": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "著作等身"
+          }
+        }
+      }
+    },
     "Prompt": {
       "localizations": {
         "zh-Hant": {
@@ -3007,6 +3217,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "回收磁碟"
+          }
+        }
+      }
+    },
+    "Record 12 hours": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音 12 小時"
+          }
+        }
+      }
+    },
+    "Record 3 hours": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音 3 小時"
+          }
+        }
+      }
+    },
+    "Record 30 minutes": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音 30 分鐘"
           }
         }
       }
@@ -4091,6 +4331,16 @@
         }
       }
     },
+    "Try 3 different models": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "嘗試 3 種模型"
+          }
+        }
+      }
+    },
     "Try again": {
       "localizations": {
         "zh-Hant": {
@@ -4171,6 +4421,16 @@
         }
       }
     },
+    "Unstoppable": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "勢不可擋"
+          }
+        }
+      }
+    },
     "Updates": {
       "localizations": {
         "zh-Hant": {
@@ -4231,6 +4491,36 @@
         }
       }
     },
+    "Use 3 days in a row": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "連續 3 天使用"
+          }
+        }
+      }
+    },
+    "Use 30 days in a row": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "連續 30 天使用"
+          }
+        }
+      }
+    },
+    "Use 7 days in a row": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "連續 7 天使用"
+          }
+        }
+      }
+    },
     "Use model default": {
       "localizations": {
         "zh-Hant": {
@@ -4271,12 +4561,42 @@
         }
       }
     },
+    "Voice Veteran": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "口述老手"
+          }
+        }
+      }
+    },
+    "Warmed Up": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "熱身完成"
+          }
+        }
+      }
+    },
     "We compare the time it would take to **type** your final text against the time you actually spent **speaking**, minus the time spent fixing the transcript.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "我們以**打出**最終文字所需的時間，對比你實際**口述**的時間，再扣除修正逐字稿的時間。"
+          }
+        }
+      }
+    },
+    "Weeklong": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "持續一週"
           }
         }
       }
@@ -4347,6 +4667,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "詞語替換"
+          }
+        }
+      }
+    },
+    "Wordsmith": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字工匠"
           }
         }
       }
@@ -4477,6 +4807,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "小時"
+          }
+        }
+      }
+    },
+    "inserted with no manual edits": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "插入時未經編輯"
           }
         }
       }

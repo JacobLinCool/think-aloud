@@ -43,6 +43,7 @@ private struct SettingsDetail: View {
     @ViewBuilder
     private var content: some View {
         switch category {
+        case .insights: InsightsPane()
         case .startup: StartupPane()
         case .shortcuts: ShortcutsPane()
         case .permissions: PermissionsPane()

@@ -226,6 +226,25 @@ final class DatasetStatisticsTests: XCTestCase {
         XCTAssertEqual(s.activityByDay.first?.day, "2026-06-05")
     }
 
+    // MARK: - Streak
+
+    func testLongestDayStreakAcrossMonthBoundary() {
+        // 06-29,06-30,07-01 = 3 consecutive (crosses the month). 06-05,06-06 = 2. 06-01 alone = 1.
+        let days = ["2026-06-01", "2026-06-05", "2026-06-06", "2026-06-29", "2026-06-30", "2026-07-01"]
+        let s = DatasetStatistics.compute(from: days.enumerated().map {
+            rec(id: "r\($0.0)", createdAt: "\($0.1)T10:00:00Z", raw: "x", edited: "x")
+        })
+        XCTAssertEqual(s.longestDayStreak, 3)
+        XCTAssertEqual(s.activeDayCount, 6)
+    }
+
+    func testStreakCollapsesDuplicateDays() {
+        let s = DatasetStatistics.compute(from: (0..<3).map {
+            rec(id: "r\($0)", createdAt: "2026-06-10T1\($0):00:00Z", raw: "x", edited: "x")
+        })
+        XCTAssertEqual(s.longestDayStreak, 1, "three records on one day = a 1-day streak")
+    }
+
     // MARK: - Privacy projection
 
     func testPublicProjectionDropsAppAndDatedActivity() {

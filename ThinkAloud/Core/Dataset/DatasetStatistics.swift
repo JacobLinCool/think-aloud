@@ -28,6 +28,9 @@ struct DatasetStatistics: Sendable, Equatable, Codable {
     var lastRecordAt: String?
     /// Distinct UTC calendar days (the `yyyy-MM-dd` prefix of `createdAt`) with ≥1 record.
     var activeDayCount: Int
+    /// Longest run of consecutive active UTC days. Clock-free (derived purely from the records), so
+    /// it powers the "N-day streak" achievement deterministically.
+    var longestDayStreak: Int
 
     var audio: AudioSummary
     var text: TextSummary
@@ -50,6 +53,7 @@ struct DatasetStatistics: Sendable, Equatable, Codable {
 
     static let empty = DatasetStatistics(
         recordCount: 0, insertedCount: 0, firstRecordAt: nil, lastRecordAt: nil, activeDayCount: 0,
+        longestDayStreak: 0,
         audio: .empty, text: .empty, editing: .empty, productivity: .empty,
         byLanguage: [], byModel: [], byApp: [], activityByDay: [],
         activityByHourUTC: Array(repeating: 0, count: 24),
@@ -417,6 +421,7 @@ extension DatasetStatistics {
             firstRecordAt: firstAt,
             lastRecordAt: lastAt,
             activeDayCount: dayAgg.count,
+            longestDayStreak: longestStreak(days: Array(dayAgg.keys)),
             audio: audio,
             text: text,
             editing: editing,
@@ -481,6 +486,32 @@ extension DatasetStatistics {
         guard chars.count >= 13, chars[10] == "T" else { return nil }
         guard let h = Int(String(chars[11...12])), (0...23).contains(h) else { return nil }
         return h
+    }
+
+    /// Longest run of consecutive calendar days in a set of `yyyy-MM-dd` keys. Converts each day to a
+    /// Julian-day ordinal (pure integer math), sorts the distinct ordinals, and walks for the longest
+    /// `+1` run.
+    private static func longestStreak(days: [String]) -> Int {
+        let ordinals = Set(days.compactMap(julianDay)).sorted()
+        guard !ordinals.isEmpty else { return 0 }
+        var longest = 1, run = 1
+        for i in 1..<ordinals.count {
+            run = ordinals[i] == ordinals[i - 1] + 1 ? run + 1 : 1
+            if run > longest { longest = run }
+        }
+        return longest
+    }
+
+    /// Julian Day Number for a `yyyy-MM-dd` date — a monotonic integer day ordinal, so consecutive
+    /// calendar days differ by exactly 1 across month/year boundaries. Pure integer math.
+    private static func julianDay(_ day: String) -> Int? {
+        let parts = day.split(separator: "-")
+        guard parts.count == 3, let y = Int(parts[0]), let m = Int(parts[1]), let d = Int(parts[2]),
+              (1...12).contains(m), (1...31).contains(d) else { return nil }
+        let a = (14 - m) / 12
+        let yy = y + 4800 - a
+        let mm = m + 12 * a - 3
+        return d + (153 * mm + 2) / 5 + 365 * yy + yy / 4 - yy / 100 + yy / 400 - 32045
     }
 
     /// Weekday (0 = Sunday … 6 = Saturday) for a `yyyy-MM-dd` date via Sakamoto's algorithm. Pure

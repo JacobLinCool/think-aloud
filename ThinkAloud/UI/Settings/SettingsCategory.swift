@@ -4,11 +4,13 @@ import SwiftUI
 /// persisted selection token (see `SettingsRouter`), so reordering or adding cases later never
 /// corrupts a previously-saved selection.
 ///
-/// The eight job-shaped categories. Each mental object lives in exactly one home: app-level setup
+/// Insights is the home page (first item, default landing — every open lands here so the user sees
+/// their stats + achievements immediately). The rest are the job-shaped categories: app-level setup
 /// (Startup), the dictation hotkeys (Shortcuts), OS grants (Permissions), updates (Software Update),
 /// the engine + its files (Model), everyday output shaping (Output), saved records (Dataset), and
 /// power/diagnostic tools (Advanced).
 enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
+    case insights
     case startup
     case shortcuts
     case permissions
@@ -22,6 +24,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
 
     var title: LocalizedStringKey {
         switch self {
+        case .insights: "Insights"
         case .startup: "Startup"
         case .shortcuts: "Shortcuts"
         case .permissions: "Permissions"
@@ -35,6 +38,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
 
     var symbol: String {
         switch self {
+        case .insights: "chart.bar.xaxis"
         case .startup: "gearshape"
         case .shortcuts: "keyboard"
         case .permissions: "lock.shield"
