@@ -33,7 +33,9 @@ struct DatasetRecord: Codable, FetchableRecord, PersistableRecord, Sendable, Equ
     /// dictionary) but BEFORE any manual human correction. Lets us separate automatic formatting
     /// from real human edits: `raw → autoEdited` is the auto-format delta, `autoEdited → edited`
     /// is what the person actually fixed. `nil` for records saved before v0.4.0 (no migration
-    /// backfill is possible — the intermediate text was never captured); stats fall back to `raw`.
+    /// backfill is possible — the intermediate text was never captured); such rows are EXCLUDED from
+    /// the edit/clean metrics (not counted in `eligibleCount`), never charged as a human edit — the
+    /// stats engine must never substitute `rawTranscript` here (that would punish S↔T-conversion users).
     /// Appended last + defaulted so the synthesized memberwise init keeps existing call sites valid.
     var autoEditedTranscript: String? = nil
 

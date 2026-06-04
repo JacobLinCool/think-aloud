@@ -17,6 +17,10 @@ final class DatasetBrowserController {
     /// loaded page) on a background task, then cached here — never recomputed per render.
     private(set) var statistics: DatasetStatistics?
     private(set) var statisticsLoading: Bool = false
+    /// Set when a reload is requested while one is already in flight, so the coalescer re-runs once
+    /// after the current compute finishes — otherwise a mutation (delete/edit) landing during the
+    /// two-suspension-point compute would be dropped and the cache would keep a stale snapshot.
+    private var statisticsReloadPending: Bool = false
     /// One-shot indicator pulses for ~1.5s after a successful edit save. Lets the detail view
     /// show "已儲存 ✓" briefly without us threading a separate callback.
     private(set) var lastSaveTick: Date?
@@ -62,16 +66,20 @@ final class DatasetBrowserController {
     }
 
     /// Recomputes the overview statistics over all saved records (background compute, cached).
-    /// Idempotent-ish: safe to call on appear and after mutations; skips if already in flight.
+    /// Trailing-edge coalescer: a call arriving mid-compute marks a pending reload and the loop
+    /// re-runs once so the cached snapshot always reflects the latest dataset, never an in-flight one.
     func loadStatistics() async {
-        if statisticsLoading { return }
+        if statisticsLoading { statisticsReloadPending = true; return }
         statisticsLoading = true
         defer { statisticsLoading = false }
-        do {
-            statistics = try await datasetStore.computeStatistics()
-        } catch {
-            errorMessage = String(localized: "Failed to compute statistics: \(error.localizedDescription)")
-        }
+        repeat {
+            statisticsReloadPending = false
+            do {
+                statistics = try await datasetStore.computeStatistics()
+            } catch {
+                errorMessage = String(localized: "Failed to compute statistics: \(error.localizedDescription)")
+            }
+        } while statisticsReloadPending
     }
 
     /// Loads the next page. Idempotent if already loading or no more data.
@@ -146,6 +154,9 @@ final class DatasetBrowserController {
                 )
             }
             lastSaveTick = Date()
+            // Editing changes the field every edit-derived stat reads (clean rate, manual distance,
+            // time saved, counts) — invalidate the cached overview through the coalescer.
+            await loadStatistics()
         } catch {
             errorMessage = String(localized: "Save failed: \(error.localizedDescription)")
         }

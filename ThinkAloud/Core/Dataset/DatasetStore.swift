@@ -63,7 +63,8 @@ actor DatasetStore {
         }
         // v0.4.0: capture the post-Auto-Post-Edit / pre-manual-edit transcript so statistics can
         // tell automatic formatting apart from real human corrections. Nullable + no backfill —
-        // older rows keep NULL and the stats engine falls back to `raw_transcript` for them.
+        // older rows keep NULL and are EXCLUDED from the edit/clean metrics (the engine never
+        // substitutes raw_transcript for the missing intermediate).
         m.registerMigration("addAutoEditedTranscript") { db in
             try db.alter(table: "records") { t in
                 t.add(column: "auto_edited_transcript", .text)

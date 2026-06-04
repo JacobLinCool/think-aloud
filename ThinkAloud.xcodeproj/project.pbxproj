@@ -62,6 +62,7 @@
 		717746A829426E48CD0996E1 /* DatasetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16408ECB6DBBBF061C5E3C66 /* DatasetStore.swift */; };
 		7239E594F7407C88BBCDA84D /* HFPushView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2A70290B1B2DEE0F3491BD /* HFPushView.swift */; };
 		736D4285300436C47995A996 /* MLXAudioWhisperRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79272DFE514F055E081E69BF /* MLXAudioWhisperRuntime.swift */; };
+		743049F63184D8D560F7902A /* ActivityWindowingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31459A26B4C13AC64BAB5ECE /* ActivityWindowingTests.swift */; };
 		748ACD894DB68DA9475399C7 /* BenchmarkRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27612263B9D0D0A3AF5B6E49 /* BenchmarkRunner.swift */; };
 		75C3DF6900968562C48D741F /* MLXAudioSTT in Frameworks */ = {isa = PBXBuildFile; productRef = 4484CA5F8DE1CCBFE82E00BB /* MLXAudioSTT */; };
 		76F986DA9B3864F7A6E8E73A /* AdvancedPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350EF2A8C1580F06BA144A83 /* AdvancedPane.swift */; };
@@ -155,6 +156,7 @@
 		28E6B662BCB8C90F7D120950 /* LiveASRSmokeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveASRSmokeTest.swift; sourceTree = "<group>"; };
 		2BD0C6CBBC80507827CB3766 /* JSONLExporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONLExporterTests.swift; sourceTree = "<group>"; };
 		30F90BA28E3E50D0EAF259D1 /* SettingsCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCategory.swift; sourceTree = "<group>"; };
+		31459A26B4C13AC64BAB5ECE /* ActivityWindowingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityWindowingTests.swift; sourceTree = "<group>"; };
 		325A849CDBD91C4D59F76CC3 /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
 		34010A84EE341A65F6353514 /* PopupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupViewModel.swift; sourceTree = "<group>"; };
 		350EF2A8C1580F06BA144A83 /* AdvancedPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedPane.swift; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 		21EDCD55ED9A9E0739A47488 /* ThinkAloudTests */ = {
 			isa = PBXGroup;
 			children = (
+				31459A26B4C13AC64BAB5ECE /* ActivityWindowingTests.swift */,
 				03C653890C518AC74AC443D7 /* ASRTypesTests.swift */,
 				E9CBEFFBEE795B31CC292666 /* AudioFileStoreTests.swift */,
 				D84B6290801A9E8A17AE4204 /* AudioRecorderTests.swift */,
@@ -683,6 +686,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				818647C5F88EF6842106C6EA /* ASRTypesTests.swift in Sources */,
+				743049F63184D8D560F7902A /* ActivityWindowingTests.swift in Sources */,
 				BAADAD2ECA2463F6696C7792 /* AudioFileStoreTests.swift in Sources */,
 				10D894845BC29265CC1B259E /* AudioRecorderTests.swift in Sources */,
 				07E71866CABAAD64EC67DE45 /* AudioResampleTests.swift in Sources */,

@@ -450,21 +450,26 @@ private struct BreakdownBars: View {
 // MARK: - View-side derived helpers (use the live clock; cheap, computed in body)
 
 /// "This week vs last" using UTC day strings so it lines up with the engine's day bucketing.
-private struct WeeklyActivity {
+/// Internal (not private) so the UTC-windowing contract can be regression-tested.
+struct WeeklyActivity {
     let thisWeek: Int
     let lastWeek: Int
 
     init(stats: DatasetStatistics, now: Date = Date()) {
-        let cal = Calendar(identifier: .gregorian)
+        // The engine keys days by the UTC `created_at` prefix, so window in UTC too (Calendar
+        // otherwise defaults to TimeZone.current and shifts the boundaries by a day).
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone(secondsFromGMT: 0)!
         func dayString(_ date: Date) -> String { Self.fmt.string(from: date) }
         let today = cal.startOfDay(for: now)
-        let weekAgo = cal.date(byAdding: .day, value: -7, to: today) ?? today
-        let twoWeeksAgo = cal.date(byAdding: .day, value: -14, to: today) ?? today
-        let thisLo = dayString(weekAgo), lastLo = dayString(twoWeeksAgo), lastHi = dayString(weekAgo)
+        // Symmetric 7-day windows: this week = today-6…today, last week = today-13…today-7.
+        let thisWeekStart = cal.date(byAdding: .day, value: -6, to: today) ?? today
+        let lastWeekStart = cal.date(byAdding: .day, value: -13, to: today) ?? today
+        let thisLo = dayString(thisWeekStart), lastLo = dayString(lastWeekStart)
         var tw = 0, lw = 0
         for d in stats.activityByDay {
             if d.day >= thisLo { tw += d.count }
-            else if d.day >= lastLo && d.day < lastHi { lw += d.count }
+            else if d.day >= lastLo { lw += d.count }   // d.day < thisLo here → [lastLo, thisLo)
         }
         self.thisWeek = tw
         self.lastWeek = lw
@@ -487,12 +492,15 @@ private struct WeeklyActivity {
 }
 
 /// Dense daily series for the activity chart — fills gaps with 0 so the axis is continuous.
-private struct ActivitySeries {
+/// Internal (not private) so the UTC-windowing contract can be regression-tested.
+struct ActivitySeries {
     struct Point: Identifiable { let date: Date; let count: Int; var id: Date { date } }
     let points: [Point]
 
     init(stats: DatasetStatistics, days: Int, now: Date = Date()) {
-        let cal = Calendar(identifier: .gregorian)
+        // UTC, to match the engine's day keys (see WeeklyActivity).
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone(secondsFromGMT: 0)!
         let counts = Dictionary(uniqueKeysWithValues: stats.activityByDay.map { ($0.day, $0.count) })
         let today = cal.startOfDay(for: now)
         var pts: [Point] = []
@@ -568,6 +576,8 @@ enum StatFmt {
         let f = DateFormatter()
         f.dateStyle = .medium
         f.timeStyle = .none
+        // Render in UTC so the displayed date matches the UTC day key isoDay parsed it from.
+        f.timeZone = TimeZone(secondsFromGMT: 0)
         return f
     }()
 }
