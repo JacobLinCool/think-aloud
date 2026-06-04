@@ -60,10 +60,9 @@ final class MenuBarController: NSObject {
         container.openDatasetBrowser()
     }
 
-    /// Opens the dataset window, which lands on the Records tab and shows the overview/insights when
-    /// no record is selected (a fresh open, or after the reload that clears selection).
+    /// Opens Settings on the Insights home page (stats + achievements).
     @objc private func openInsights() {
-        container.openDatasetBrowser()
+        container.openSettings(to: .insights)
     }
 
     @objc private func checkForUpdates() {

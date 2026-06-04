@@ -243,9 +243,15 @@ struct DatasetBrowserView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
-            // Nothing selected → show the dataset overview (insights for the app user + the
-            // dataset's shape for a consumer) instead of a bare placeholder.
-            DatasetOverviewView(controller: controller)
+            VStack(spacing: 6) {
+                Image(systemName: "text.quote")
+                    .font(.largeTitle)
+                    .foregroundStyle(.tertiary)
+                Text("Select a record")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }

@@ -103,6 +103,9 @@ final class PopupCoordinator {
     }
 
     var settingsOpener: ((SettingsCategory?) -> Void)?
+    /// Fired after a record is successfully saved to the dataset, so achievements can re-evaluate
+    /// (and a newly-earned milestone can notify) as the user dictates.
+    var onRecordSaved: (() -> Void)?
 
     func openSettings(_ category: SettingsCategory? = nil) {
         settingsOpener?(category)
@@ -329,6 +332,7 @@ final class PopupCoordinator {
                     autoEditedTranscript: autoEditedText
                 )
                 try await datasetStore.save(record)
+                onRecordSaved?()
             } catch {
                 NSLog("ThinkAloud: dataset save failed: \(error)")
             }
