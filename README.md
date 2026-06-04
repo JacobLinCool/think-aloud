@@ -12,9 +12,10 @@ Built around [Qwen3-ASR](https://huggingface.co/mlx-community?search_models=Qwen
 - **Streaming transcription** with editable preview before inserting.
 - **Chinese output preference** — keep model output as-is, prefer Traditional (正體), or prefer Simplified (簡體). Conversion runs locally via ICU.
 - **Localized UI** — English and 正體中文, or follow the system language. Switch any time in Settings → General (takes effect after relaunch).
+- **Insights** — see how much you've dictated, your estimated time saved vs. typing, and how often a transcript "came out clean" (inserted with zero edits). Activity over time, recording-length distribution, and per-language/model breakdowns. Open from the menu bar (`⌥`-click the mic, **Insights…**) or the Dataset window.
 - **Dataset browser** — play recordings, scrub the timeline, edit transcripts, bulk delete.
 - **Built-in benchmark** — re-run any saved model against your dataset; see CER, WER, exact-match rate, real-time factor (RTF), and a per-character git-style diff. Toggle strict vs lenient (normalized) scoring without re-running. Multiple runs kept for cross-model comparison. JSON export.
-- **Push to Hugging Face Hub** — full LFS support, repo card auto-generated, token stored in macOS Keychain.
+- **Push to Hugging Face Hub** — full LFS support; a rich dataset card + machine-readable `statistics.json` are generated from your data (length distribution, text volume, transcript-quality rates). Source-app names are excluded by default; token stored in macOS Keychain.
 - **Idle auto-unload** of model weights to free memory between sessions.
 - **Automatic updates** via [Sparkle](https://sparkle-project.org/) — checks GitHub Releases daily, verifies each update's signature, and installs on your OK. Settings → Updates.
 
@@ -51,7 +52,7 @@ Built around [Qwen3-ASR](https://huggingface.co/mlx-community?search_models=Qwen
 
 Open from menu bar **Browse Dataset…** (`⌘D`) or Settings → Dataset.
 
-- **Records** — saved dictations. Play, scrub, edit the transcript (raw stays immutable, edited overwrites). Multi-select + `⌘⌫` for bulk delete. Push the whole dataset to HF Hub from the toolbar.
+- **Records** — saved dictations. Play, scrub, edit the transcript (raw stays immutable, edited overwrites). Multi-select + `⌘⌫` for bulk delete. Push the whole dataset to HF Hub from the toolbar. With nothing selected, the detail pane shows your **insights** — time saved, "came out clean" rate, length distribution, and breakdowns.
 - **Benchmark** — pick a model + Chinese preference, run the full pipeline (audio decode → model → post-process) against every record. Reports overall CER, WER, exact-match rate, average latency, and real-time factor (RTF); a Normalize toggle flips between strict (case + punctuation preserved) and lenient scoring without re-running. Per-record diffs show what the model omitted (green) vs hallucinated (red). Multiple runs are kept in-session for comparison and can be exported as JSON.
 
 ![Dataset browser & benchmark](images/dataset-benchmark.png)
@@ -61,6 +62,8 @@ Open from menu bar **Browse Dataset…** (`⌘D`) or Settings → Dataset.
 - All audio is processed on-device. Nothing is sent to a server unless you explicitly press **Push** in the dataset browser.
 - The Hugging Face token is stored in macOS Keychain — never on disk in plain text, never in UserDefaults.
 - Recordings are only saved to your dataset when you choose **Insert & save**. Plain Insert discards the audio.
+- A push only includes an explicit allowlist of fields. Source-app names are **off by default** (opt in per push), and free-form config blobs are never uploaded. The pre-push dialog lists exactly what will be written.
+- Insights are computed locally; the app-usage breakdown ("where you dictate") never leaves your Mac.
 - The dataset (SQLite + WAV files) lives at `~/Library/Application Support/ThinkAloud/`.
 
 ## Build from source

@@ -52,6 +52,26 @@ final class DatasetStoreTests: XCTestCase {
         try await store.count()
     }
 
+    func testAutoEditedTranscriptRoundTrips() async throws {
+        let dbURL = tempDir.appendingPathComponent("dataset.sqlite")
+        let store = DatasetStore(databaseURL: dbURL)
+        try await store.setup()
+
+        // New record carries the auto-edited intermediate.
+        var withAuto = makeRecord(id: "rec_auto", createdAt: "2026-06-05T10:00:00Z", raw: "raw model", edited: "final text")
+        withAuto.autoEditedTranscript = "auto formatted"
+        try await store.save(withAuto)
+        let fetchedAuto = try await store.fetch(id: "rec_auto")
+        XCTAssertEqual(fetchedAuto?.autoEditedTranscript, "auto formatted")
+
+        // A record that omits it (historical shape) stores/loads NULL → nil.
+        let withoutAuto = makeRecord(id: "rec_legacy", createdAt: "2026-06-05T10:00:01Z")
+        XCTAssertNil(withoutAuto.autoEditedTranscript, "defaulted to nil when omitted")
+        try await store.save(withoutAuto)
+        let fetchedLegacy = try await store.fetch(id: "rec_legacy")
+        XCTAssertNil(fetchedLegacy?.autoEditedTranscript)
+    }
+
     func testDeleteAll() async throws {
         let dbURL = tempDir.appendingPathComponent("dataset.sqlite")
         let store = DatasetStore(databaseURL: dbURL)

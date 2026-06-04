@@ -9,6 +9,11 @@ final class HFPushController {
     var organization: String = ""
     var isPrivate: Bool = true
     var includeAudio: Bool = true
+    /// Privacy-first default OFF — the app the user dictates into is not published unless they opt in.
+    var includeSourceApp: Bool = false
+
+    /// Aggregate stats for the pre-push consent summary (what the upload will contain). Loaded lazily.
+    private(set) var summary: DatasetStatistics?
 
     // Runtime state
     private(set) var isRunning: Bool = false
@@ -35,6 +40,12 @@ final class HFPushController {
         tokenStore.hasToken && !repoName.isEmpty && !isRunning
     }
 
+    /// Loads the aggregate summary shown in the consent block. Cheap one-shot; ignores errors.
+    func loadSummary() async {
+        guard summary == nil else { return }
+        summary = try? await datasetStore.computeStatistics()
+    }
+
     func push() {
         guard !isRunning, let token = tokenStore.token else { return }
         let datasetStore = datasetStore
@@ -44,7 +55,8 @@ final class HFPushController {
             repoName: repoName.trimmingCharacters(in: .whitespacesAndNewlines),
             organization: org.isEmpty ? nil : org,
             isPrivate: isPrivate,
-            includeAudio: includeAudio
+            includeAudio: includeAudio,
+            includeSourceApp: includeSourceApp
         )
 
         isRunning = true

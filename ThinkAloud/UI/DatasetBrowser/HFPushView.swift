@@ -40,6 +40,7 @@ struct HFPushView: View {
             }
             Toggle(String(localized: "Private"), isOn: $controller.isPrivate)
             Toggle(String(localized: "Include audio files"), isOn: $controller.includeAudio)
+            Toggle(String(localized: "Include source-app names"), isOn: $controller.includeSourceApp)
         }
         .disabled(controller.isRunning)
     }
@@ -91,9 +92,56 @@ struct HFPushView: View {
                 }
             }
         } else {
-            Text("Uploaded as `metadata.jsonl` + audio files (LFS). Audio is uploaded — only push if you've reviewed the contents.")
-                .font(.caption)
+            consentSummary
+        }
+    }
+
+    /// Pre-push consent block: what the upload will contain, so nothing is a surprise.
+    @ViewBuilder
+    private var consentSummary: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let s = controller.summary, !s.isEmpty {
+                HStack(spacing: 14) {
+                    summaryStat(String(localized: "Recordings"), "\(s.recordCount)")
+                    summaryStat(String(localized: "Speech"), String(format: "%.1f h", Double(s.audio.totalDurationMs) / 3_600_000))
+                    summaryStat(String(localized: "Languages"), "\(s.byLanguage.count)")
+                }
+            }
+            Text("This push writes:")
+                .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 2) {
+                bullet(String(localized: "README.md + statistics.json (aggregate stats)"))
+                bullet(String(localized: "metadata.jsonl — one row per recording, with transcripts + derived counts"))
+                if controller.includeAudio {
+                    bullet(String(localized: "audio/… — your 16 kHz recordings (LFS)"))
+                }
+            }
+            Label {
+                Text(controller.includeSourceApp
+                     ? String(localized: "Source-app names **are** included.")
+                     : String(localized: "Source-app names are **not** included."))
+            } icon: {
+                Image(systemName: controller.includeSourceApp ? "info.circle" : "checkmark.shield")
+            }
+            .font(.caption)
+            .foregroundStyle(controller.includeSourceApp ? Color.secondary : Color.green)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .task { await controller.loadSummary() }
+    }
+
+    private func summaryStat(_ label: String, _ value: String) -> some View {
+        VStack(alignment: .leading, spacing: 1) {
+            Text(value).font(.title3.weight(.semibold).monospacedDigit())
+            Text(label).font(.caption2).foregroundStyle(.secondary)
+        }
+    }
+
+    private func bullet(_ text: String) -> some View {
+        HStack(alignment: .top, spacing: 6) {
+            Text("•").foregroundStyle(.secondary)
+            Text(text).font(.caption).foregroundStyle(.secondary)
         }
     }
 
