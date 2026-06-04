@@ -122,6 +122,7 @@ struct InsightsPane: View {
     @ViewBuilder
     private func retentionHook(_ s: DatasetStatistics) -> some View {
         let weekly = WeeklyActivity(stats: s)
+        let streak = CurrentStreak(stats: s)
         let milestone = StatFmt.nextMilestone(after: s.recordCount)
         HStack(spacing: 14) {
             Label {
@@ -130,9 +131,11 @@ struct InsightsPane: View {
                     Text(arrow).foregroundStyle(weekly.up ? Color.green : Color.secondary)
                 }
             } icon: { Image(systemName: "calendar") }
-            if s.longestDayStreak > 1 {
+            // Live current streak only (consecutive days ending today/yesterday) — not the all-time
+            // best, which would glow even after the user stopped dictating weeks ago.
+            if streak.days >= 2 {
                 Divider().frame(height: 14)
-                Label("\(s.longestDayStreak)-day streak", systemImage: "flame.fill")
+                Label("\(streak.days)-day streak", systemImage: "flame.fill")
                     .foregroundStyle(.orange)
             }
             if let milestone {
@@ -453,6 +456,44 @@ struct WeeklyActivity {
     var deltaArrow: String? {
         guard lastWeek > 0 || thisWeek > 0, thisWeek != lastWeek else { return nil }
         return thisWeek > lastWeek ? "▲" : "▼"
+    }
+
+    private static let fmt: DateFormatter = {
+        let f = DateFormatter()
+        f.calendar = Calendar(identifier: .gregorian)
+        f.timeZone = TimeZone(secondsFromGMT: 0)
+        f.dateFormat = "yyyy-MM-dd"
+        return f
+    }()
+}
+
+/// The user's CURRENT consecutive-day run, counted back from today (or yesterday, as a grace day so
+/// the streak doesn't read as broken before today's first dictation). 0 when the most recent active
+/// day is older than that. Internal so it can be unit-tested. UTC to match the engine's day keys.
+struct CurrentStreak {
+    let days: Int
+
+    init(stats: DatasetStatistics, now: Date = Date()) {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone(secondsFromGMT: 0)!
+        let active = Set(stats.activityByDay.map(\.day))
+        func key(_ d: Date) -> String { Self.fmt.string(from: d) }
+        let today = cal.startOfDay(for: now)
+        let yesterday = cal.date(byAdding: .day, value: -1, to: today) ?? today
+
+        let anchor: Date
+        if active.contains(key(today)) { anchor = today }
+        else if active.contains(key(yesterday)) { anchor = yesterday }
+        else { self.days = 0; return }
+
+        var count = 0
+        var cursor = anchor
+        while active.contains(key(cursor)) {
+            count += 1
+            guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { break }
+            cursor = prev
+        }
+        self.days = count
     }
 
     private static let fmt: DateFormatter = {

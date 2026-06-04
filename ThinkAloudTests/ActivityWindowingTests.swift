@@ -38,6 +38,18 @@ final class ActivityWindowingTests: XCTestCase {
         XCTAssertTrue(w.up, "2 >= 2")
     }
 
+    func testCurrentStreakCountsBackFromTodayOrYesterday() throws {
+        let now = try XCTUnwrap(Self.utc.date(from: "2026-06-15T12:00:00Z"))
+        // Ending today.
+        XCTAssertEqual(CurrentStreak(stats: stats(onDays: ["2026-06-13", "2026-06-14", "2026-06-15"]), now: now).days, 3)
+        // Ending yesterday (grace day — not yet dictated today).
+        XCTAssertEqual(CurrentStreak(stats: stats(onDays: ["2026-06-12", "2026-06-13", "2026-06-14"]), now: now).days, 3)
+        // Most recent active day older than yesterday → no live streak.
+        XCTAssertEqual(CurrentStreak(stats: stats(onDays: ["2026-06-10", "2026-06-11"]), now: now).days, 0)
+        // A gap right before today → streak is just today.
+        XCTAssertEqual(CurrentStreak(stats: stats(onDays: ["2026-06-12", "2026-06-13", "2026-06-15"]), now: now).days, 1)
+    }
+
     func testActivitySeriesIsDenseAndUTCAligned() throws {
         let now = try XCTUnwrap(Self.utc.date(from: "2026-06-15T12:00:00Z"))
         let s = stats(onDays: ["2026-06-15", "2026-06-09", "2026-06-08", "2026-06-02", "2026-06-01"])

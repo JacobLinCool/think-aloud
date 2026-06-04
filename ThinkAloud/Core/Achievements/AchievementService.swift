@@ -1,6 +1,6 @@
 import Foundation
 import Observation
-import UserNotifications
+@preconcurrency import UserNotifications
 
 /// Owns achievement state: recomputes statistics, unlocks newly-earned milestones, persists the
 /// unlocked set, and fires a system notification when something new is earned. Also the shared
@@ -23,25 +23,36 @@ final class AchievementService {
     private static let baselineKey = "ThinkAloud.achievements.baselineEstablished"
 
     private var didRequestAuth = false
+    private var refreshInFlight = false
+    private var refreshPending = false
     /// Injection seam so tests can observe notifications without touching UNUserNotificationCenter.
-    var notifier: (Achievement) -> Void
+    /// Takes the whole batch unlocked in one pass so a single auth round-trip covers all of them.
+    var notifier: ([Achievement]) -> Void
 
     init(datasetStore: DatasetStore) {
         self.datasetStore = datasetStore
         self.notifier = { _ in }
-        self.notifier = { [weak self] in self?.postSystemNotification($0) }
+        self.notifier = { [weak self] in self?.postSystemNotifications($0) }
         if let saved = UserDefaults.standard.array(forKey: Self.unlockedKey) as? [String] {
             unlockedIDs = Set(saved)
         }
     }
 
-    /// Recompute statistics and reconcile achievements. Cheap to call repeatedly (the heavy compute
-    /// is the same one the Insights dashboard already needs).
+    /// Recompute statistics and reconcile achievements. Coalesces concurrent callers (Insights `.task`
+    /// + the after-save trigger) onto one compute, with a single trailing re-run if a save lands
+    /// mid-compute — so an open Insights window + a save don't kick off two full Levenshtein passes.
     func refresh() async {
-        guard let s = try? await datasetStore.computeStatistics() else { return }
-        stats = s
-        hasLoaded = true
-        reconcile(with: s)
+        if refreshInFlight { refreshPending = true; return }
+        refreshInFlight = true
+        defer { refreshInFlight = false }
+        repeat {
+            refreshPending = false
+            if let s = try? await datasetStore.computeStatistics() {
+                stats = s
+                hasLoaded = true
+                reconcile(with: s)
+            }
+        } while refreshPending
     }
 
     /// Pure reconciliation: on the FIRST evaluation (no baseline yet) every already-satisfied
@@ -64,28 +75,47 @@ final class AchievementService {
             UserDefaults.standard.set(true, forKey: Self.baselineKey)
             return
         }
-        // Notify in catalogue order for a stable, sensible sequence when several land at once.
-        for a in Achievement.all where result.notify.contains(a.id) {
-            notifier(a)
-        }
+        // Notify in catalogue order for a stable sequence when several land at once.
+        let newly = Achievement.all.filter { result.notify.contains($0.id) }
+        if !newly.isEmpty { notifier(newly) }
     }
 
     // MARK: - System notification
 
-    private func postSystemNotification(_ a: Achievement) {
+    /// Posts banners for a batch of freshly-unlocked achievements. The `add()` calls run INSIDE the
+    /// authorization callback (mirroring `InsertionFeedback`) so the very first unlock on a fresh
+    /// install isn't dropped by racing the still-`.notDetermined` auth prompt — and one auth
+    /// round-trip covers the whole batch.
+    private func postSystemNotifications(_ achievements: [Achievement]) {
+        guard !achievements.isEmpty else { return }
         let center = UNUserNotificationCenter.current()
-        requestAuthIfNeeded(center)
-        let content = UNMutableNotificationContent()
-        content.title = String(localized: "Achievement unlocked 🎉")
-        content.body = "\(a.title) — \(a.detail)"
-        content.sound = .default
-        center.add(UNNotificationRequest(identifier: "achievement.\(a.id)", content: content, trigger: nil))
+        ensureAuthorized(center) { granted in
+            guard granted else {
+                NSLog("ThinkAloud: achievement notification skipped — not authorized (\(achievements.count) queued)")
+                return
+            }
+            for a in achievements {
+                let content = UNMutableNotificationContent()
+                content.title = String(localized: "Achievement unlocked 🎉")
+                content.body = "\(a.title) — \(a.detail)"
+                content.sound = .default
+                center.add(UNNotificationRequest(identifier: "achievement.\(a.id)", content: content, trigger: nil)) { error in
+                    if let error { NSLog("ThinkAloud: achievement notification add failed: \(error)") }
+                }
+            }
+        }
     }
 
-    /// Ask once, lazily — at the moment we'd first celebrate something, not at launch.
-    private func requestAuthIfNeeded(_ center: UNUserNotificationCenter) {
-        guard !didRequestAuth else { return }
+    /// Resolve authorization, then call back with the verdict. First call prompts (lazily — at the
+    /// first celebration, not at launch); later calls just read the current setting.
+    private func ensureAuthorized(_ center: UNUserNotificationCenter, completion: @escaping @Sendable (Bool) -> Void) {
+        if didRequestAuth {
+            center.getNotificationSettings { settings in
+                completion(settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional)
+            }
+            return
+        }
         didRequestAuth = true
-        center.requestAuthorization(options: [.alert, .sound]) { _, _ in }
+        center.requestAuthorization(options: [.alert, .sound]) { granted, _ in completion(granted) }
     }
 }
