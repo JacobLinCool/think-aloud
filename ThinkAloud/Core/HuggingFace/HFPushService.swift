@@ -193,6 +193,7 @@ actor HFPushService {
             "asr_runtime": r.asrRuntime,
             "raw_transcript": r.rawTranscript,
             "auto_edited_transcript": r.autoEditedTranscript.map { $0 as Any } ?? NSNull(),
+            "llm_edited_transcript": r.llmEditedTranscript.map { $0 as Any } ?? NSNull(),
             "edited_transcript": r.editedTranscript,
             "inserted": r.inserted,
             "audio_path": r.audioPath,
@@ -201,10 +202,12 @@ actor HFPushService {
             "edited_char_count": r.editedTranscript.unicodeScalars.count,
             "token_count": TextMetrics.wordTokens(r.editedTranscript).count,
         ]
-        // Manual-edit metrics only when the auto-edited intermediate exists — never raw-fallback (the
-        // Auto Post-Edit S↔T conversion would otherwise read as a huge "human edit").
-        if let auto = r.autoEditedTranscript {
-            let baseN = TextMetrics.normalize(auto, mode: .light)
+        // Manual-edit metrics measure the HUMAN delta on top of the last AUTOMATIC stage: the LLM
+        // rewrite when AI Refine ran, else the deterministic auto-post-edit. Never raw-fallback (the
+        // S↔T conversion / LLM rewrite would otherwise read as a huge "human edit"). Null when neither
+        // intermediate was captured.
+        if let base = r.llmEditedTranscript ?? r.autoEditedTranscript {
+            let baseN = TextMetrics.normalize(base, mode: .light)
             let dist = TextMetrics.editDistanceScalars(baseN, editedN)
             let refLen = baseN.unicodeScalars.count
             row["manual_edit_distance"] = dist
@@ -338,18 +341,18 @@ actor HFPushService {
         ## Schema (`metadata.jsonl`)
 
         Pipeline: `raw_transcript` (model output) → `auto_edited_transcript` (automatic formatting:
-        Chinese conversion, CJK–Latin spacing, custom dictionary) → `edited_transcript` (final, after any
-        human correction).
+        Chinese conversion, CJK–Latin spacing, custom dictionary) → `llm_edited_transcript` (optional
+        on-device LLM "AI Refine" rewrite) → `edited_transcript` (final, after any human correction).
 
         | Field | Meaning |
         | --- | --- |
         | `id`, `created_at` | record id and ISO8601 timestamp |
         | `duration_ms`, `sample_rate`, `channels` | audio properties |
         | `language`, `asr_provider`, `asr_model`, `asr_runtime` | recognition engine |
-        | `raw_transcript` / `auto_edited_transcript` / `edited_transcript` | pipeline stages (`auto_edited` is `null` for pre-v0.4.0 rows) |
+        | `raw_transcript` / `auto_edited_transcript` / `llm_edited_transcript` / `edited_transcript` | pipeline stages (`auto_edited` is `null` for pre-v0.4.0 rows; `llm_edited` is `null` when AI Refine didn't run) |
         | `inserted` | whether the text was inserted into the focused app |
         | `raw_char_count`, `edited_char_count`, `token_count` | derived counts (unicode scalars; tokens per the WER convention) |
-        | `manual_edit_distance`, `manual_edit_rate` | human edits on top of `auto_edited` (`null` when the intermediate wasn't captured) |
+        | `manual_edit_distance`, `manual_edit_rate` | human edits on top of the last automatic stage (`llm_edited` if AI Refine ran, else `auto_edited`); `null` when neither was captured |
         | `audio_path`\(options.includeAudio ? ", `file_name`" : "") | audio location |
         \(options.includeSourceApp ? "| `source_app_bundle_id`, `source_app_name` | the app dictated into |\n" : "")
 

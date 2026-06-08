@@ -143,6 +143,7 @@ jobs:
             -configuration Release \
             -archivePath "$RUNNER_TEMP/ThinkAloud.xcarchive" \
             -destination 'generic/platform=macOS' \
+            -skipMacroValidation \
             MARKETING_VERSION="$MARKETING_VERSION" \
             CURRENT_PROJECT_VERSION="$CURRENT_PROJECT_VERSION" \
             CODE_SIGN_STYLE=Manual \

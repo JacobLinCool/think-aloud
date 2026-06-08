@@ -70,6 +70,13 @@ actor DatasetStore {
                 t.add(column: "auto_edited_transcript", .text)
             }
         }
+        // v0.5.0: the AI Refine (LLM) stage output, before manual edits. Nullable; null when no LLM
+        // stage ran. Pipeline: raw → auto_edited → llm_edited → edited.
+        m.registerMigration("addLLMEditedTranscript") { db in
+            try db.alter(table: "records") { t in
+                t.add(column: "llm_edited_transcript", .text)
+            }
+        }
         return m
     }
 

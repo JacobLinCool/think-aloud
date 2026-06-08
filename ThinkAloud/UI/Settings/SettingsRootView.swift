@@ -50,6 +50,7 @@ private struct SettingsDetail: View {
         case .softwareUpdate: UpdatesPane()
         case .model: ModelPane()
         case .output: OutputPane()
+        case .refine: RefinePane()
         case .dataset: DatasetPane()
         case .advanced: AdvancedPane()
         }

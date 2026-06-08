@@ -9,7 +9,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "0.4.1"
+    MARKETING_VERSION: "0.5.0"
     CURRENT_PROJECT_VERSION: "1"
     MACOSX_DEPLOYMENT_TARGET: "15.0"
     SWIFT_STRICT_CONCURRENCY: complete
@@ -24,6 +24,11 @@ packages:
   mlx-swift:
     url: https://github.com/ml-explore/mlx-swift
     from: 0.30.6
+  # Text/vision LLM inference for the AI Refine post-edit stage. Pinned to the exact revision
+  # mlx-audio-swift already resolves transitively, so adding the top-level products forces no bump.
+  mlx-swift-lm:
+    url: https://github.com/ml-explore/mlx-swift-lm.git
+    exactVersion: "3.31.3"
   GRDB:
     url: https://github.com/groue/GRDB.swift
     from: 7.10.0
@@ -107,6 +112,14 @@ targets:
         product: MLXAudioSTS
       - package: mlx-swift
         product: MLX
+      - package: mlx-swift-lm
+        product: MLXLLM
+      - package: mlx-swift-lm
+        product: MLXVLM
+      - package: mlx-swift-lm
+        product: MLXLMCommon
+      - package: mlx-swift-lm
+        product: MLXHuggingFace
       - package: GRDB
         product: GRDB
       - package: Sparkle
