@@ -67,6 +67,17 @@ final class LLMConfigTests: XCTestCase {
         XCTAssertEqual(cfg, back)
     }
 
+    // MARK: - Reasoning strip (Qwen3 <think> blocks must never reach the editor/dataset)
+
+    func testStripReasoning() {
+        XCTAssertEqual(LLMText.stripReasoning("plain text"), "plain text")
+        XCTAssertEqual(LLMText.stripReasoning("<think>reasoning here</think>The answer."), "The answer.")
+        XCTAssertEqual(LLMText.stripReasoning("<think>still thinking, no answer yet"), "", "unclosed think → empty (no answer)")
+        XCTAssertEqual(LLMText.stripReasoning("<think>a</think><think>b</think>Final"), "Final", "text after the LAST close")
+        XCTAssertEqual(LLMText.stripReasoning("  <think>x</think>\n  Answer  "), "Answer", "trims around the answer")
+        XCTAssertEqual(LLMText.stripReasoning(""), "")
+    }
+
     // MARK: - Model profiles
 
     func testModelProfileLookupAndSizes() {

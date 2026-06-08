@@ -23,6 +23,25 @@ struct LLMGenerateParams: Sendable {
     }
 }
 
+/// Text helpers for LLM output.
+enum LLMText {
+    /// Strips chain-of-thought reasoning that "thinking" models (Qwen3) emit before their answer.
+    /// Returns everything after the LAST `</think>`; if a `<think>` block is still open (no close), the
+    /// model hasn't produced its answer yet, so returns empty — the caller treats that as "no output"
+    /// and keeps the deterministic transcript. We also disable thinking at the prompt level, so this is
+    /// belt-and-suspenders for models that ignore that flag.
+    static func stripReasoning(_ text: String) -> String {
+        let closeTag = "</think>"
+        if let r = text.range(of: closeTag, options: .backwards) {
+            return String(text[r.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        if text.contains("<think>") {
+            return ""
+        }
+        return text
+    }
+}
+
 enum LLMError: Error, LocalizedError {
     case notReady
     case loadFailed(String)

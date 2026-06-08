@@ -23,6 +23,8 @@ final class LLMSmokeTest: XCTestCase {
         )
         NSLog("LLM(Qwen3-0.6B) OUTPUT: <<<\(out)>>>")
         XCTAssertFalse(out.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, "expected non-empty rewrite")
+        // enable_thinking=false must suppress Qwen3's chain-of-thought — no raw reasoning in output.
+        XCTAssertFalse(out.contains("<think>"), "thinking must be disabled — got reasoning: \(out)")
     }
 
     /// Qwen3.5 via the MLXVLM factory, run text-only (no images). The user's chosen model line. ~2.2 GB.

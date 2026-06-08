@@ -18,6 +18,9 @@ actor MLXLLMRuntime: LLMRuntime {
     private var container: UncheckedBox<ModelContainer>?
     private var currentStatus: ASRRuntimeStatus = .unloaded
     private var expectedTotalBytes: Int64?
+    /// In-flight load, so a refine that arrives while a warm-up preload is running JOINS it instead
+    /// of seeing `container == nil` and silently giving up.
+    private var loadTask: Task<Void, Error>?
 
     init(modelID: String, cacheDirectory: URL) {
         self.modelID = modelID
@@ -27,15 +30,37 @@ actor MLXLLMRuntime: LLMRuntime {
     func status() -> ASRRuntimeStatus { currentStatus }
 
     func unload() {
+        loadTask?.cancel()
+        loadTask = nil
         container = nil
         currentStatus = .unloaded
         expectedTotalBytes = nil
         NSLog("ThinkAloud: MLXLLMRuntime unloaded modelID=\(modelID)")
     }
 
+    /// Re-entrancy-safe: concurrent callers (a warm-up preload + the first refine) share ONE load.
     func preload() async throws {
         if container != nil { return }
-        if currentStatus.isLoading { return }
+        if let loadTask {
+            try await loadTask.value
+            return
+        }
+        let task = Task<Void, Error> { [weak self] in
+            guard let self else { return }
+            try await self.doLoad()
+        }
+        loadTask = task
+        do {
+            try await task.value
+            loadTask = nil
+        } catch {
+            loadTask = nil
+            throw error
+        }
+    }
+
+    private func doLoad() async throws {
+        if container != nil { return }
 
         let alreadyDownloaded = LLMModelPaths.hasModelFiles(for: modelID, cache: cache)
         var pollingTask: Task<Void, Never>?
@@ -112,7 +137,10 @@ actor MLXLLMRuntime: LLMRuntime {
             let session = ChatSession(
                 box.value,
                 instructions: instructions,
-                generateParameters: GenerateParameters(temperature: params.temperature)
+                generateParameters: GenerateParameters(temperature: params.temperature),
+                // Disable Qwen3's chain-of-thought — we want a clean rewrite, not reasoning. The
+                // popup also strips any `</think>` block as a fallback for models that ignore this.
+                additionalContext: ["enable_thinking": false]
             )
             // Runaway guard: a faithful cleanup shouldn't exceed the input by much. Cap output chars
             // so a confused small model can't hang dictation with an unbounded generation.

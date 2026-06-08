@@ -29,6 +29,10 @@ final class PopupCoordinator {
     private var lastLLMEditedTranscript: String?
     /// The in-flight refine, so ⌥Space-insert / cancel can abort it and insert what's shown.
     private var polishingTask: Task<Void, Never>?
+    /// Bumped on every new invocation / cancel. The polishing task captures the value at start and
+    /// stops writing to the shared view model if it changes — so a stale refine from a previous
+    /// dictation can never clobber a new session's text or its saved `llmEditedTranscript`.
+    private var generation: Int = 0
 
     init(
         permissions: PermissionsService,
@@ -61,6 +65,12 @@ final class PopupCoordinator {
         }
         modelManager.recordActivity()
         viewModel.reset()
+        // New session: invalidate (and stop) any refine still running from a previous dictation so it
+        // can't write into this session's transcript.
+        generation += 1
+        polishingTask?.cancel()
+        polishingTask = nil
+        lastLLMEditedTranscript = nil
 
         let focus = FocusContext.capture()
         viewModel.focusContext = focus
@@ -72,6 +82,11 @@ final class PopupCoordinator {
             await self.startRecording()
         }
         modelManager.preloadNow()
+        // Warm up the refine model during recording when this app will use it, so the .polishing stage
+        // doesn't pay a multi-GB cold load.
+        if let profile = llmManager.effectiveConfig(for: focus), profile.backend == .mlx {
+            llmManager.preloadNow()
+        }
     }
 
     func stopAndTranscribe() {
@@ -88,6 +103,8 @@ final class PopupCoordinator {
             await self.recorder.cancel()
             self.elapsedTimerTask?.cancel()
             self.elapsedTimerTask = nil
+            // Supersede + stop any in-flight refine (generation guard makes its late writes no-ops).
+            self.generation += 1
             self.polishingTask?.cancel()
             self.polishingTask = nil
             self.recordingStartedAt = nil
@@ -316,27 +333,34 @@ final class PopupCoordinator {
         let base = viewModel.editedTranscript
         guard !base.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
 
+        let gen = generation
         viewModel.phase = .polishing
         let stream = llmManager.refine(base, using: profile)
         let task = Task { @MainActor [weak self] in
             guard let self else { return }
             var accumulated = ""
+            var threw = false
             do {
                 for try await chunk in stream {
                     accumulated += chunk
-                    self.viewModel.editedTranscript = accumulated
+                    // A newer dictation superseded this refine — stop touching the shared view model.
+                    guard self.generation == gen else { return }
+                    self.viewModel.editedTranscript = LLMText.stripReasoning(accumulated)
                 }
             } catch {
-                NSLog("ThinkAloud: AI Refine failed, keeping deterministic text: \(error)")
+                // A clean cancel (⌥Space-insert) keeps the partial; a real error fails open to base.
+                if !Task.isCancelled { threw = true }
+                NSLog("ThinkAloud: AI Refine error: \(error)")
             }
-            let result = accumulated.trimmingCharacters(in: .whitespacesAndNewlines)
-            if result.isEmpty {
-                // Refusal / failure / empty → keep the deterministic Auto-Post-Edit output.
+            guard self.generation == gen else { return }
+            let cleaned = LLMText.stripReasoning(accumulated).trimmingCharacters(in: .whitespacesAndNewlines)
+            if threw || cleaned.isEmpty {
+                // Fail open: refusal / error / empty / unclosed reasoning → keep the deterministic output.
                 self.viewModel.editedTranscript = base
                 self.lastLLMEditedTranscript = nil
             } else {
-                self.viewModel.editedTranscript = result
-                self.lastLLMEditedTranscript = result
+                self.viewModel.editedTranscript = cleaned
+                self.lastLLMEditedTranscript = cleaned
             }
             if case .polishing = self.viewModel.phase { self.viewModel.phase = .review }
             self.modelManager.recordActivity()

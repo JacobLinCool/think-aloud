@@ -29,7 +29,8 @@ enum LLMProbe {
         let session = ChatSession(
             container,
             instructions: instructions,
-            generateParameters: GenerateParameters(temperature: temperature)
+            generateParameters: GenerateParameters(temperature: temperature),
+            additionalContext: ["enable_thinking": false]
         )
         var out = ""
         for try await chunk in session.streamResponse(to: prompt) {
