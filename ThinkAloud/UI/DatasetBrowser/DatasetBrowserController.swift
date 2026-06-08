@@ -122,7 +122,8 @@ final class DatasetBrowserController {
                     savedToDataset: r.savedToDataset,
                     language: r.language,
                     metadataJSON: r.metadataJSON,
-                    autoEditedTranscript: r.autoEditedTranscript
+                    autoEditedTranscript: r.autoEditedTranscript,
+                    llmEditedTranscript: r.llmEditedTranscript
                 )
             }
             lastSaveTick = Date()

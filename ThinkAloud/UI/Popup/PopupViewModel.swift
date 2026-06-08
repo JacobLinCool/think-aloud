@@ -5,6 +5,9 @@ enum PopupPhase: Equatable {
     case idle
     case recording
     case transcribing
+    /// The AI Refine (LLM) stage is rewriting the transcript — it streams into `editedTranscript`
+    /// live. Cancellable: ⌥Space / insert aborts it and inserts what's shown.
+    case polishing
     case review
     case error(String)
 }

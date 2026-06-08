@@ -39,6 +39,11 @@ struct DatasetRecord: Codable, FetchableRecord, PersistableRecord, Sendable, Equ
     /// Appended last + defaulted so the synthesized memberwise init keeps existing call sites valid.
     var autoEditedTranscript: String? = nil
 
+    /// The transcript after the AI Refine (LLM) stage, before any manual human correction. `nil` when
+    /// no LLM stage ran (feature off / model not ready / refusal fallback). Pipeline:
+    /// `raw → autoEdited → llmEdited → edited`. Appended last + defaulted (keeps the memberwise init valid).
+    var llmEditedTranscript: String? = nil
+
     enum CodingKeys: String, CodingKey {
         case id
         case createdAt = "created_at"
@@ -59,6 +64,7 @@ struct DatasetRecord: Codable, FetchableRecord, PersistableRecord, Sendable, Equ
         case language
         case metadataJSON = "metadata_json"
         case autoEditedTranscript = "auto_edited_transcript"
+        case llmEditedTranscript = "llm_edited_transcript"
     }
 }
 

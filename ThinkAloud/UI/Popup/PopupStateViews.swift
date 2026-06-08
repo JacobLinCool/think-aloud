@@ -180,6 +180,46 @@ struct ReviewPopupView: View {
     }
 }
 
+/// The AI Refine stage: the rewrite streams in read-only; ⌥Space / "Insert now" cancels the refine
+/// and inserts what's shown.
+struct PolishingPopupView: View {
+    @Bindable var viewModel: PopupViewModel
+    let coordinator: PopupCoordinator
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            ScrollView {
+                Text(viewModel.editedTranscript.isEmpty ? " " : viewModel.editedTranscript)
+                    .font(.body)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .textSelection(.enabled)
+            }
+            .frame(minHeight: 90)
+            .padding(8)
+            .background(Color.accentColor.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
+
+            HStack(spacing: 6) {
+                Image(systemName: "wand.and.stars")
+                    .foregroundStyle(.tint)
+                    .symbolEffect(.pulse, options: .repeat(.continuous))
+                Text("Polishing with AI…")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer(minLength: 0)
+            HStack {
+                Button("Cancel") { coordinator.cancel() }
+                    .keyboardShortcut(.escape, modifiers: [])
+                Spacer()
+                Button("Insert now") { coordinator.insertAndSave() }
+                    .keyboardShortcut(.defaultAction)
+                    .buttonStyle(.borderedProminent)
+            }
+        }
+    }
+}
+
 struct ErrorPopupView: View {
     let message: String
     let coordinator: PopupCoordinator

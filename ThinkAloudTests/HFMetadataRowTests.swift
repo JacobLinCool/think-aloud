@@ -5,7 +5,8 @@ import XCTest
 /// opt-in, free-form blobs never leave, and the auto-edited column is consistent across rows.
 final class HFMetadataRowTests: XCTestCase {
 
-    private func record(autoEdited: String?, sourceApp: Bool) -> DatasetRecord {
+    private func record(autoEdited: String?, sourceApp: Bool, llmEdited: String? = nil,
+                        raw: String = "teh cat", edited: String = "the cat") -> DatasetRecord {
         DatasetRecord(
             id: "rec_1", createdAt: "2026-06-05T10:00:00Z",
             audioPath: "audio/2026-06-05/rec_1.wav",
@@ -14,11 +15,27 @@ final class HFMetadataRowTests: XCTestCase {
             sourceAppName: sourceApp ? "Safari" : nil,
             asrProvider: "mlx-audio-swift", asrModel: "mlx-community/Qwen3-ASR-1.7B-4bit", asrRuntime: "rt",
             asrConfigJSON: "{\"secret\":\"do-not-upload\"}",   // free-form blob — must NOT be published
-            rawTranscript: "teh cat", editedTranscript: "the cat",
+            rawTranscript: raw, editedTranscript: edited,
             inserted: true, savedToDataset: true,
             language: "en", metadataJSON: "{\"device\":\"leak\"}",  // free-form blob — must NOT be published
-            autoEditedTranscript: autoEdited
+            autoEditedTranscript: autoEdited,
+            llmEditedTranscript: llmEdited
         )
+    }
+
+    func testLLMEditedEmittedAndBecomesManualEditBaseline() {
+        // AI Refine ran: raw "teh cat" → auto "teh cat" → llm "the cat" → user kept it verbatim.
+        // The human delta must be measured vs the LLM output (0), NOT vs auto (which would be 2).
+        let r = record(autoEdited: "teh cat", sourceApp: false, llmEdited: "the cat", raw: "teh cat", edited: "the cat")
+        let row = HFPushService.metadataRow(for: r, includeAudio: false, includeSourceApp: false)
+        XCTAssertEqual(row["llm_edited_transcript"] as? String, "the cat")
+        XCTAssertEqual(row["manual_edit_distance"] as? Int, 0, "baseline is the LLM output → no human edit")
+
+        // No LLM stage: explicit null, baseline falls back to auto-edited.
+        let noLLM = record(autoEdited: "teh cat", sourceApp: false, llmEdited: nil, raw: "teh cat", edited: "the cat")
+        let row2 = HFPushService.metadataRow(for: noLLM, includeAudio: false, includeSourceApp: false)
+        XCTAssertTrue(row2["llm_edited_transcript"] is NSNull, "explicit null when no LLM stage")
+        XCTAssertEqual(row2["manual_edit_distance"] as? Int, 2, "baseline = auto-edited → teh→the = 2")
     }
 
     func testFreeFormBlobsAndInternalFieldsNeverUploaded() {

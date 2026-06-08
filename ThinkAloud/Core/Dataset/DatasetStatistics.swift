@@ -318,12 +318,15 @@ extension DatasetStatistics {
 
             // Edit decomposition — eligible records only, normalized (light) both sides so trailing
             // whitespace never reads as an edit and clean ⇔ distance == 0 holds exactly.
+            // The human-edit baseline is the last AUTOMATIC stage before manual edits: the LLM rewrite
+            // (AI Refine) when it ran, else the deterministic auto-post-edit. Eligible = either was
+            // captured (v0.4.0+); never raw-fallback.
             var manualDistance = 0
             var hasManual = false
-            if let auto = r.autoEditedTranscript {
+            if let base = r.llmEditedTranscript ?? r.autoEditedTranscript {
                 eligibleCount += 1
                 hasManual = true
-                let baseN = TextMetrics.normalize(auto, mode: .light)
+                let baseN = TextMetrics.normalize(base, mode: .light)
                 let editedN = TextMetrics.normalize(r.editedTranscript, mode: .light)
                 manualDistance = TextMetrics.editDistanceScalars(baseN, editedN)
                 let refLen = baseN.unicodeScalars.count

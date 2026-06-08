@@ -17,6 +17,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
     case softwareUpdate
     case model
     case output
+    case refine
     case dataset
     case advanced
 
@@ -31,6 +32,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
         case .softwareUpdate: "Software Update"
         case .model: "Model"
         case .output: "Output"
+        case .refine: "AI Refine"
         case .dataset: "Dataset"
         case .advanced: "Advanced"
         }
@@ -45,6 +47,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable, Hashable {
         case .softwareUpdate: "arrow.down.circle"
         case .model: "brain"
         case .output: "text.cursor"
+        case .refine: "wand.and.stars"
         case .dataset: "tray.full"
         case .advanced: "wrench.and.screwdriver"
         }

@@ -141,6 +141,16 @@
         }
       }
     },
+    "(no output — the model declined or isn't ready)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "（沒有輸出 — 模型拒絕或尚未就緒）"
+          }
+        }
+      }
+    },
     "(your namespace)": {
       "localizations": {
         "zh-Hant": {
@@ -291,6 +301,16 @@
         }
       }
     },
+    "AI Refine": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI 潤飾"
+          }
+        }
+      }
+    },
     "ASR Model": {
       "localizations": {
         "zh-Hant": {
@@ -391,6 +411,26 @@
         }
       }
     },
+    "Add": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新增"
+          }
+        }
+      }
+    },
+    "Add app…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新增 App…"
+          }
+        }
+      }
+    },
     "Add term": {
       "localizations": {
         "zh-Hant": {
@@ -407,6 +447,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "進階"
+          }
+        }
+      }
+    },
+    "After transcription, an on-device language model rewrites the text — fixing fillers, grammar, and punctuation — before you insert it.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉錄後，由裝置端的語言模型改寫文字 — 修掉贅詞、文法與標點 — 再讓你插入。"
           }
         }
       }
@@ -457,6 +507,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "介面語言"
+          }
+        }
+      }
+    },
+    "Apple Intelligence": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple 智慧"
+          }
+        }
+      }
+    },
+    "Apple Intelligence isn't available on this Mac; using a downloaded model.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這台 Mac 無法使用 Apple 智慧；改用已下載的模型。"
           }
         }
       }
@@ -1121,6 +1191,16 @@
         }
       }
     },
+    "Creativity": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "創意程度"
+          }
+        }
+      }
+    },
     "Crunching your numbers…": {
       "localizations": {
         "zh-Hant": {
@@ -1217,6 +1297,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "資料集為空，無法 benchmark。"
+          }
+        }
+      }
+    },
+    "Default style": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預設風格"
           }
         }
       }
@@ -1491,6 +1581,16 @@
         }
       }
     },
+    "Done": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成"
+          }
+        }
+      }
+    },
     "Done.": {
       "localizations": {
         "zh-Hant": {
@@ -1567,6 +1667,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "已下載"
+          }
+        }
+      }
+    },
+    "Downloaded model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已下載的模型"
           }
         }
       }
@@ -1667,6 +1777,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "編輯達人"
+          }
+        }
+      }
+    },
+    "Engine": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "引擎"
           }
         }
       }
@@ -1837,6 +1957,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "寫入剪貼簿失敗。"
+          }
+        }
+      }
+    },
+    "Failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "失敗：%@"
           }
         }
       }
@@ -2131,6 +2261,16 @@
         }
       }
     },
+    "Insert now": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即插入"
+          }
+        }
+      }
+    },
     "Inserted.": {
       "localizations": {
         "zh-Hant": {
@@ -2297,6 +2437,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "最長"
+          }
+        }
+      }
+    },
+    "Lower stays faithful to what you said; higher rewrites more freely.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "數值越低越忠於原話；越高改寫越自由。"
           }
         }
       }
@@ -2527,6 +2677,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "未啟用任何格式化步驟 — 輸出與輸入相同。"
+          }
+        }
+      }
+    },
+    "No per-app overrides. Add an app to give it its own style.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚無各 App 設定。新增一個 App 來給它專屬風格。"
           }
         }
       }
@@ -2851,6 +3011,16 @@
         }
       }
     },
+    "Per-app overrides": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "各 App 設定"
+          }
+        }
+      }
+    },
     "Permissions": {
       "localizations": {
         "zh-Hant": {
@@ -2887,6 +3057,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "潤飾 50 篇逐字稿"
+          }
+        }
+      }
+    },
+    "Polishing with AI…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI 潤飾中…"
           }
         }
       }
@@ -3341,6 +3521,26 @@
         }
       }
     },
+    "Refine in this app": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在此 App 中潤飾"
+          }
+        }
+      }
+    },
+    "Refine transcripts with AI": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用 AI 潤飾逐字稿"
+          }
+        }
+      }
+    },
     "Refresh": {
       "localizations": {
         "zh-Hant": {
@@ -3397,6 +3597,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "移除失敗：%@"
+          }
+        }
+      }
+    },
+    "Remove override": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除設定"
           }
         }
       }
@@ -3517,6 +3727,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "用於錄製語音以在本機轉錄。"
+          }
+        }
+      }
+    },
+    "Requires macOS 26 or later.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要 macOS 26 或更新版本。"
           }
         }
       }
@@ -4111,6 +4331,16 @@
         }
       }
     },
+    "Style for %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 的風格"
+          }
+        }
+      }
+    },
     "Suppress background noise with DeepFilterNet before transcription. Downloads a small model on first use.": {
       "localizations": {
         "zh-Hant": {
@@ -4131,6 +4361,16 @@
         }
       }
     },
+    "System prompt": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "系統提示"
+          }
+        }
+      }
+    },
     "Test connection": {
       "localizations": {
         "zh-Hant": {
@@ -4147,6 +4387,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "測試我的環境"
+          }
+        }
+      }
+    },
+    "Test refine": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "測試潤飾"
           }
         }
       }
@@ -4237,6 +4487,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ThinkAloud 需要兩項 macOS 權限。你隨時可以在「系統設定」中變更。"
+          }
+        }
+      }
+    },
+    "This Mac isn't eligible for Apple Intelligence.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這台 Mac 不支援 Apple 智慧。"
           }
         }
       }
@@ -4367,6 +4627,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "由聯發科研究院針對台灣中文最佳化。"
+          }
+        }
+      }
+    },
+    "Turn on Apple Intelligence in System Settings.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請在「系統設定」中開啟 Apple 智慧。"
+          }
+        }
+      }
+    },
+    "Type some text to preview the rewrite…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸入一些文字來預覽改寫…"
           }
         }
       }
@@ -4527,6 +4807,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "依照模型"
+          }
+        }
+      }
+    },
+    "Use this model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用此模型"
           }
         }
       }

@@ -43,6 +43,8 @@ struct PopupRootView: View {
             RecordingPopupView(viewModel: viewModel, coordinator: coordinator)
         case .transcribing:
             TranscribingPopupView(coordinator: coordinator, modelManager: modelManager)
+        case .polishing:
+            PolishingPopupView(viewModel: viewModel, coordinator: coordinator)
         case .review:
             ReviewPopupView(viewModel: viewModel, coordinator: coordinator)
         case .error(let message):

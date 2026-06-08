@@ -7,6 +7,7 @@ final class AppContainer {
     let permissions: PermissionsService
     let hotkeys: HotkeyManager
     let modelManager: ModelManager
+    let llmManager: LLMManager
     let datasetStore: DatasetStore
     let audioFileStore: AudioFileStore
     let recorder: AudioRecorder
@@ -26,16 +27,21 @@ final class AppContainer {
     init() {
         let appSupport = AppPaths.applicationSupportDirectory()
         let modelsDir = appSupport.appendingPathComponent("models", isDirectory: true)
+        // LLM weights live in a DEDICATED sibling dir (HF layout `models--*`), kept out of `models/`
+        // so ModelManager.pruneRedundantHFCache() (which scans the ASR models dir) can never delete them.
+        let llmDir = appSupport.appendingPathComponent("llm", isDirectory: true)
         let audioDir = appSupport.appendingPathComponent("audio", isDirectory: true)
         let dbURL = appSupport.appendingPathComponent("dataset.sqlite")
 
         AppPaths.ensureDirectoryExists(appSupport)
         AppPaths.ensureDirectoryExists(modelsDir)
+        AppPaths.ensureDirectoryExists(llmDir)
         AppPaths.ensureDirectoryExists(audioDir)
 
         let permissions = PermissionsService()
         let hotkeys = HotkeyManager()
         let modelManager = ModelManager(modelsDirectory: modelsDir)
+        let llmManager = LLMManager(cacheDirectory: llmDir)
         let datasetStore = DatasetStore(databaseURL: dbURL)
         let audioFileStore = AudioFileStore(rootDirectory: audioDir)
         let recorder = AudioRecorder()
@@ -48,6 +54,7 @@ final class AppContainer {
         self.permissions = permissions
         self.hotkeys = hotkeys
         self.modelManager = modelManager
+        self.llmManager = llmManager
         self.datasetStore = datasetStore
         self.audioFileStore = audioFileStore
         self.recorder = recorder
@@ -59,6 +66,7 @@ final class AppContainer {
         self.coordinator = PopupCoordinator(
             permissions: permissions,
             modelManager: modelManager,
+            llmManager: llmManager,
             recorder: recorder,
             insertion: insertion,
             datasetStore: datasetStore,
