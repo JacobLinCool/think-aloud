@@ -1,0 +1,43 @@
+surface_id,label,route_or_entry,surface_type,parent_surface,state_variant,access_requirements,reachable_from,primary_actions,notes
+MB-01,Menu bar status item,App launch,status item,,idle/running,App running,macOS menu bar,Open status menu,Primary persistent entry point
+MB-02,Status menu,Click MB-01,menu,MB-01,idle/update-busy,App running,MB-01,"Start recording; Insights; Browse Dataset; Settings; Check for Updates; Quit",Update command is disabled while busy
+ONB-01,Welcome,First launch or Advanced > Run Setup Assistant,window step,,welcome,None,App launch or SET-ADVANCED,"Get Started; Skip setup; Close",First onboarding step
+ONB-02,Permissions,Continue from ONB-01,window step,ONB-01,permission unknown/granted/denied,None,ONB-01,"Request microphone; Open System Settings; Continue; Back; Skip",Uses shared permission component
+ONB-03,Model setup,Continue from ONB-02,window step,ONB-02,not-downloaded/downloading/downloaded/loading/ready/failed,Network and disk for download,ONB-02,"Choose profile; Download and load; Back; Skip",Continue is gated until selected model is downloaded or ready
+ONB-04,Shortcut tutorial,Continue from ONB-03,window step,ONB-03,configured shortcuts,None,ONB-03,"Continue; Back; Skip",Explains the three real phase shortcuts and clipboard fallback; editing remains in Settings > Shortcuts
+ONB-05,Finish,Continue from ONB-04,window step,ONB-04,ready/pending requirements,None,ONB-04,"Fix pending item; Start Using ThinkAloud; Back",Shows remaining permission/model requirements
+POP-01,Preparing popup,Start recording,nonactivating panel,,idle,App running and shortcut/menu invocation,MB-02 or global shortcut,Wait or cancel via panel close semantics,Transient initialization state
+POP-02,Recording popup,Start succeeds,nonactivating panel,POP-01,recording,Microphone permission,POP-01,"Cancel; Stop and Transcribe",Includes elapsed time and input-level meter
+POP-03,Transcribing popup,Stop recording,nonactivating panel,POP-02,model-loading/transcribing,Recorded audio,POP-02,Cancel,Progress depends on model readiness
+POP-04,AI polishing popup,ASR completes with refinement enabled,nonactivating panel,POP-03,streaming,Configured local LLM,POP-03,"Cancel; Insert now",Shows partial rewrite
+POP-05,Transcript review,ASR/refinement completes,nonactivating panel,POP-03,streaming/ready,Successful transcription,POP-03 or POP-04,"Edit; Cancel; Insert; Insert and Save",Streaming state temporarily locks editor
+POP-06,Popup error,Any dictation failure,nonactivating panel,POP-01,permission/generic/no-result,None,POP-01/02/03/04,"Open Settings; Close",Error action currently always targets Permissions
+SET-ROOT,Settings window,MB-02 Settings or deep link,window,,category selection,None,MB-02/POP-06/ONB-05,Choose sidebar category,Resizable two-column settings window
+SET-INSIGHTS,Insights,SET-ROOT default or MB-02 Insights,settings pane,SET-ROOT,loading/empty/populated,None,SET-ROOT or MB-02,Review statistics and achievements,Default landing page
+SET-STARTUP,Startup,SET-ROOT > Startup,settings pane,SET-ROOT,login-item/language states,None,SET-ROOT,"Toggle launch at login; choose language; relaunch",System approval may be required
+SET-SHORTCUTS,Shortcuts,SET-ROOT > Shortcuts,settings pane,SET-ROOT,configured/recording/conflict,None,SET-ROOT,"Record three shortcuts; reset all",KeyboardShortcuts controls
+SET-SHORTCUTS-RESET,Reset shortcuts confirmation,SET-SHORTCUTS > Reset all,confirmation,SET-SHORTCUTS,pending,None,SET-SHORTCUTS,"Confirm reset; Cancel",Destructive-to-preferences confirmation
+SET-PERMISSIONS,Permissions,SET-ROOT > Permissions,settings pane,SET-ROOT,unknown/granted/denied,None,SET-ROOT or POP-06,"Request microphone; Open System Settings",Live refresh on app activation
+SET-UPDATES,Software Update,SET-ROOT > Software Update,settings pane,SET-ROOT,idle/checking/downloading/error,Network for update check,SET-ROOT,"Check for Updates; choose channel; automatic-check/download toggles",Sparkle owns update dialogs
+SET-MODEL,Model,SET-ROOT > Model,settings pane,SET-ROOT,not-downloaded/downloading/loading/ready/failed,Network and disk for download,SET-ROOT,"Choose transcription engine; download; remove; reveal files",ModelDownloadList supplies per-profile actions
+SET-MODEL-DISK,Low disk warning,SET-MODEL > Download,alert,SET-MODEL,insufficient-space,Low free disk,SET-MODEL,"Download anyway; Cancel",Shown before oversized download
+SET-OUTPUT,Output,SET-ROOT > Output,settings pane,SET-ROOT,configured/preview,None,SET-ROOT,"Choose audio cleanup and Chinese output; manage dictionary; preview",Contains dynamic dictionary rows
+SET-REFINE,AI Refine,SET-ROOT > AI Refine,settings pane,SET-ROOT,disabled/enabled/testing/download states,Supported LLM availability,SET-ROOT,"Enable; choose engine/model; edit prompts; test; manage models",Includes per-app overrides
+SET-REFINE-APP,Per-app refine editor,SET-REFINE > Edit,sheet,SET-REFINE,enabled/disabled,None,SET-REFINE,"Toggle; choose engine; edit prompt; Done",Modal configuration sheet
+SET-DATASET,Dataset,SET-ROOT > Dataset,settings pane,SET-ROOT,loading/empty/populated/exported/error,None,SET-ROOT,"Browse; reveal storage; export JSONL; clear all; manage HF token",Includes local storage and token management
+SET-DATASET-CLEAR,Clear dataset confirmation,SET-DATASET > Clear all,confirmation,SET-DATASET,pending,Existing records,SET-DATASET,"Clear all; Cancel",Permanent local deletion
+SET-ADVANCED,Advanced,SET-ROOT > Advanced,settings pane,SET-ROOT,idle/busy/report/error,None,SET-ROOT,"Set idle unload; load/unload engines; run smoke test; rerun setup",Power and diagnostic tools
+SET-DENOISE,Denoise tester,SET-ADVANCED embedded section,settings subview,SET-ADVANCED,permission/idle/recording/processing/ready/failed,Microphone for recording,SET-ADVANCED,"Request access; record/stop; compare playback; retry",Audio test state machine
+DATA-ROOT,Dataset browser root,MB-02 > Browse Dataset or SET-DATASET > Browse,window,,records/benchmark,None,MB-02 or SET-DATASET,Switch Records or Benchmark,Resizable window
+DATA-LIST,Records sidebar,DATA-ROOT > Records,sidebar list,DATA-ROOT,loading/empty/populated/paginating/error,None,DATA-ROOT,"Select/multiselect; refresh; show/hide sidebar; context delete",Fixed-width sidebar with paging
+DATA-DETAIL,Record detail,Select one record,detail pane,DATA-ROOT,no-selection/multiselection/selected,At least one record for selection,DATA-LIST,"Play/scrub audio; inspect metadata; start edit",No-selection and multiselection are distinct states
+DATA-EDIT,Transcript editor,DATA-DETAIL > Edit,detail edit state,DATA-DETAIL,editing/saving/saved/error,Selected record,DATA-DETAIL,"Edit; Save; Cancel",Raw transcript remains immutable
+DATA-DELETE,Record deletion confirmation,Toolbar/context delete,confirmation,DATA-LIST,single/bulk,Selected record(s),DATA-LIST or DATA-DETAIL,"Delete; Cancel",Deletes database rows and audio permanently
+DATA-HF,Hugging Face push,DATA-ROOT toolbar push,sheet,DATA-ROOT,configuration/progress/success/error,Stored HF token and records,DATA-ROOT,"Choose repository/privacy fields; Push; Cancel; Close",Uploads only after explicit submission
+BENCH-CONFIG,Benchmark configuration,DATA-ROOT > Benchmark,window mode,DATA-ROOT,idle,At least one dataset record,DATA-ROOT,"Choose model/preprocessing/scoring; Start",Model may require local download
+BENCH-RUN,Benchmark progress,Start benchmark,window mode,BENCH-CONFIG,preloading/running/cancelling,Dataset and model,BENCH-CONFIG,Cancel,Shows current item and determinate progress
+BENCH-RESULTS,Benchmark results,Benchmark completes,window mode,BENCH-RUN,summary/run-comparison/record-detail,None,BENCH-RUN,"Switch run; toggle normalization; inspect diff; export JSON",Keeps multiple runs in session
+BENCH-ERROR,Benchmark failure or cancellation,Benchmark task fails/cancels,inline state,BENCH-CONFIG,empty/preload-failed/failed/cancelled,None,BENCH-CONFIG or BENCH-RUN,Retry by starting again,Inline message replaces results/progress
+EXT-PERMISSIONS,macOS Privacy and Security settings,Open System Settings,external system UI,ONB-02,Microphone/Accessibility,None,ONB-02/SET-PERMISSIONS/SET-DENOISE,Grant or revoke OS permission,OS-owned and only app launch/deep-link behavior is in scope
+EXT-UPDATER,Sparkle update flow,Check for Updates,external framework UI,SET-UPDATES,available/up-to-date/error,Network,MB-02 or SET-UPDATES,"Install; defer; cancel",Framework-owned dialog copy/layout is out of scope
+EXT-SAVE,macOS export save panel,Export JSONL or benchmark JSON,external system UI,SET-DATASET,destination selection,Writable destination,SET-DATASET or BENCH-RESULTS,"Choose destination; Save; Cancel",OS-owned panel

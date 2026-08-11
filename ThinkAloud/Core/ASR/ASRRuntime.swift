@@ -72,9 +72,18 @@ enum ASRError: Error, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .modelNotReady: return "ASR model is not ready."
-        case .audioLoadFailed(let msg): return "Failed to load audio: \(msg)"
-        case .modelLoadFailed(let msg): return "Failed to load model: \(msg)"
+        case .modelNotReady:
+            return String(
+                localized: "The speech model isn’t ready. Open Model settings and try again."
+            )
+        case .audioLoadFailed:
+            return String(
+                localized: "ThinkAloud couldn’t read the recording. Record the audio again and retry."
+            )
+        case .modelLoadFailed:
+            return String(
+                localized: "ThinkAloud couldn’t load the speech model. Open Model settings and retry."
+            )
         }
     }
 }

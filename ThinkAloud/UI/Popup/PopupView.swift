@@ -38,17 +38,24 @@ struct PopupRootView: View {
     private var content: some View {
         switch viewModel.phase {
         case .idle:
-            IdlePopupView()
+            IdlePopupView(coordinator: coordinator)
         case .recording:
             RecordingPopupView(viewModel: viewModel, coordinator: coordinator)
         case .transcribing:
             TranscribingPopupView(coordinator: coordinator, modelManager: modelManager)
+        case .inserting:
+            InsertingPopupView()
         case .polishing:
             PolishingPopupView(viewModel: viewModel, coordinator: coordinator)
         case .review:
             ReviewPopupView(viewModel: viewModel, coordinator: coordinator)
-        case .error(let message):
-            ErrorPopupView(message: message, coordinator: coordinator)
+        case .savingDataset:
+            SavingDatasetPopupView(
+                insertionSucceeded: viewModel.insertionSucceededForDatasetSave,
+                includesDataset: viewModel.savingIncludesDataset
+            )
+        case .error(let failure):
+            ErrorPopupView(failure: failure, coordinator: coordinator)
         }
     }
 }

@@ -61,6 +61,7 @@ final class UpdaterController {
     @ObservationIgnored private let feedDelegate: ChannelFeedDelegate
     @ObservationIgnored private var canCheckObservation: NSKeyValueObservation?
     @ObservationIgnored private let channelKey = "ThinkAloud.updateChannel"
+    @ObservationIgnored private var hasStarted = false
 
     /// True when a manual check can be started right now. Sparkle flips this to false while a
     /// check/download session is in flight; the menu item and the "Check Now" button observe it.
@@ -93,15 +94,19 @@ final class UpdaterController {
         let feedDelegate = ChannelFeedDelegate(storedChannel.feedURLString)
         self.feedDelegate = feedDelegate
 
-        // startingUpdater: true launches the scheduled-check cycle once the app finishes launching.
+        // AppContainer starts Sparkle only after setup is explicitly completed. This prevents an
+        // update prompt from covering first-run onboarding.
         let controller = SPUStandardUpdaterController(
-            startingUpdater: true,
+            startingUpdater: false,
             updaterDelegate: feedDelegate,
             userDriverDelegate: nil
         )
         self.controller = controller
         let updater = controller.updater
-        self.canCheckForUpdates = updater.canCheckForUpdates
+        // A user-initiated check is valid before the scheduled updater is started: the action
+        // starts Sparkle on demand. Keep the control available during onboarding instead of
+        // mirroring Sparkle's pre-start `false`.
+        self.canCheckForUpdates = true
         self.automaticallyChecksForUpdates = updater.automaticallyChecksForUpdates
         self.automaticallyDownloadsUpdates = updater.automaticallyDownloadsUpdates
 
@@ -115,8 +120,16 @@ final class UpdaterController {
         }
     }
 
+    func start() {
+        guard !hasStarted else { return }
+        hasStarted = true
+        controller.startUpdater()
+        canCheckForUpdates = controller.updater.canCheckForUpdates
+    }
+
     /// Start a user-initiated check (shows progress + the standard update dialog).
     func checkForUpdates() {
+        start()
         controller.checkForUpdates(nil)
     }
 }

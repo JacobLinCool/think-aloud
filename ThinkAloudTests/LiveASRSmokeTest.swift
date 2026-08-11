@@ -15,8 +15,7 @@ final class LiveASRSmokeTest: XCTestCase {
     func testTranscribeAudioTestingDataset() async throws {
         let runtime = ASRRuntimeFactory.make(profile: .fast, cacheDirectory: nil)
         let cacheDir = FileManager.default.temporaryDirectory.appendingPathComponent("ThinkAloudLiveSmokeTest", isDirectory: true)
-        try? FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true)
-        let runner = SmokeTestRunner(cacheDirectory: cacheDir)
+        let runner = try SmokeTestRunner(cacheDirectory: cacheDir)
 
         let report = try await runner.run(using: runtime)
         XCTAssertEqual(report.total, 3, "Should run against all three audio-testing samples.")

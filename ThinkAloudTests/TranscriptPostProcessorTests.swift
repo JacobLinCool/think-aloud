@@ -89,12 +89,103 @@ final class TranscriptPostProcessorTests: XCTestCase {
         XCTAssertEqual(TranscriptPostProcessor.apply(off, to: "用gpt四"), "用GPT-4")
     }
 
-    func testDecodesLegacyJSONWithoutDictionaryKey() throws {
-        // Pre-dictionary persisted config must still load (no keyNotFound), preserving cjkLatinSpacing.
-        let legacy = #"{"chinese":"traditional","cjkLatinSpacing":true}"#.data(using: .utf8)!
-        let decoded = try JSONDecoder().decode(PostEditConfig.self, from: legacy)
-        XCTAssertEqual(decoded.chinese, .traditional)
-        XCTAssertTrue(decoded.cjkLatinSpacing)
-        XCTAssertTrue(decoded.dictionary.isEmpty)
+    func testRejectsPostEditPayloadMissingAnyCanonicalKey() {
+        let partialPayloads = [
+            #"{"cjkLatinSpacing":true,"dictionary":[]}"#,
+            #"{"chinese":"traditional","dictionary":[]}"#,
+            #"{"chinese":"traditional","cjkLatinSpacing":true}"#
+        ]
+
+        for json in partialPayloads {
+            XCTAssertThrowsError(
+                try JSONDecoder().decode(PostEditConfig.self, from: Data(json.utf8))
+            ) { error in
+                guard case DecodingError.keyNotFound = error else {
+                    return XCTFail("Expected keyNotFound for partial PostEditConfig, got \(error)")
+                }
+            }
+        }
+    }
+
+    @MainActor
+    func testModelManagerUsesDefaultsOnlyWhenCanonicalKeysAreUnsetAndIgnoresRetiredKey() throws {
+        let suiteName = "TranscriptPostProcessorTests.ModelManager.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let modelsDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ThinkAloud-CanonicalPostEdit-\(UUID().uuidString)", isDirectory: true)
+        let firstLaunchManager = try ModelManager(modelsDirectory: modelsDirectory, defaults: defaults)
+        XCTAssertEqual(firstLaunchManager.profile, .accurate)
+        XCTAssertEqual(firstLaunchManager.postEdit, .default)
+        XCTAssertEqual(firstLaunchManager.preEdit, .default)
+        XCTAssertEqual(firstLaunchManager.idleTimeout, .tenMinutes)
+
+        defaults.set(ChinesePreference.traditional.rawValue, forKey: "ThinkAloud.chinesePreference")
+        let managerWithRetiredKey = try ModelManager(modelsDirectory: modelsDirectory, defaults: defaults)
+        XCTAssertEqual(managerWithRetiredKey.postEdit, .default)
+    }
+
+    @MainActor
+    func testModelManagerRejectsEveryInvalidSavedCanonicalSetting() {
+        let suiteName = "TranscriptPostProcessorTests.InvalidModelManager.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let modelsDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ThinkAloud-InvalidSettings-\(UUID().uuidString)", isDirectory: true)
+        let cases: [(key: String, value: Any, expected: SavedSettingsError)] = [
+            (
+                "ThinkAloud.modelProfile",
+                "retired-model",
+                .invalidSavedValue(.speechModel)
+            ),
+            (
+                "ThinkAloud.postEditConfig",
+                Data(#"{"chinese":"traditional","cjkLatinSpacing":true}"#.utf8),
+                .invalidSavedValue(.postEdit)
+            ),
+            (
+                "ThinkAloud.preEditConfig",
+                Data(#"{"denoise":true}"#.utf8),
+                .invalidSavedValue(.preEdit)
+            ),
+            (
+                "ThinkAloud.idleTimeout",
+                "twoWeeks",
+                .invalidSavedValue(.idleTimeout)
+            )
+        ]
+
+        for testCase in cases {
+            defaults.removePersistentDomain(forName: suiteName)
+            defaults.set(testCase.value, forKey: testCase.key)
+            XCTAssertThrowsError(
+                try ModelManager(modelsDirectory: modelsDirectory, defaults: defaults)
+            ) { error in
+                XCTAssertEqual(error as? SavedSettingsError, testCase.expected)
+            }
+        }
+    }
+
+    @MainActor
+    func testModelManagerReadsCanonicalPostEditConfig() throws {
+        let suiteName = "TranscriptPostProcessorTests.CanonicalModelManager.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let expected = PostEditConfig(
+            chinese: .simplified,
+            cjkLatinSpacing: true,
+            dictionary: [DictionaryRule(from: "舊詞", to: "新詞")]
+        )
+        defaults.set(
+            try JSONEncoder().encode(expected),
+            forKey: "ThinkAloud.postEditConfig"
+        )
+
+        let modelsDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ThinkAloud-CanonicalPostEdit-\(UUID().uuidString)", isDirectory: true)
+        let manager = try ModelManager(modelsDirectory: modelsDirectory, defaults: defaults)
+
+        XCTAssertEqual(manager.postEdit, expected)
     }
 }

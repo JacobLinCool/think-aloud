@@ -47,6 +47,7 @@ struct ModelStep: View {
                                 .foregroundStyle(.green)
                                 .imageScale(.small)
                                 .help(String(localized: "Already downloaded"))
+                                .accessibilityHidden(true)
                         }
                     }
                     Text(profile.tagline)
@@ -72,6 +73,15 @@ struct ModelStep: View {
         }
         .buttonStyle(.plain)
         .disabled(manager.runtimeStatus.isLoading)
+        .accessibilityLabel(profile.displayName)
+        .accessibilityValue(
+            isSelected
+                ? (downloaded
+                    ? String(localized: "Selected, downloaded")
+                    : String(localized: "Selected, not downloaded"))
+                : (downloaded ? String(localized: "Downloaded") : String(localized: "Not downloaded"))
+        )
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     // MARK: - Status / download
@@ -86,6 +96,18 @@ struct ModelStep: View {
                 HStack {
                     StatusBadge(tone: status.badge, text: status.displayLabel)
                     Spacer()
+                    if manager.preloadIsRunning {
+                        Button(
+                            manager.preloadCancellationRequested
+                                ? String(localized: "Canceling…")
+                                : String(localized: "Cancel Download")
+                        ) {
+                            manager.cancelPreload()
+                        }
+                        .controlSize(.small)
+                        .disabled(manager.preloadCancellationRequested)
+                        .accessibilityLabel(String(localized: "Cancel speech model download"))
+                    }
                 }
                 if let progress = status.downloadProgress {
                     ProgressView(value: progress)
@@ -115,13 +137,6 @@ struct ModelStep: View {
                     .lineLimit(3)
             }
 
-            if !(status.isReady || downloaded) {
-                Button(String(localized: "Download later")) {
-                    container.onboardingState.next()
-                }
-                .buttonStyle(.link)
-                .padding(.top, 2)
-            }
         }
         .padding(.top, 4)
     }

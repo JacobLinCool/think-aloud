@@ -8,13 +8,18 @@ import Observation
 @MainActor
 @Observable
 final class SettingsRouter {
-    var selection: SettingsCategory
+    static let selectionKey = "ThinkAloud.settings.lastCategory"
+    @ObservationIgnored private let defaults: UserDefaults
 
-    init(initial: SettingsCategory? = nil) {
-        // Deep-link target wins; otherwise every fresh open lands on the Insights home page so the
-        // user sees their stats + achievements immediately (no last-viewed restore — the home is
-        // the intended first impression each time).
-        self.selection = initial ?? .insights
+    var selection: SettingsCategory {
+        didSet { defaults.set(selection.rawValue, forKey: Self.selectionKey) }
+    }
+
+    init(initial: SettingsCategory? = nil, defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        let saved = defaults.string(forKey: Self.selectionKey).flatMap(SettingsCategory.init(rawValue:))
+        self.selection = initial ?? saved ?? .insights
+        defaults.set(selection.rawValue, forKey: Self.selectionKey)
     }
 
     func route(to category: SettingsCategory?) {

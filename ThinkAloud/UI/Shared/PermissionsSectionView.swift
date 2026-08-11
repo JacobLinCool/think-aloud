@@ -2,11 +2,8 @@ import AppKit
 import Combine
 import SwiftUI
 
-/// The single source of the mic + accessibility permission UI, shared by the Settings Permissions
-/// pane and the Onboarding permissions step (which used to duplicate it). The live re-check
-/// machinery (the Accessibility-trust distributed notification + app-activation + a light poll) now
-/// lives here, so the SETTINGS pane finally auto-updates the moment the user grants access in System
-/// Settings — previously only the onboarding copy did.
+/// The single source of the mic + accessibility permission UI, shared by Settings and onboarding.
+/// Accessibility-trust notifications, app activation, and a light poll keep both surfaces current.
 ///
 /// `style` switches the chrome: grouped-Form sections in Settings, onboarding cards in the flow.
 struct PermissionsSectionView: View {
@@ -15,7 +12,7 @@ struct PermissionsSectionView: View {
     @Environment(AppContainer.self) private var container
     let style: Style
 
-    /// Light timer fallback: re-check while the view is visible in case neither notification fires.
+    /// Periodic re-check while the view is visible, covering permission changes without a signal.
     @State private var pollTask: Task<Void, Never>?
 
     /// macOS posts this distributed notification when Accessibility trust changes — the signal that
@@ -62,7 +59,7 @@ struct PermissionsSectionView: View {
                 micButtons(prominent: false)
             }
         } header: {
-            Text("Microphone")
+            Text("Microphone (Required)")
         } footer: {
             Text("Required to record your voice for local transcription.")
                 .font(.caption)
@@ -76,7 +73,7 @@ struct PermissionsSectionView: View {
                 accessibilityButtons(includeRequest: false, prominent: false)
             }
         } header: {
-            Text("Accessibility")
+            Text("Accessibility (Optional)")
         } footer: {
             Text("Lets ThinkAloud paste the transcription into the focused app. Optional — without it, text is copied to your clipboard instead (press ⌘V). After you enable it in System Settings, this updates on its own.")
                 .font(.caption)
@@ -93,7 +90,7 @@ struct PermissionsSectionView: View {
 
         OnboardingCard {
             VStack(alignment: .leading, spacing: 10) {
-                Label("Microphone", systemImage: "mic.fill")
+                Label("Microphone · Required", systemImage: "mic.fill")
                     .font(.headline)
                 Text("Required to record your voice for local transcription.")
                     .font(.callout)
@@ -109,7 +106,7 @@ struct PermissionsSectionView: View {
 
         OnboardingCard {
             VStack(alignment: .leading, spacing: 10) {
-                Label("Accessibility", systemImage: "accessibility")
+                Label("Accessibility · Optional", systemImage: "accessibility")
                     .font(.headline)
                 Text("Lets ThinkAloud paste the transcription into the focused app. Optional — without it, text is copied to your clipboard instead.")
                     .font(.callout)
@@ -137,12 +134,12 @@ struct PermissionsSectionView: View {
         case .granted:
             EmptyView()
         case .notDetermined:
-            let button = Button(String(localized: "Request access")) {
+            let button = Button(String(localized: "Request Microphone Access…")) {
                 Task { await container.permissions.requestMicrophone() }
             }
             if prominent { button.buttonStyle(.borderedProminent) } else { button }
         case .denied, .unknown:
-            Button(String(localized: "Open System Settings")) {
+            Button(String(localized: "Open Microphone Settings…")) {
                 container.permissions.openMicrophoneSettings()
             }
         }
@@ -151,11 +148,11 @@ struct PermissionsSectionView: View {
     @ViewBuilder
     private func accessibilityButtons(includeRequest: Bool, prominent: Bool) -> some View {
         if container.permissions.accessibilityStatus != .granted {
-            Button(String(localized: "Open System Settings")) {
+            Button(String(localized: "Open Accessibility Settings…")) {
                 container.permissions.openAccessibilitySettings()
             }
             if includeRequest {
-                let request = Button(String(localized: "Request access")) {
+                let request = Button(String(localized: "Request Accessibility Access…")) {
                     container.permissions.promptAccessibility()
                 }
                 if prominent { request.buttonStyle(.borderedProminent) } else { request }

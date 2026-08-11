@@ -10,6 +10,8 @@ final class DatasetBrowserWindowController: NSObject, NSWindowDelegate {
     private var player: AudioPlayerController?
     private var benchmark: BenchmarkController?
     private var pushController: HFPushController?
+    private var isPresentingCloseAlert = false
+    private var allowNextClose = false
 
     init(container: AppContainer) {
         self.container = container
@@ -21,14 +23,17 @@ final class DatasetBrowserWindowController: NSObject, NSWindowDelegate {
             NSApp.activate(ignoringOtherApps: true)
             window.makeKeyAndOrderFront(nil)
             if let c = controller {
-                Task { @MainActor in await c.reload() }
+                if !c.hasUnsavedDraft {
+                    Task { @MainActor in await c.reload() }
+                }
             }
             return
         }
         guard let container else { return }
         let newController = DatasetBrowserController(
             datasetStore: container.datasetStore,
-            audioFileStore: container.audioFileStore
+            audioFileStore: container.audioFileStore,
+            deletionService: container.datasetDeletionService
         )
         let newPlayer = AudioPlayerController()
         let newBenchmark = BenchmarkController(
@@ -44,8 +49,16 @@ final class DatasetBrowserWindowController: NSObject, NSWindowDelegate {
             datasetStore: container.datasetStore,
             audioFileStore: container.audioFileStore
         )
-        let root = DatasetBrowserRootView(controller: newController, player: newPlayer, benchmark: newBenchmark, pushController: newPush, tokenStore: container.hfTokenStore)
+        let root = DatasetBrowserRootView(
+            controller: newController,
+            player: newPlayer,
+            benchmark: newBenchmark,
+            pushController: newPush,
+            tokenStore: container.hfTokenStore
+        )
+        .environment(container)
         let hosting = NSHostingController(rootView: root)
+        hosting.view.setAccessibilityLabel(String(localized: "Dataset Browser"))
         let size = NSSize(width: 880, height: 600)
         hosting.preferredContentSize = size
 
@@ -70,6 +83,45 @@ final class DatasetBrowserWindowController: NSObject, NSWindowDelegate {
         self.player = newPlayer
         self.benchmark = newBenchmark
         self.pushController = newPush
+    }
+
+    nonisolated func windowShouldClose(_ sender: NSWindow) -> Bool {
+        MainActor.assumeIsolated {
+            guard !allowNextClose else {
+                allowNextClose = false
+                return true
+            }
+            guard let controller, controller.hasUnsavedDraft else { return true }
+            guard !isPresentingCloseAlert else { return false }
+
+            isPresentingCloseAlert = true
+            let alert = NSAlert()
+            alert.alertStyle = .warning
+            alert.messageText = String(localized: "Save changes before closing?")
+            alert.informativeText = String(localized: "Your edited transcript has unsaved changes.")
+            alert.addButton(withTitle: String(localized: "Save"))
+            alert.addButton(withTitle: String(localized: "Cancel"))
+            alert.addButton(withTitle: String(localized: "Discard Changes"))
+            alert.beginSheetModal(for: sender) { [weak self, weak sender] response in
+                Task { @MainActor in
+                    guard let self, let sender else { return }
+                    self.isPresentingCloseAlert = false
+                    switch response {
+                    case .alertFirstButtonReturn:
+                        guard await controller.saveDraft() else { return }
+                        self.allowNextClose = true
+                        sender.performClose(nil)
+                    case .alertThirdButtonReturn:
+                        controller.discardDraft()
+                        self.allowNextClose = true
+                        sender.performClose(nil)
+                    default:
+                        break
+                    }
+                }
+            }
+            return false
+        }
     }
 
     nonisolated func windowWillClose(_ notification: Notification) {

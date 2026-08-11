@@ -6,10 +6,9 @@ struct RecordDetailView: View {
     let controller: DatasetBrowserController
     let player: AudioPlayerController
 
-    @State private var editing: Bool = false
-    @State private var draft: String = ""
     @State private var audioURL: URL?
     @State private var showSavedTick: Bool = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// Caps text-block readable width so long Chinese paragraphs don't run the full
     /// (potentially full-screen) detail width.
@@ -28,12 +27,16 @@ struct RecordDetailView: View {
         }
         .frame(maxWidth: .infinity)
         .task(id: record.id) {
-            let url = await controller.audioURL(for: record)
-            audioURL = url
-            // Pre-load the player so the Slider/duration are accurate before the user presses ▶.
-            player.prepare(url: url, id: record.id)
-            editing = false
-            draft = record.editedTranscript
+            player.beginLoading(id: record.id)
+            do {
+                let url = try await controller.audioURL(for: record)
+                audioURL = url
+                // Pre-load the player so the Slider/duration are accurate before the user presses ▶.
+                player.prepare(url: url, id: record.id)
+            } catch {
+                audioURL = nil
+                player.reportLoadError(error, id: record.id)
+            }
             showSavedTick = false
         }
         .onChange(of: controller.lastSaveTick) { _, _ in
@@ -44,7 +47,7 @@ struct RecordDetailView: View {
                 await MainActor.run { showSavedTick = false }
             }
         }
-        .navigationTitle("")
+        .navigationTitle(Text(verbatim: ""))
     }
 
     // MARK: - Player (scrubbable)
@@ -66,7 +69,9 @@ struct RecordDetailView: View {
                     .frame(width: 32, height: 32)
             }
             .buttonStyle(.plain)
-            .disabled(audioURL == nil)
+            .disabled(audioURL == nil || player.loadState == .loading || isAudioUnavailable)
+            .accessibilityLabel(isThisPlaying ? String(localized: "Pause audio") : String(localized: "Play audio"))
+            .accessibilityHint(String(localized: "Plays or pauses the selected recording."))
 
             VStack(alignment: .leading, spacing: 4) {
                 Slider(
@@ -87,6 +92,9 @@ struct RecordDetailView: View {
                 )
                 .controlSize(.small)
                 .disabled(player.playingID != record.id || displayDuration <= 0)
+                .accessibilityLabel(String(localized: "Playback position"))
+                .accessibilityValue("\(timeLabel(displayTime)) of \(timeLabel(displayDuration))")
+                .accessibilityHint(String(localized: "Adjust the current position in the recording."))
 
                 HStack {
                     Text(timeLabel(displayTime))
@@ -98,9 +106,24 @@ struct RecordDetailView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            if player.loadState == .loading {
+                ProgressView()
+                    .controlSize(.small)
+                    .accessibilityLabel(String(localized: "Loading audio"))
+            }
         }
         .padding(12)
         .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+        .overlay(alignment: .bottomLeading) {
+            if case .error(let message) = player.loadState {
+                Label(message, systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .padding(.horizontal, 12)
+                    .offset(y: 18)
+                    .accessibilityLabel(String(localized: "Audio error: \(message)"))
+            }
+        }
     }
 
     // MARK: - Metadata
@@ -125,7 +148,9 @@ struct RecordDetailView: View {
             }
             if let lang = record.language {
                 metaRow("Language") {
-                    Text(lang).foregroundStyle(.primary)
+                    Text(Locale.current.localizedString(forLanguageCode: lang) ?? lang)
+                        .foregroundStyle(.primary)
+                        .help(lang)
                 }
             }
             metaRow("Created") {
@@ -147,6 +172,7 @@ struct RecordDetailView: View {
                             .imageScale(.small)
                     }
                     .buttonStyle(.borderless)
+                    .accessibilityLabel(String(localized: "Copy Record ID"))
                     .help(String(localized: "Copy ID"))
                 }
             }
@@ -197,28 +223,46 @@ struct RecordDetailView: View {
                     .transition(.opacity)
                 }
                 Spacer()
-                if !editing {
-                    Button(String(localized: "Edit")) { beginEdit() }
+                if !isEditingThisRecord {
+                    Button(String(localized: "Edit")) { controller.beginEditing(record) }
                         .controlSize(.small)
                         .keyboardShortcut("e", modifiers: [.command])
                         .help(String(localized: "Edit (⌘E)"))
                 }
             }
-            if editing {
-                TextEditor(text: $draft)
+            if isEditingThisRecord {
+                TextEditor(text: Binding(
+                    get: { controller.editDraft },
+                    set: { controller.editDraft = $0 }
+                ))
                     .font(.body)
                     .scrollContentBackground(.hidden)
                     .padding(8)
                     .frame(minHeight: 120)
                     .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 8))
                 HStack {
+                    if let error = controller.editErrorMessage {
+                        Label(error, systemImage: "exclamationmark.triangle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                            .accessibilityLabel(String(localized: "Save error: \(error)"))
+                        Button(String(localized: "Retry")) { saveEdit() }
+                            .controlSize(.small)
+                            .disabled(controller.isSavingDraft)
+                    }
                     Spacer()
-                    Button(String(localized: "Cancel")) { cancelEdit() }
+                    if controller.isSavingDraft {
+                        ProgressView()
+                            .controlSize(.small)
+                            .accessibilityLabel(String(localized: "Saving changes"))
+                    }
+                    Button(String(localized: "Cancel")) { controller.discardDraft() }
                         .keyboardShortcut(.cancelAction)
+                        .disabled(controller.isSavingDraft)
                     Button(String(localized: "Save")) { saveEdit() }
                         .keyboardShortcut("s", modifiers: [.command])
                         .buttonStyle(.borderedProminent)
-                        .disabled(draft == record.editedTranscript)
+                        .disabled(!controller.hasUnsavedDraft || controller.isSavingDraft)
                 }
             } else {
                 Text(record.editedTranscript.isEmpty ? String(localized: "(empty)") : record.editedTranscript)
@@ -229,7 +273,7 @@ struct RecordDetailView: View {
                     .background(Color.accentColor.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
             }
         }
-        .animation(.easeOut(duration: 0.2), value: showSavedTick)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: showSavedTick)
     }
 
     @ViewBuilder
@@ -246,15 +290,33 @@ struct RecordDetailView: View {
         player.playingID == record.id && player.isPlaying
     }
 
+    private var isAudioUnavailable: Bool {
+        if case .error = player.loadState { return true }
+        return false
+    }
+
+    private var isEditingThisRecord: Bool {
+        controller.editingRecordID == record.id
+    }
+
     private func timeLabel(_ seconds: TimeInterval) -> String {
-        let s = max(0, Int(seconds))
-        return String(format: "%d:%02d", s / 60, s % 60)
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .positional
+        formatter.allowedUnits = seconds >= 3600 ? [.hour, .minute, .second] : [.minute, .second]
+        formatter.zeroFormattingBehavior = .pad
+        return formatter.string(from: max(0, seconds)) ?? "0:00"
     }
 
     private var createdLabel: String {
-        let iso = ISO8601DateFormatter()
-        iso.formatOptions = [.withInternetDateTime]
-        guard let date = iso.date(from: record.createdAt) else { return record.createdAt }
+        let fractional = ISO8601DateFormatter()
+        fractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let standard = ISO8601DateFormatter()
+        standard.formatOptions = [.withInternetDateTime]
+        guard let date = fractional.date(from: record.createdAt)
+                ?? standard.date(from: record.createdAt)
+        else {
+            return String(localized: "Invalid recording date")
+        }
         let f = DateFormatter()
         f.dateStyle = .medium
         f.timeStyle = .medium
@@ -269,21 +331,9 @@ struct RecordDetailView: View {
 
     // MARK: - Edit lifecycle
 
-    private func beginEdit() {
-        draft = record.editedTranscript
-        editing = true
-    }
-
-    private func cancelEdit() {
-        draft = record.editedTranscript
-        editing = false
-    }
-
     private func saveEdit() {
-        let snapshot = draft
-        editing = false
         Task {
-            await controller.updateEdited(id: record.id, text: snapshot)
+            _ = await controller.saveDraft()
         }
     }
 }

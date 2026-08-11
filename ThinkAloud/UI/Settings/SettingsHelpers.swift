@@ -1,6 +1,25 @@
 import AppKit
 import SwiftUI
 
+struct SettingsPersistenceErrorSection: View {
+    let error: SavedSettingsError
+
+    var body: some View {
+        Section {
+            Label(error.localizedDescription, systemImage: "exclamationmark.triangle.fill")
+                .font(.callout)
+                .foregroundStyle(.red)
+                .textSelection(.enabled)
+        } header: {
+            Text("Settings Not Saved")
+        } footer: {
+            Text("Change the affected setting again. If this message remains, quit and reopen ThinkAloud before relying on the change.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+}
+
 /// Coloured status badge for read-only state rows in Settings (permissions, model status, etc.).
 struct StatusBadge: View {
     enum Tone {
@@ -18,10 +37,12 @@ struct StatusBadge: View {
             Image(systemName: icon)
                 .imageScale(.small)
                 .foregroundStyle(color)
+                .accessibilityHidden(true)
             Text(text)
                 .foregroundStyle(.secondary)
         }
         .font(.subheadline)
+        .accessibilityElement(children: .combine)
     }
 
     private var icon: String {
@@ -56,6 +77,7 @@ struct RevealInFinderButton: View {
         }
         .buttonStyle(.borderless)
         .help(String(localized: "Reveal in Finder"))
+        .accessibilityLabel(String(localized: "Reveal in Finder"))
     }
 }
 
@@ -105,6 +127,7 @@ struct RefreshButton: View {
         }
         .buttonStyle(.borderless)
         .help(String(localized: "Refresh status"))
+        .accessibilityLabel(String(localized: "Refresh status"))
     }
 }
 

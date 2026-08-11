@@ -13,7 +13,7 @@ Built around [Qwen3-ASR](https://huggingface.co/mlx-community?search_models=Qwen
 - **Chinese output preference** — keep model output as-is, prefer Traditional (正體), or prefer Simplified (簡體). Conversion runs locally via ICU.
 - **AI Refine (per-app)** — an optional on-device LLM rewrites the transcript after ASR (fix fillers, grammar, punctuation, tone). Download a Qwen model (Qwen3 / Qwen3.5) or use Apple Intelligence where available. Because ThinkAloud knows the source app, you can give **different apps different styles** via per-app system prompts — formal for work, casual for chat. Fails open to the plain transcript; Settings → AI Refine.
 - **Localized UI** — English and 正體中文, or follow the system language. Switch any time in Settings → General (takes effect after relaunch).
-- **Insights & achievements** — the Settings home page (opens here every time): how much you've dictated, your estimated time saved vs. typing, how often a transcript "came out clean" (inserted with zero edits), a 30-day activity chart, recording-length distribution, and a wall of unlockable achievements (sessions, hours, words, day streaks, models & apps used, transcripts polished) that fire a notification when earned. Also reachable from the menu bar (`⌥`-click the mic, **Insights…**).
+- **Insights & achievements** — the Settings home page measures every completed **Insert** / **Insert & Save** attempt, independently of Dataset: how much you've dictated, estimated time saved vs. typing, how often a transcript "came out clean," 30-day activity, recording-length distribution, model/app usage, and unlockable achievements. Also reachable from the menu bar (`⌥`-click the mic, **Insights…**).
 - **Dataset browser** — play recordings, scrub the timeline, edit transcripts, bulk delete.
 - **Built-in benchmark** — re-run any saved model against your dataset; see CER, WER, exact-match rate, real-time factor (RTF), and a per-character git-style diff. Toggle strict vs lenient (normalized) scoring without re-running. Multiple runs kept for cross-model comparison. JSON export.
 - **Push to Hugging Face Hub** — full LFS support; a rich dataset card + machine-readable `statistics.json` are generated from your data (length distribution, text volume, transcript-quality rates). Source-app names are excluded by default; token stored in macOS Keychain.
@@ -53,7 +53,7 @@ Built around [Qwen3-ASR](https://huggingface.co/mlx-community?search_models=Qwen
 
 Open from menu bar **Browse Dataset…** (`⌘D`) or Settings → Dataset.
 
-- **Records** — saved dictations. Play, scrub, edit the transcript (raw stays immutable, edited overwrites). Multi-select + `⌘⌫` for bulk delete. Push the whole dataset to HF Hub from the toolbar. With nothing selected, the detail pane shows your **insights** — time saved, "came out clean" rate, length distribution, and breakdowns.
+- **Records** — saved dictations. Play, scrub, edit the transcript (raw stays immutable, edited overwrites). Multi-select + `⌘⌫` for bulk delete. Push the whole dataset to HF Hub from the toolbar. With nothing selected, the detail pane shows a **Dataset overview** computed only from saved records.
 - **Benchmark** — pick a model + Chinese preference, run the full pipeline (audio decode → model → post-process) against every record. Reports overall CER, WER, exact-match rate, average latency, and real-time factor (RTF); a Normalize toggle flips between strict (case + punctuation preserved) and lenient scoring without re-running. Per-record diffs show what the model omitted (green) vs hallucinated (red). Multiple runs are kept in-session for comparison and can be exported as JSON.
 
 ![Dataset browser & benchmark](images/dataset-benchmark.png)
@@ -62,10 +62,11 @@ Open from menu bar **Browse Dataset…** (`⌘D`) or Settings → Dataset.
 
 - All audio is processed on-device. Nothing is sent to a server unless you explicitly press **Push** in the dataset browser.
 - The Hugging Face token is stored in macOS Keychain — never on disk in plain text, never in UserDefaults.
-- Recordings are only saved to your dataset when you choose **Insert & save**. Plain Insert discards the audio.
+- Every **Insert** / **Insert & Save** attempt stores its transcription metadata and full transcript stages locally so Insights reflects actual usage. This history has no audio field.
+- Recordings are only saved to Dataset when you choose **Insert & Save**. Plain Insert releases the in-memory audio without writing an audio file.
 - A push only includes an explicit allowlist of fields. Source-app names are **off by default** (opt in per push), and free-form config blobs are never uploaded. The pre-push dialog lists exactly what will be written.
-- Insights are computed locally; the app-usage breakdown ("where you dictate") never leaves your Mac.
-- The dataset (SQLite + WAV files) lives at `~/Library/Application Support/ThinkAloud/`.
+- Insights are computed only from local session history; deleting or clearing Dataset never changes Insights. The app-usage breakdown ("where you dictate") never leaves your Mac.
+- Local session history and Dataset records share one SQLite database but use separate tables and repositories. Dataset WAV files live alongside it at `~/Library/Application Support/ThinkAloud/`.
 
 ## Build from source
 
@@ -79,8 +80,9 @@ xcodegen generate
 # Build
 xcodebuild -project ThinkAloud.xcodeproj -scheme ThinkAloud -configuration Debug build
 
-# Run tests (45 unit tests; one optional live ASR test gated by env)
-xcodebuild -project ThinkAloud.xcodeproj -scheme ThinkAloud -configuration Debug test
+# Run the non-UI test suite (live model smoke tests require explicit env opt-in)
+xcodebuild -project ThinkAloud.xcodeproj -scheme ThinkAloud -configuration Debug \
+  -only-testing:ThinkAloudTests test
 ```
 
 To open in Xcode: `open ThinkAloud.xcodeproj`.

@@ -3,14 +3,10 @@ import Foundation
 // Auto Post-Edit pipeline. Deterministic, on-device text clean-up applied to raw ASR output
 // before it reaches the editor / dataset:
 //
-//   Audio → [Auto Pre-Edit (future)] → ASR → [Auto Post-Edit] → text
-//                                              ├─ 1. Chinese conversion (ChinesePreference)
-//                                              ├─ 2. CJK/Latin spacing (CJKLatinSpacer, opt-in)
-//                                              └─ 3. Custom dictionary (CompiledDictionary, LAST)
-//
-// Auto Pre-Edit will be the symmetric stage on the other side of ASR — operating on the
-// `[Float]` samples before transcription (e.g. audio enhancement, target-speaker extraction),
-// configured by a sibling `PreEditConfig`. It is intentionally not implemented yet.
+//   Audio → [Auto Pre-Edit] → ASR → [Auto Post-Edit] → text
+//                                        ├─ 1. Chinese conversion (ChinesePreference)
+//                                        ├─ 2. CJK/Latin spacing (CJKLatinSpacer, opt-in)
+//                                        └─ 3. Custom dictionary (CompiledDictionary, LAST)
 
 enum ChinesePreference: String, CaseIterable, Identifiable, Sendable, Codable {
     /// Pass through whatever the model produced.
@@ -59,19 +55,6 @@ struct PostEditConfig: Codable, Sendable, Equatable {
         self.chinese = chinese
         self.cjkLatinSpacing = cjkLatinSpacing
         self.dictionary = dictionary
-    }
-
-    enum CodingKeys: String, CodingKey { case chinese, cjkLatinSpacing, dictionary }
-
-    // Explicit decode so older persisted JSON (no `dictionary` key, or — for a future field —
-    // no `cjkLatinSpacing` key) still loads. Swift's synthesized Decodable throws keyNotFound for
-    // a missing key even when the property has a default; that throw would make ModelManager fall
-    // through to legacy migration and silently reset the user's existing post-edit settings.
-    init(from decoder: Decoder) throws {
-        let c = try decoder.container(keyedBy: CodingKeys.self)
-        chinese = try c.decodeIfPresent(ChinesePreference.self, forKey: .chinese) ?? .model
-        cjkLatinSpacing = try c.decodeIfPresent(Bool.self, forKey: .cjkLatinSpacing) ?? false
-        dictionary = try c.decodeIfPresent([DictionaryRule].self, forKey: .dictionary) ?? []
     }
 
     /// Number of active (enabled, non-blank) dictionary rules.

@@ -48,8 +48,14 @@ enum LLMError: Error, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .notReady: return "The refine model is not ready."
-        case .loadFailed(let m): return "Failed to load the refine model: \(m)"
+        case .notReady:
+            return String(
+                localized: "The refinement model isn’t ready. Open AI Refine settings and try again."
+            )
+        case .loadFailed:
+            return String(
+                localized: "ThinkAloud couldn’t load the refinement model. Open AI Refine settings and retry."
+            )
         }
     }
 }

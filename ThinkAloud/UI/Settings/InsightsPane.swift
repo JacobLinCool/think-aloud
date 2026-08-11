@@ -2,7 +2,7 @@ import SwiftUI
 import Charts
 
 /// The Settings home page (first sidebar item, default landing): a motivational dashboard + the
-/// achievement wall. Reads the shared `AchievementService` — which is both the cached statistics
+/// achievement wall. Reads usage history through the shared `AchievementService`, which is both the cached statistics
 /// source and the unlock state — so opening here refreshes the numbers and the badges in one pass.
 struct InsightsPane: View {
     @Environment(AppContainer.self) private var container
@@ -12,7 +12,9 @@ struct InsightsPane: View {
         let svc = container.achievements
         ScrollView {
             Group {
-                if !svc.hasLoaded {
+                if let error = svc.loadError {
+                    failureState(error)
+                } else if !svc.hasLoaded {
                     loadingState
                 } else if svc.stats.isEmpty {
                     emptyState
@@ -33,6 +35,7 @@ struct InsightsPane: View {
     private func dashboard(_ s: DatasetStatistics, _ svc: AchievementService) -> some View {
         VStack(alignment: .leading, spacing: 22) {
             header(s)
+            privacyDisclosure
             heroTrio(s)
             retentionHook(s)
             achievementsSection(s, svc)
@@ -41,6 +44,15 @@ struct InsightsPane: View {
             modelsSection(s)
             appsSection(s)
         }
+    }
+
+    private var privacyDisclosure: some View {
+        Label(
+            String(localized: "Full transcripts stay on this Mac. Audio is saved only when you choose Insert & Save."),
+            systemImage: "lock.fill"
+        )
+        .font(.caption)
+        .foregroundStyle(.secondary)
     }
 
     @ViewBuilder
@@ -80,11 +92,11 @@ struct InsightsPane: View {
         if s.editing.eligibleCount == 0 {
             HeroCard(tone: .neutral, value: "—",
                      title: String(localized: "came out clean"),
-                     caption: String(localized: "inserted with no manual edits"))
+                     caption: String(localized: "finished with no manual edits"))
         } else {
             HeroCard(tone: .good, value: StatFmt.percent(s.editing.cleanRate),
                      title: String(localized: "came out clean"),
-                     caption: String(localized: "\(s.editing.cleanCount) of \(s.editing.eligibleCount) inserted with no edits"))
+                     caption: String(localized: "\(s.editing.cleanCount) of \(s.editing.eligibleCount) finished with no edits"))
         }
     }
 
@@ -98,6 +110,7 @@ struct InsightsPane: View {
                 Image(systemName: "info.circle").imageScale(.small).foregroundStyle(.secondary)
             }
             .buttonStyle(.borderless)
+            .accessibilityLabel(String(localized: "Explain Time Saved Estimate"))
             .popover(isPresented: $showTimeSavedInfo, arrowEdge: .bottom) { timeSavedExplanation(s) }
         })
     }
@@ -110,7 +123,7 @@ struct InsightsPane: View {
                 .font(.callout)
             Text(TypingModel.default.assumptionDescription).font(.caption).foregroundStyle(.secondary)
             Divider()
-            Text("Based on \(s.productivity.recordCount) recordings with a measured length.")
+            Text("Based on \(s.productivity.recordCount) Insert attempts with a measured length, including failed delivery attempts.")
                 .font(.caption).foregroundStyle(.secondary)
         }
         .padding(16)
@@ -195,7 +208,10 @@ struct InsightsPane: View {
             VStack(alignment: .leading, spacing: 12) {
                 if s.audio.recordsWithDuration > 0 {
                     Chart(s.audio.histogram, id: \.label) { b in
-                        BarMark(x: .value("Range", b.label), y: .value("Count", b.count))
+                        BarMark(
+                            x: .value("Range", StatFmt.durationBucket(b)),
+                            y: .value("Count", b.count)
+                        )
                             .foregroundStyle(Color.teal.gradient)
                             .cornerRadius(3)
                     }
@@ -268,10 +284,36 @@ struct InsightsPane: View {
     private var emptyState: some View {
         VStack(spacing: 10) {
             Image(systemName: "chart.bar.xaxis").font(.system(size: 34)).foregroundStyle(.tertiary)
-            Text("Your insights appear after your first save").font(.headline)
-            Text("Press the hotkey, dictate, then choose Insert & save. Your time saved, accuracy, and dataset shape show up here.")
+                .accessibilityHidden(true)
+            Text("Your insights appear after your first Insert").font(.headline)
+            Text("Press the hotkey, dictate, then choose Insert or Insert & Save. Usage, time saved, and accuracy will appear here.")
                 .font(.callout).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center).frame(maxWidth: 360)
+            Text("Full transcripts stay on this Mac. Audio is saved only when you add a recording to Dataset.")
+                .font(.caption).foregroundStyle(.tertiary)
+                .multilineTextAlignment(.center).frame(maxWidth: 380)
+        }
+        .frame(maxWidth: .infinity, minHeight: 240)
+        .padding(24)
+    }
+
+    private func failureState(_ message: String) -> some View {
+        VStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 34))
+                .foregroundStyle(.orange)
+                .accessibilityHidden(true)
+            Text("Insights Couldn’t Load")
+                .font(.headline)
+            Text(message)
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 420)
+            Button(String(localized: "Retry")) {
+                Task { await container.achievements.refresh() }
+            }
+            .buttonStyle(.borderedProminent)
         }
         .frame(maxWidth: .infinity, minHeight: 240)
         .padding(24)
@@ -536,23 +578,55 @@ struct ActivitySeries {
 // MARK: - Formatting
 
 enum StatFmt {
-    static func count(_ n: Int) -> String { grouping.string(from: NSNumber(value: n)) ?? "\(n)" }
+    static func count(_ n: Int) -> String {
+        n.formatted(.number.grouping(.automatic))
+    }
 
-    static func percent(_ fraction: Double) -> String { "\(Int((fraction * 100).rounded()))%" }
+    static func percent(_ fraction: Double) -> String {
+        fraction.formatted(.percent.precision(.fractionLength(0)))
+    }
 
     static func duration(seconds: Double) -> String {
-        if seconds < 1 { return String(localized: "0 sec") }
-        if seconds < 90 { return String(localized: "\(Int(seconds.rounded())) sec") }
-        let minutes = seconds / 60
-        if minutes < 90 { return String(localized: "\(Int(minutes.rounded())) min") }
-        return String(format: "%.1f ", minutes / 60) + String(localized: "hr")
+        let clamped = max(0, seconds)
+        if clamped < 90 {
+            return measurement(
+                clamped.rounded(),
+                unit: UnitDuration.seconds,
+                fractionLength: 0
+            )
+        }
+        let minutes = clamped / 60
+        if minutes < 90 {
+            return measurement(
+                minutes.rounded(),
+                unit: UnitDuration.minutes,
+                fractionLength: 0
+            )
+        }
+        return measurement(minutes / 60, unit: UnitDuration.hours, fractionLength: 1)
     }
 
     static func durationMs(_ ms: Int) -> String {
         let seconds = Double(ms) / 1000
-        if seconds < 60 { return String(format: "%.1fs", seconds) }
-        let m = Int(seconds) / 60, s = Int(seconds) % 60
-        return String(format: "%d:%02d", m, s)
+        if seconds < 60 {
+            return measurement(seconds, unit: UnitDuration.seconds, fractionLength: 1)
+        }
+        return measurement(seconds / 60, unit: UnitDuration.minutes, fractionLength: 1)
+    }
+
+    static func durationBucket(_ bucket: DatasetStatistics.DurationBucket) -> String {
+        switch (bucket.lowerMs, bucket.upperMs) {
+        case (0, 2_000): return String(localized: "0–2 sec")
+        case (2_000, 5_000): return String(localized: "2–5 sec")
+        case (5_000, 10_000): return String(localized: "5–10 sec")
+        case (10_000, 20_000): return String(localized: "10–20 sec")
+        case (20_000, 30_000): return String(localized: "20–30 sec")
+        case (30_000, 60_000): return String(localized: "30–60 sec")
+        case (60_000, nil): return String(localized: "60+ sec")
+        default:
+            assertionFailure("Unexpected duration histogram bucket")
+            return String(localized: "Unknown range")
+        }
     }
 
     static func prettyDay(_ yyyymmdd: String) -> String {
@@ -564,9 +638,19 @@ enum StatFmt {
         [10, 25, 50, 100, 250, 500, 1_000, 2_500, 5_000, 10_000].first { $0 > n }
     }
 
-    private static let grouping: NumberFormatter = {
-        let f = NumberFormatter(); f.numberStyle = .decimal; return f
-    }()
+    private static func measurement(
+        _ value: Double,
+        unit: UnitDuration,
+        fractionLength: Int
+    ) -> String {
+        Measurement(value: value, unit: unit).formatted(
+            .measurement(
+                width: .abbreviated,
+                usage: .asProvided,
+                numberFormatStyle: .number.precision(.fractionLength(fractionLength))
+            )
+        )
+    }
     private static let isoDay: DateFormatter = {
         let f = DateFormatter(); f.timeZone = TimeZone(secondsFromGMT: 0); f.dateFormat = "yyyy-MM-dd"; return f
     }()

@@ -2,6 +2,101 @@ import Foundation
 import HuggingFace
 import Observation
 
+enum SavedSettingsError: Error, LocalizedError, Equatable, Sendable {
+    enum Field: Equatable, Sendable {
+        case speechModel
+        case postEdit
+        case preEdit
+        case idleTimeout
+        case refineModel
+        case refineConfiguration
+
+        var preferenceKey: String {
+            switch self {
+            case .speechModel: return "ThinkAloud.modelProfile"
+            case .postEdit: return "ThinkAloud.postEditConfig"
+            case .preEdit: return "ThinkAloud.preEditConfig"
+            case .idleTimeout: return "ThinkAloud.idleTimeout"
+            case .refineModel: return "ThinkAloud.llmModelProfile"
+            case .refineConfiguration: return "ThinkAloud.llmPostEditConfig"
+            }
+        }
+    }
+
+    case invalidSavedValue(Field)
+    case encodingFailed(Field)
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidSavedValue(.speechModel):
+            return String(localized: "The saved speech model setting is invalid. Reset it, then retry.")
+        case .invalidSavedValue(.postEdit):
+            return String(localized: "The saved transcript editing settings are invalid. Reset them, then retry.")
+        case .invalidSavedValue(.preEdit):
+            return String(localized: "The saved audio cleanup settings are invalid. Reset them, then retry.")
+        case .invalidSavedValue(.idleTimeout):
+            return String(localized: "The saved model idle-time setting is invalid. Reset it, then retry.")
+        case .invalidSavedValue(.refineModel):
+            return String(localized: "The saved AI refinement model setting is invalid. Reset it, then retry.")
+        case .invalidSavedValue(.refineConfiguration):
+            return String(localized: "The saved AI refinement settings are invalid. Reset them, then retry.")
+        case .encodingFailed(.speechModel):
+            return String(localized: "ThinkAloud couldn’t save the speech model setting. Try again.")
+        case .encodingFailed(.postEdit):
+            return String(localized: "ThinkAloud couldn’t save the transcript editing settings. Try again.")
+        case .encodingFailed(.preEdit):
+            return String(localized: "ThinkAloud couldn’t save the audio cleanup settings. Try again.")
+        case .encodingFailed(.idleTimeout):
+            return String(localized: "ThinkAloud couldn’t save the model idle-time setting. Try again.")
+        case .encodingFailed(.refineModel):
+            return String(localized: "ThinkAloud couldn’t save the AI refinement model setting. Try again.")
+        case .encodingFailed(.refineConfiguration):
+            return String(localized: "ThinkAloud couldn’t save the AI refinement settings. Try again.")
+        }
+    }
+
+    var invalidPreferenceKey: String? {
+        guard case .invalidSavedValue(let field) = self else { return nil }
+        return field.preferenceKey
+    }
+}
+
+enum SavedSettingsReader {
+    static func enumValue<Value>(
+        _ type: Value.Type,
+        defaults: UserDefaults,
+        key: String,
+        field: SavedSettingsError.Field
+    ) throws -> Value? where Value: RawRepresentable, Value.RawValue == String {
+        guard let object = defaults.object(forKey: key) else { return nil }
+        guard let rawValue = object as? String,
+              let value = Value(rawValue: rawValue) else {
+            NSLog("ThinkAloud: invalid saved enum setting for key \(key)")
+            throw SavedSettingsError.invalidSavedValue(field)
+        }
+        return value
+    }
+
+    static func decodableValue<Value: Decodable>(
+        _ type: Value.Type,
+        defaults: UserDefaults,
+        key: String,
+        field: SavedSettingsError.Field
+    ) throws -> Value? {
+        guard let object = defaults.object(forKey: key) else { return nil }
+        guard let data = object as? Data else {
+            NSLog("ThinkAloud: saved setting for key \(key) is not data")
+            throw SavedSettingsError.invalidSavedValue(field)
+        }
+        do {
+            return try JSONDecoder().decode(type, from: data)
+        } catch {
+            NSLog("ThinkAloud: failed to decode saved setting for key \(key): \(error)")
+            throw SavedSettingsError.invalidSavedValue(field)
+        }
+    }
+}
+
 enum IdleTimeout: String, CaseIterable, Identifiable, Sendable {
     case never
     case fiveMinutes
@@ -36,50 +131,45 @@ enum IdleTimeout: String, CaseIterable, Identifiable, Sendable {
 @Observable
 final class ModelManager {
     private let modelsDirectory: URL
-    private let defaultsKey = "ThinkAloud.modelProfile"
+    private let defaults: UserDefaults
+    private static let defaultsKey = SavedSettingsError.Field.speechModel.preferenceKey
 
     private(set) var profile: ModelProfile {
         didSet {
-            UserDefaults.standard.set(profile.rawValue, forKey: defaultsKey)
+            defaults.set(profile.rawValue, forKey: Self.defaultsKey)
             if profile != oldValue {
                 rebuildRuntime()
             }
         }
     }
 
-    /// Legacy key from when post-processing was Chinese-conversion only. Read once at launch to
-    /// migrate into `postEdit`; no longer written.
-    private let chinesePreferenceKey = "ThinkAloud.chinesePreference"
-    private let postEditKey = "ThinkAloud.postEditConfig"
+    private static let postEditKey = SavedSettingsError.Field.postEdit.preferenceKey
     /// Auto Post-Edit configuration (Chinese conversion + CJK/Latin spacing, …).
     var postEdit: PostEditConfig {
         didSet {
-            if let data = try? JSONEncoder().encode(postEdit) {
-                UserDefaults.standard.set(data, forKey: postEditKey)
-            }
+            persist(postEdit, forKey: Self.postEditKey, field: .postEdit)
         }
     }
 
-    private let preEditKey = "ThinkAloud.preEditConfig"
+    private static let preEditKey = SavedSettingsError.Field.preEdit.preferenceKey
     /// Auto Pre-Edit configuration (audio denoise before ASR, …).
     var preEdit: PreEditConfig {
         didSet {
-            if let data = try? JSONEncoder().encode(preEdit) {
-                UserDefaults.standard.set(data, forKey: preEditKey)
-            }
+            persist(preEdit, forKey: Self.preEditKey, field: .preEdit)
         }
     }
 
-    private let idleTimeoutKey = "ThinkAloud.idleTimeout"
+    private static let idleTimeoutKey = SavedSettingsError.Field.idleTimeout.preferenceKey
     var idleTimeout: IdleTimeout {
         didSet {
-            UserDefaults.standard.set(idleTimeout.rawValue, forKey: idleTimeoutKey)
+            defaults.set(idleTimeout.rawValue, forKey: Self.idleTimeoutKey)
             scheduleIdleEvictionIfNeeded()
         }
     }
 
     private(set) var runtimeStatus: ASRRuntimeStatus = .unloaded
     private(set) var lastError: String?
+    private(set) var settingsError: SavedSettingsError?
     private(set) var lastActivityAt: Date = .distantPast
 
     /// Live download status keyed by profile, used by the Advanced pane to show a percentage +
@@ -91,33 +181,48 @@ final class ModelManager {
     private var runtimeRef: any ASRRuntime
     private var statusPollingTask: Task<Void, Never>?
     private var idleEvictionTask: Task<Void, Never>?
+    private var preloadTask: Task<Void, Never>?
+    private(set) var preloadIsRunning = false
+    private(set) var preloadCancellationRequested = false
 
     /// Auto Pre-Edit denoiser (DeepFilterNet). Lazily loaded on first use, freed on idle/unload
     /// alongside the ASR model. `dfnStatus` mirrors its state for the Settings UI.
     private let dfnRuntimeRef: DeepFilterNetRuntime
     private(set) var dfnStatus: ASRRuntimeStatus = .unloaded
 
-    init(modelsDirectory: URL) {
+    init(modelsDirectory: URL, defaults: UserDefaults = .standard) throws {
+        let storedProfile = try SavedSettingsReader.enumValue(
+            ModelProfile.self,
+            defaults: defaults,
+            key: Self.defaultsKey,
+            field: .speechModel
+        ) ?? .accurate
+        let storedPostEdit = try SavedSettingsReader.decodableValue(
+            PostEditConfig.self,
+            defaults: defaults,
+            key: Self.postEditKey,
+            field: .postEdit
+        ) ?? .default
+        let storedPreEdit = try SavedSettingsReader.decodableValue(
+            PreEditConfig.self,
+            defaults: defaults,
+            key: Self.preEditKey,
+            field: .preEdit
+        ) ?? .default
+        let storedIdleTimeout = try SavedSettingsReader.enumValue(
+            IdleTimeout.self,
+            defaults: defaults,
+            key: Self.idleTimeoutKey,
+            field: .idleTimeout
+        ) ?? .tenMinutes
+
         self.modelsDirectory = modelsDirectory
-        let stored = UserDefaults.standard.string(forKey: defaultsKey).flatMap(ModelProfile.init(rawValue:)) ?? .accurate
-        self.profile = stored
-        if let data = UserDefaults.standard.data(forKey: postEditKey),
-           let cfg = try? JSONDecoder().decode(PostEditConfig.self, from: data) {
-            self.postEdit = cfg
-        } else {
-            // Migrate the legacy Chinese-preference-only setting into the new pipeline config.
-            let legacy = UserDefaults.standard.string(forKey: chinesePreferenceKey).flatMap(ChinesePreference.init(rawValue:)) ?? .model
-            self.postEdit = PostEditConfig(chinese: legacy)
-        }
-        if let data = UserDefaults.standard.data(forKey: preEditKey),
-           let cfg = try? JSONDecoder().decode(PreEditConfig.self, from: data) {
-            self.preEdit = cfg
-        } else {
-            self.preEdit = .default
-        }
-        let storedTimeout = UserDefaults.standard.string(forKey: idleTimeoutKey).flatMap(IdleTimeout.init(rawValue:)) ?? .tenMinutes
-        self.idleTimeout = storedTimeout
-        self.runtimeRef = ASRRuntimeFactory.make(profile: stored, cacheDirectory: modelsDirectory)
+        self.defaults = defaults
+        self.profile = storedProfile
+        self.postEdit = storedPostEdit
+        self.preEdit = storedPreEdit
+        self.idleTimeout = storedIdleTimeout
+        self.runtimeRef = ASRRuntimeFactory.make(profile: storedProfile, cacheDirectory: modelsDirectory)
         self.dfnRuntimeRef = DeepFilterNetRuntime(modelsDirectory: modelsDirectory)
     }
 
@@ -129,6 +234,20 @@ final class ModelManager {
         profile = new
     }
 
+    private func persist<Value: Encodable>(
+        _ value: Value,
+        forKey key: String,
+        field: SavedSettingsError.Field
+    ) {
+        do {
+            defaults.set(try JSONEncoder().encode(value), forKey: key)
+            settingsError = nil
+        } catch {
+            NSLog("ThinkAloud: failed to encode saved setting for key \(key): \(error)")
+            settingsError = .encodingFailed(field)
+        }
+    }
+
     /// Mark the model as actively in use. Resets the idle-eviction countdown.
     func recordActivity() {
         lastActivityAt = Date()
@@ -136,18 +255,48 @@ final class ModelManager {
     }
 
     func preloadNow() {
+        guard preloadTask == nil else { return }
         let runtime = runtimeRef
+        preloadIsRunning = true
+        preloadCancellationRequested = false
+        lastError = nil
         startStatusPolling()
-        Task { @MainActor in
+        preloadTask = Task { @MainActor in
+            var userFacingFailure: String?
+            defer {
+                self.preloadTask = nil
+                self.preloadIsRunning = false
+                self.preloadCancellationRequested = false
+            }
             do {
                 try await runtime.preload()
+                try Task.checkCancellation()
                 self.recordActivity()
                 self.pruneRedundantHFCache()
+            } catch is CancellationError {
+                await runtime.unload()
+                self.lastError = nil
             } catch {
-                self.lastError = String(describing: error)
+                NSLog("ThinkAloud: speech model preload failed: \(error)")
+                let message = String(
+                    localized: "Speech model failed to load. Retry or open Model settings."
+                )
+                userFacingFailure = message
+                self.lastError = message
             }
             await self.stopStatusPollingAndSync()
+            if let userFacingFailure {
+                // Runtime errors can contain framework diagnostics. Keep those in the log and
+                // expose only a concise, actionable, localizable status to Settings/onboarding.
+                self.runtimeStatus = .failed(userFacingFailure)
+            }
         }
+    }
+
+    func cancelPreload() {
+        guard let preloadTask else { return }
+        preloadCancellationRequested = true
+        preloadTask.cancel()
     }
 
     func refreshStatus() {
@@ -161,6 +310,7 @@ final class ModelManager {
     func unloadNow() {
         idleEvictionTask?.cancel()
         idleEvictionTask = nil
+        preloadTask?.cancel()
         let runtime = runtimeRef
         let dfn = dfnRuntimeRef
         Task { @MainActor in
@@ -187,7 +337,10 @@ final class ModelManager {
             recordActivity()
             return out
         } catch {
-            dfnStatus = .failed(String(describing: error))
+            NSLog("ThinkAloud: audio cleanup failed: \(error)")
+            dfnStatus = .failed(
+                String(localized: "Audio cleanup failed. Retry or choose Auto/Off in Output settings.")
+            )
             throw error
         }
     }
@@ -202,7 +355,10 @@ final class ModelManager {
                 self.dfnStatus = await dfn.status
                 self.recordActivity()
             } catch {
-                self.dfnStatus = .failed(String(describing: error))
+                NSLog("ThinkAloud: audio cleanup model preload failed: \(error)")
+                self.dfnStatus = .failed(
+                    String(localized: "Audio cleanup failed. Retry or choose Auto/Off in Output settings.")
+                )
             }
         }
     }
@@ -239,6 +395,10 @@ final class ModelManager {
     private func rebuildRuntime() {
         idleEvictionTask?.cancel()
         idleEvictionTask = nil
+        preloadTask?.cancel()
+        preloadTask = nil
+        preloadIsRunning = false
+        preloadCancellationRequested = false
         runtimeRef = ASRRuntimeFactory.make(profile: profile, cacheDirectory: modelsDirectory)
         runtimeStatus = .unloaded
         lastError = nil
@@ -297,6 +457,7 @@ final class ModelManager {
     /// Downloads a profile's weights to disk. For the active profile this just calls preload();
     /// for non-active profiles it spins up a transient runtime, fetches, then unloads its weights.
     func downloadProfile(_ profile: ModelProfile) async throws {
+        try Task.checkCancellation()
         if profile == self.profile {
             // Active profile: reuse the live runtime so its weights stay loaded afterwards.
             let poll = startProfileDownloadPolling(profile: profile, runtime: runtimeRef)
@@ -305,6 +466,7 @@ final class ModelManager {
                 profileDownloadStatus[profile] = nil
             }
             try await runtimeRef.preload()
+            try Task.checkCancellation()
             return
         }
         let transient = ASRRuntimeFactory.make(profile: profile, cacheDirectory: modelsDirectory)
@@ -314,6 +476,7 @@ final class ModelManager {
             profileDownloadStatus[profile] = nil
         }
         try await transient.preload()
+        try Task.checkCancellation()
         await transient.unload()
         pruneRedundantHFCache()
     }
@@ -350,7 +513,7 @@ final class ModelManager {
             let hfFolder = "models--\(parts[0])--\(parts[1])"
             let hfDir = modelsDirectory.appendingPathComponent(hfFolder)
             if FileManager.default.fileExists(atPath: hfDir.path) {
-                try? FileManager.default.removeItem(at: hfDir)
+                try FileManager.default.removeItem(at: hfDir)
             }
         }
     }

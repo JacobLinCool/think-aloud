@@ -1,101 +1,78 @@
 import Foundation
 import GRDB
 
-actor DatasetStore {
+protocol DatasetRecordWriting: Sendable {
+    func save(_ record: DatasetRecord) async throws
+}
+
+actor DatasetStore: DatasetRecordWriting {
+    struct SearchPage: Sendable, Equatable {
+        let records: [DatasetRecord]
+        let totalCount: Int
+        let offset: Int
+
+        var hasMore: Bool { offset + records.count < totalCount }
+    }
+
     enum StoreError: Error, LocalizedError {
-        case notSetup
+        case recordsNotFound([String])
+        case audioStorageEnumerationFailed(String)
+        case audioStorageMetadataFailed(String, String)
+        case missingRequiredAutoEditedTranscript(recordID: String)
+
         var errorDescription: String? {
             switch self {
-            case .notSetup: return "Dataset store is not initialized."
+            case .recordsNotFound(let ids):
+                return String(
+                    localized: "Could not find \(ids.count) record(s): \(ids.sorted().joined(separator: ", "))."
+                )
+            case .audioStorageEnumerationFailed(let path):
+                return String(localized: "Could not enumerate the audio folder: \(path)")
+            case .audioStorageMetadataFailed(let path, let reason):
+                return String(localized: "Could not read audio storage metadata for \(path): \(reason)")
+            case .missingRequiredAutoEditedTranscript(let recordID):
+                return String(
+                    localized: "Record \(recordID) is missing its required Auto Post-Edit text."
+                )
             }
         }
     }
 
-    private let databaseURL: URL
-    private var pool: DatabasePool?
+    private let database: LocalDatabase
+
+    init(database: LocalDatabase) {
+        self.database = database
+    }
 
     init(databaseURL: URL) {
-        self.databaseURL = databaseURL
+        self.init(database: LocalDatabase(fileURL: databaseURL))
     }
 
-    nonisolated var databaseFileURL: URL { databaseURL }
+    nonisolated var databaseFileURL: URL { database.fileURL }
 
     func setup() throws {
-        if pool != nil { return }
-        try FileManager.default.createDirectory(at: databaseURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-        var configuration = Configuration()
-        configuration.label = "ThinkAloud.dataset"
-        let pool = try DatabasePool(path: databaseURL.path, configuration: configuration)
-        try migrator.migrate(pool)
-        self.pool = pool
+        try database.setup()
     }
 
-    private var migrator: DatabaseMigrator {
-        var m = DatabaseMigrator()
-        m.registerMigration("createRecords") { db in
-            try db.create(table: "records") { t in
-                t.column("id", .text).primaryKey()
-                t.column("created_at", .text).notNull()
-
-                t.column("audio_path", .text).notNull()
-                t.column("duration_ms", .integer)
-                t.column("sample_rate", .integer)
-                t.column("channels", .integer)
-
-                t.column("source_app_bundle_id", .text)
-                t.column("source_app_name", .text)
-
-                t.column("asr_provider", .text).notNull()
-                t.column("asr_model", .text).notNull()
-                t.column("asr_runtime", .text).notNull()
-                t.column("asr_config_json", .text)
-
-                t.column("raw_transcript", .text).notNull()
-                t.column("edited_transcript", .text).notNull()
-
-                t.column("inserted", .integer).notNull()
-                t.column("saved_to_dataset", .integer).notNull()
-
-                t.column("language", .text)
-                t.column("metadata_json", .text)
-            }
-            try db.create(index: "records_created_at", on: "records", columns: ["created_at"])
+    func save(_ record: DatasetRecord) async throws {
+        let pool = try database.connection()
+        guard record.autoEditedTranscript != nil else {
+            throw StoreError.missingRequiredAutoEditedTranscript(recordID: record.id)
         }
-        // v0.4.0: capture the post-Auto-Post-Edit / pre-manual-edit transcript so statistics can
-        // tell automatic formatting apart from real human corrections. Nullable + no backfill —
-        // older rows keep NULL and are EXCLUDED from the edit/clean metrics (the engine never
-        // substitutes raw_transcript for the missing intermediate).
-        m.registerMigration("addAutoEditedTranscript") { db in
-            try db.alter(table: "records") { t in
-                t.add(column: "auto_edited_transcript", .text)
-            }
-        }
-        // v0.5.0: the AI Refine (LLM) stage output, before manual edits. Nullable; null when no LLM
-        // stage ran. Pipeline: raw → auto_edited → llm_edited → edited.
-        m.registerMigration("addLLMEditedTranscript") { db in
-            try db.alter(table: "records") { t in
-                t.add(column: "llm_edited_transcript", .text)
-            }
-        }
-        return m
-    }
-
-    func save(_ record: DatasetRecord) throws {
-        guard let pool else { throw StoreError.notSetup }
-        try pool.write { db in
+        try await pool.write { db in
             try record.save(db)
         }
     }
 
     func count() throws -> Int {
-        guard let pool else { throw StoreError.notSetup }
+        let pool = try database.connection()
         return try pool.read { db in
             try DatasetRecord.fetchCount(db)
         }
     }
 
     func all() throws -> [DatasetRecord] {
-        guard let pool else { throw StoreError.notSetup }
+        let pool = try database.connection()
         return try pool.read { db in
             try DatasetRecord
                 .order(Column("created_at").desc)
@@ -106,7 +83,7 @@ actor DatasetStore {
     /// Returns at most `limit` records starting at `offset`, sorted newest first.
     /// Used by the browser to lazy-load as the user scrolls.
     func page(offset: Int, limit: Int) throws -> [DatasetRecord] {
-        guard let pool else { throw StoreError.notSetup }
+        let pool = try database.connection()
         return try pool.read { db in
             try DatasetRecord
                 .order(Column("created_at").desc)
@@ -115,26 +92,75 @@ actor DatasetStore {
         }
     }
 
-    /// Aggregate statistics over saved records. Reads once inside the actor, then runs the O(n·m)
-    /// edit-distance compute on a detached task so it never serializes behind a live save while the
-    /// user is dictating. Defense-in-depth: only `saved_to_dataset` rows feed the stats/publish path,
-    /// so a future "review later" state can't silently widen what gets aggregated (and republished).
+    /// Searches the full dataset, not just rows currently loaded by the browser.
+    ///
+    /// `%` and `_` are escaped so user input is always literal text rather than an accidental LIKE
+    /// program. Bound parameters keep transcripts and app names out of SQL syntax.
+    func search(query: String, offset: Int, limit: Int) throws -> SearchPage {
+        let pool = try database.connection()
+        let normalizedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        let safeOffset = max(0, offset)
+        let safeLimit = max(1, limit)
+        return try pool.read { db in
+            if normalizedQuery.isEmpty {
+                let records = try DatasetRecord
+                    .order(Column("created_at").desc)
+                    .limit(safeLimit, offset: safeOffset)
+                    .fetchAll(db)
+                return SearchPage(
+                    records: records,
+                    totalCount: try DatasetRecord.fetchCount(db),
+                    offset: safeOffset
+                )
+            }
+
+            let pattern = "%\(Self.escapeLikeLiteral(normalizedQuery))%"
+            let predicate = """
+                (
+                    id LIKE ? ESCAPE '\\' COLLATE NOCASE OR
+                    edited_transcript LIKE ? ESCAPE '\\' COLLATE NOCASE OR
+                    raw_transcript LIKE ? ESCAPE '\\' COLLATE NOCASE OR
+                    source_app_name LIKE ? ESCAPE '\\' COLLATE NOCASE OR
+                    source_app_bundle_id LIKE ? ESCAPE '\\' COLLATE NOCASE
+                )
+                """
+            let searchArguments: StatementArguments = [
+                pattern, pattern, pattern, pattern, pattern
+            ]
+            let records = try DatasetRecord.fetchAll(
+                db,
+                sql: """
+                    SELECT * FROM records
+                    WHERE \(predicate)
+                    ORDER BY created_at DESC
+                    LIMIT ? OFFSET ?
+                    """,
+                arguments: searchArguments + [safeLimit, safeOffset]
+            )
+            let totalCount = try Int.fetchOne(
+                db,
+                sql: "SELECT COUNT(*) FROM records WHERE \(predicate)",
+                arguments: searchArguments
+            ) ?? 0
+            return SearchPage(records: records, totalCount: totalCount, offset: safeOffset)
+        }
+    }
+
+    /// Aggregate statistics over Dataset records only. The table itself is the explicit collection;
+    /// usage history lives in `dictation_sessions` and is never included here.
     func computeStatistics() async throws -> DatasetStatistics {
-        guard let pool else { throw StoreError.notSetup }
+        let pool = try database.connection()
         // In this async context GRDB resolves `read` to its async overload (runs on a reader queue,
         // off the actor). The Levenshtein compute then runs on a detached task so it never resumes
         // on — and serializes behind — the actor's executor mid-dictation.
         let records = try await pool.read { db in
-            try DatasetRecord
-                .filter(Column("saved_to_dataset") == true)
-                .order(Column("created_at").desc)
-                .fetchAll(db)
+            try DatasetRecord.order(Column("created_at").desc).fetchAll(db)
         }
         return await Task.detached { DatasetStatistics.compute(from: records) }.value
     }
 
     func fetch(id: String) throws -> DatasetRecord? {
-        guard let pool else { throw StoreError.notSetup }
+        let pool = try database.connection()
         return try pool.read { db in
             try DatasetRecord.fetchOne(db, key: id)
         }
@@ -143,37 +169,104 @@ actor DatasetStore {
     /// Overwrites only the editedTranscript. We never version it — the user wanted
     /// "always keep raw, only keep the latest edited", so this is destructive on the edited side.
     func update(id: String, editedTranscript: String) throws {
-        guard let pool else { throw StoreError.notSetup }
+        let pool = try database.connection()
         try pool.write { db in
             try db.execute(
                 sql: "UPDATE records SET edited_transcript = ? WHERE id = ?",
                 arguments: [editedTranscript, id]
             )
+            guard db.changesCount == 1 else {
+                throw StoreError.recordsNotFound([id])
+            }
         }
     }
 
-    func delete(id: String) throws {
-        guard let pool else { throw StoreError.notSetup }
-        _ = try pool.write { db in
-            try DatasetRecord.deleteOne(db, key: id)
+    /// Deletes exactly the requested records in one database transaction.
+    ///
+    /// Returning the deleted values lets the data-deletion coordinator preserve a complete recovery
+    /// manifest. A missing id is an error: silently treating it as success would make the UI claim a
+    /// record was deleted when no mutation occurred.
+    @discardableResult
+    func delete(ids: Set<String>) throws -> [DatasetRecord] {
+        let pool = try database.connection()
+        guard !ids.isEmpty else { return [] }
+        return try pool.write { db in
+            let records = try DatasetRecord
+                .filter(ids.contains(Column("id")))
+                .fetchAll(db)
+            let found = Set(records.map(\.id))
+            let missing = ids.subtracting(found)
+            guard missing.isEmpty else {
+                throw StoreError.recordsNotFound(Array(missing))
+            }
+            _ = try DatasetRecord
+                .filter(ids.contains(Column("id")))
+                .deleteAll(db)
+            return records
         }
     }
 
-    func deleteAll() throws {
-        guard let pool else { throw StoreError.notSetup }
-        try pool.write { db in
+    @discardableResult
+    func delete(id: String) throws -> DatasetRecord {
+        guard let record = try delete(ids: [id]).first else {
+            throw StoreError.recordsNotFound([id])
+        }
+        return record
+    }
+
+    /// Deletes every current record atomically and returns the exact deleted snapshot.
+    @discardableResult
+    func deleteAll() throws -> [DatasetRecord] {
+        let pool = try database.connection()
+        return try pool.write { db in
+            let records = try DatasetRecord.fetchAll(db)
             _ = try DatasetRecord.deleteAll(db)
+            return records
         }
     }
 
-    func totalAudioBytes(rootDirectory: URL) -> Int64 {
+    func totalAudioBytes(rootDirectory: URL) throws -> Int64 {
         let fm = FileManager.default
-        guard let enumerator = fm.enumerator(at: rootDirectory, includingPropertiesForKeys: [.totalFileAllocatedSizeKey, .fileSizeKey]) else { return 0 }
+        var enumerationError: StoreError?
+        guard let enumerator = fm.enumerator(
+            at: rootDirectory,
+            includingPropertiesForKeys: [.isRegularFileKey, .totalFileAllocatedSizeKey, .fileSizeKey],
+            errorHandler: { url, error in
+                enumerationError = .audioStorageMetadataFailed(url.path, error.localizedDescription)
+                return false
+            }
+        ) else {
+            throw StoreError.audioStorageEnumerationFailed(rootDirectory.path)
+        }
         var total: Int64 = 0
         for case let url as URL in enumerator {
-            let values = try? url.resourceValues(forKeys: [.totalFileAllocatedSizeKey, .fileSizeKey])
-            total += Int64(values?.totalFileAllocatedSize ?? values?.fileSize ?? 0)
+            let values: URLResourceValues
+            do {
+                values = try url.resourceValues(
+                    forKeys: [.isRegularFileKey, .totalFileAllocatedSizeKey, .fileSizeKey]
+                )
+            } catch {
+                throw StoreError.audioStorageMetadataFailed(url.path, error.localizedDescription)
+            }
+            guard values.isRegularFile == true else { continue }
+            guard let bytes = values.totalFileAllocatedSize ?? values.fileSize else {
+                throw StoreError.audioStorageMetadataFailed(
+                    url.path,
+                    String(localized: "The file size is unavailable.")
+                )
+            }
+            total += Int64(bytes)
+        }
+        if let enumerationError {
+            throw enumerationError
         }
         return total
+    }
+
+    private nonisolated static func escapeLikeLiteral(_ value: String) -> String {
+        value
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "%", with: "\\%")
+            .replacingOccurrences(of: "_", with: "\\_")
     }
 }

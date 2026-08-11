@@ -18,10 +18,12 @@ enum HuggingFaceMetadata {
         }
     }
 
-    /// Sum the byte sizes of all files in the repository's `main` revision.
+    /// Sum only the files the downstream downloader will request from the repository's `main`
+    /// revision. Counting the whole repository is incorrect for repos that also publish optimizer
+    /// checkpoints or alternate framework weights.
     /// Returns `nil` on network or parse errors so callers can fall back to
     /// progress-without-total UI.
-    static func totalRepoSize(modelID: String) async -> Int64? {
+    static func downloadSize(modelID: String, matchingPatterns: [String]) async -> Int64? {
         let urlString = "https://huggingface.co/api/models/\(modelID)/tree/main?recursive=true"
         guard let url = URL(string: urlString) else { return nil }
         var request = URLRequest(url: url)
@@ -33,12 +35,27 @@ enum HuggingFaceMetadata {
             }
             let entries = try JSONDecoder().decode([TreeEntry].self, from: data)
             let total = entries
-                .filter { $0.type == "file" }
+                .filter {
+                    $0.type == "file"
+                        && matches(path: $0.path, matchingPatterns: matchingPatterns)
+                }
                 .map(\.effectiveSize)
                 .reduce(0, +)
             return total > 0 ? total : nil
         } catch {
             return nil
+        }
+    }
+
+    /// Implements the filename patterns used by the two upstream downloaders. Their manifests use
+    /// either extension globs (`*.json`) or exact filenames (`merges.txt`).
+    static func matches(path: String, matchingPatterns: [String]) -> Bool {
+        let filename = URL(fileURLWithPath: path).lastPathComponent
+        return matchingPatterns.contains { pattern in
+            if pattern.hasPrefix("*.") {
+                return filename.lowercased().hasSuffix(String(pattern.dropFirst()).lowercased())
+            }
+            return filename == pattern
         }
     }
 }

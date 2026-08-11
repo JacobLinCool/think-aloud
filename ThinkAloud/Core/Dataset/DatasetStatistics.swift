@@ -1,6 +1,7 @@
 import Foundation
 
-/// Pure, deterministic statistics over saved dataset records.
+/// Pure, deterministic aggregate statistics over transcript-bearing records. Dataset publishing
+/// computes this from `DatasetRecord`; Insights computes the same metrics from `DictationSession`.
 ///
 /// Computed off the main thread and **cached** by callers — never recompute per render (edit-distance
 /// is O(n·m) per record). The struct serves two audiences from the same numbers:
@@ -10,11 +11,9 @@ import Foundation
 /// ## Contract (pinned so the numbers are reproducible by third parties)
 /// - **Counting unit = Unicode scalars** for char counts, the per-script split, and edit distance,
 ///   matching `TextMetrics.isCJK` / `wordTokens`. One CJK ideograph = one scalar = one "char".
-/// - **Edit metrics are eligibility-gated.** "Clean" / manual-edit numbers count only records that
-///   captured `autoEditedTranscript` (v0.4.0+). We never fall back to `rawTranscript`: for a
-///   Traditional/Simplified user the Auto Post-Edit S↔T conversion makes raw≠edited on *every* row,
-///   so a raw baseline would report ~0% clean — the opposite of the truth. `eligibleCount` is
-///   surfaced so the UI can say "since v0.4.0".
+/// - **Edit metrics are eligibility-gated.** They include only records that captured an automatic
+///   intermediate (`llmEditedTranscript ?? autoEditedTranscript`). Older rows are never assigned a
+///   guessed raw/final fallback, because conversion and manual edits make that semantically false.
 /// - **No hidden clock.** Same records in → same struct out. Recency windows are the UI's job.
 /// - **Well-formed on empty / degenerate input** — every rate is finite (no NaN/Inf), so Swift Charts
 ///   axis scaling never breaks. Empty reference follows the `TextMetrics.cer` convention.
@@ -112,8 +111,7 @@ struct DatasetStatistics: Sendable, Equatable, Codable {
     }
 
     struct EditSummary: Sendable, Equatable, Codable {
-        /// Records eligible for edit metrics: those that captured the Auto-Post-Edit intermediate
-        /// (`autoEditedTranscript != nil`, i.e. saved on v0.4.0+). All rates below are over this set.
+        /// Records that captured an automatic intermediate and are eligible for edit metrics.
         var eligibleCount: Int
         /// Eligible records the user inserted without changing a single character (after light
         /// whitespace normalization). The headline "came out clean" accuracy proxy.
@@ -123,9 +121,9 @@ struct DatasetStatistics: Sendable, Equatable, Codable {
         var meanEditRate: Double
         /// Micro: Σ manual edit distance ÷ Σ reference length — length-weighted, robust to short rows.
         var microEditRate: Double
-        /// Σ scalar edit-distance the *human* applied on top of the auto-formatted text (eligible only).
+        /// Σ scalar edit-distance the human applied after the last captured automatic stage.
         var totalManualEditDistance: Int
-        /// Σ scalar edit-distance the *Auto Post-Edit* pipeline applied (raw → auto), eligible only.
+        /// Σ scalar edit-distance the Auto Post-Edit pipeline applied (`raw → auto`).
         /// NOTE: not additive with `totalManualEditDistance` — they are baselined on different
         /// references (raw vs auto), so never present their sum as a total.
         var totalAutoFormatDistance: Int
@@ -151,8 +149,8 @@ struct DatasetStatistics: Sendable, Equatable, Codable {
         var spokenSeconds: Double
         /// Estimated time to TYPE the final text from scratch (per-script model, included records).
         var estimatedTypingSeconds: Double
-        /// Estimated time spent fixing the auto-formatted text (manual edit distance × the record's
-        /// own per-char typing speed; 0 when the record has no captured intermediate).
+        /// Estimated time spent fixing the last captured automatic stage. Zero when the historical
+        /// record has no captured intermediate.
         var estimatedFixSeconds: Double
         /// `max(0, Σ(typing − spoken − fix))`. The honest "time saved": typing from scratch vs.
         /// (speaking + correcting). Per-record values are NOT clamped (losing sessions count); only
@@ -185,6 +183,48 @@ struct DatasetStatistics: Sendable, Equatable, Codable {
     }
 }
 
+private struct StatisticsEntry: Sendable {
+    let createdAt: String
+    let durationMs: Int?
+    let sourceAppBundleID: String?
+    let sourceAppName: String?
+    let asrModel: String
+    let rawTranscript: String
+    let editedTranscript: String
+    let inserted: Bool
+    let language: String?
+    let autoEditedTranscript: String?
+    let llmEditedTranscript: String?
+
+    init(datasetRecord record: DatasetRecord) {
+        createdAt = record.createdAt
+        durationMs = record.durationMs
+        sourceAppBundleID = record.sourceAppBundleID
+        sourceAppName = record.sourceAppName
+        asrModel = record.asrModel
+        rawTranscript = record.rawTranscript
+        editedTranscript = record.editedTranscript
+        inserted = record.inserted
+        language = record.language
+        autoEditedTranscript = record.autoEditedTranscript
+        llmEditedTranscript = record.llmEditedTranscript
+    }
+
+    init(dictationSession session: DictationSession) {
+        createdAt = session.createdAt
+        durationMs = session.durationMs
+        sourceAppBundleID = session.sourceAppBundleID
+        sourceAppName = session.sourceAppName
+        asrModel = session.asrModel
+        rawTranscript = session.rawTranscript
+        editedTranscript = session.finalTranscript
+        inserted = session.deliveryOutcome == .inserted
+        language = session.language
+        autoEditedTranscript = session.autoEditedTranscript
+        llmEditedTranscript = session.llmEditedTranscript
+    }
+}
+
 // MARK: - Typing model
 
 /// Per-script typing speeds used to estimate "time saved". Conservative, transparent constants on a
@@ -207,7 +247,9 @@ struct TypingModel: Sendable, Equatable {
     var assumptionDescription: String {
         let latin = Int((latinCharsPerSecond * 60).rounded())
         let cjk = Int((cjkCharsPerSecond * 60).rounded())
-        return "Assumes typing ≈ \(latin) Latin / \(cjk) CJK characters per minute."
+        return String(
+            localized: "Assumes typing ≈ \(latin) Latin / \(cjk) CJK characters per minute."
+        )
     }
 
     /// Estimated seconds to type `text`, splitting per script. Whitespace isn't charged. Operates on
@@ -256,9 +298,33 @@ extension DatasetStatistics {
         ("30%+", 1.01),
     ]
 
-    /// Build statistics from records. Pure — same input, same output.
-    static func compute(from records: [DatasetRecord], typingModel: TypingModel = .default) -> DatasetStatistics {
-        guard !records.isEmpty else { return .empty }
+    /// Dataset-only aggregate used by export and Hugging Face publishing.
+    static func compute(
+        from records: [DatasetRecord],
+        typingModel: TypingModel = .default
+    ) -> DatasetStatistics {
+        compute(
+            entries: records.map(StatisticsEntry.init(datasetRecord:)),
+            typingModel: typingModel
+        )
+    }
+
+    /// Usage aggregate used exclusively by Insights and achievements.
+    static func computeUsage(
+        from sessions: [DictationSession],
+        typingModel: TypingModel = .default
+    ) -> DatasetStatistics {
+        compute(
+            entries: sessions.map(StatisticsEntry.init(dictationSession:)),
+            typingModel: typingModel
+        )
+    }
+
+    private static func compute(
+        entries: [StatisticsEntry],
+        typingModel: TypingModel
+    ) -> DatasetStatistics {
+        guard !entries.isEmpty else { return .empty }
 
         var insertedCount = 0
         var durations: [Int] = []
@@ -269,7 +335,7 @@ extension DatasetStatistics {
         var totalTokens = 0
         var totalCJKChars = 0
 
-        // Edit metrics — eligible (autoEdited captured) records only.
+        // Edit metrics — only records with a captured automatic intermediate are eligible.
         var eligibleCount = 0
         var cleanCount = 0
         var sumEditRate = 0.0
@@ -294,10 +360,10 @@ extension DatasetStatistics {
         var hourHist = Array(repeating: 0, count: 24)
         var weekdayHist = Array(repeating: 0, count: 7)
 
-        var firstAt = records[0].createdAt
-        var lastAt = records[0].createdAt
+        var firstAt = entries[0].createdAt
+        var lastAt = entries[0].createdAt
 
-        for r in records {
+        for r in entries {
             if r.inserted { insertedCount += 1 }
             if r.createdAt < firstAt { firstAt = r.createdAt }
             if r.createdAt > lastAt { lastAt = r.createdAt }
@@ -316,16 +382,13 @@ extension DatasetStatistics {
             totalTokens += TextMetrics.wordTokens(r.editedTranscript).count
             totalCJKChars += r.editedTranscript.unicodeScalars.reduce(0) { TextMetrics.isCJK($1) ? $0 + 1 : $0 }
 
-            // Edit decomposition — eligible records only, normalized (light) both sides so trailing
-            // whitespace never reads as an edit and clean ⇔ distance == 0 holds exactly.
-            // The human-edit baseline is the last AUTOMATIC stage before manual edits: the LLM rewrite
-            // (AI Refine) when it ran, else the deterministic auto-post-edit. Eligible = either was
-            // captured (v0.4.0+); never raw-fallback.
+            // The baseline is the last captured automatic stage. Historical rows without one are
+            // excluded rather than treating raw or final text as an invented intermediate.
             var manualDistance = 0
-            var hasManual = false
+            var hasManualBaseline = false
             if let base = r.llmEditedTranscript ?? r.autoEditedTranscript {
                 eligibleCount += 1
-                hasManual = true
+                hasManualBaseline = true
                 let baseN = TextMetrics.normalize(base, mode: .light)
                 let editedN = TextMetrics.normalize(r.editedTranscript, mode: .light)
                 manualDistance = TextMetrics.editDistanceScalars(baseN, editedN)
@@ -333,16 +396,20 @@ extension DatasetStatistics {
                 sumManualDistance += manualDistance
                 sumReferenceLen += refLen
                 if manualDistance == 0 { cleanCount += 1 }
-                // Empty-reference follows the cer() convention: 0 if edited also empty, else 1.
                 let rate: Double = refLen == 0
                     ? (editedN.unicodeScalars.isEmpty ? 0 : 1)
                     : min(1.0, Double(manualDistance) / Double(refLen))
                 sumEditRate += rate
-                editRateBuckets[editRateBucketIndex(for: rate, clean: manualDistance == 0)].count += 1
+                editRateBuckets[
+                    editRateBucketIndex(for: rate, clean: manualDistance == 0)
+                ].count += 1
 
-                sumAutoFormatDistance += TextMetrics.editDistanceScalars(
-                    TextMetrics.normalize(r.rawTranscript, mode: .light), baseN
-                )
+                if let autoEdited = r.autoEditedTranscript {
+                    sumAutoFormatDistance += TextMetrics.editDistanceScalars(
+                        TextMetrics.normalize(r.rawTranscript, mode: .light),
+                        TextMetrics.normalize(autoEdited, mode: .light)
+                    )
+                }
             }
 
             // Productivity — valid-duration records only (typing-from-scratch vs speak+fix).
@@ -350,7 +417,10 @@ extension DatasetStatistics {
                 prodCount += 1
                 let typeSec = typingModel.typingSeconds(for: r.editedTranscript)
                 let spokenSec = Double(durMs) / 1000.0
-                let fixSec = hasManual ? Double(manualDistance) * typingModel.secondsPerChar(forTextLike: r.editedTranscript) : 0
+                let fixSec = hasManualBaseline
+                    ? Double(manualDistance)
+                        * typingModel.secondsPerChar(forTextLike: r.editedTranscript)
+                    : 0
                 spokenSeconds += spokenSec
                 typingSeconds += typeSec
                 fixSeconds += fixSec
@@ -374,7 +444,7 @@ extension DatasetStatistics {
             if let w = weekday(ofDay: day) { weekdayHist[w] += 1 }
         }
 
-        let n = records.count
+        let n = entries.count
         let sortedDur = durations.sorted()
         let audio = AudioSummary(
             totalDurationMs: durations.reduce(0, +),

@@ -1,8 +1,7 @@
 import AppKit
 import SwiftUI
 
-/// Settings → Startup: app-level "set once" preferences (interface language; Open at login arrives
-/// in a later phase). Lifted verbatim from the old General pane — same @AppStorage key and bindings.
+/// Settings → Startup: app-level launch and interface-language preferences.
 struct StartupPane: View {
     @Environment(AppContainer.self) private var container
 
@@ -11,6 +10,8 @@ struct StartupPane: View {
     @AppStorage(AppLanguage.storageKey) private var languageSelection = AppLanguage.system.rawValue
     /// True once the picker is touched this session, so we surface the relaunch hint.
     @State private var languageChanged = false
+    @State private var relaunching = false
+    @State private var relaunchError: String?
 
     private var languageBinding: Binding<AppLanguage> {
         Binding(
@@ -57,16 +58,34 @@ struct StartupPane: View {
                         Text(verbatim: lang.displayName).tag(lang)
                     }
                 }
+                .accessibilityLabel(String(localized: "App language"))
                 if languageChanged {
                     HStack(alignment: .firstTextBaseline) {
                         Text("Restart to apply the new language.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Spacer()
-                        Button(String(localized: "Relaunch now")) {
-                            AppLanguage.relaunch()
+                        Button(relaunching ? String(localized: "Relaunching…") : String(localized: "Relaunch Now")) {
+                            relaunching = true
+                            relaunchError = nil
+                            AppLanguage.relaunch { error in
+                                relaunching = false
+                                if let error {
+                                    NSLog("ThinkAloud: automatic relaunch failed: \(error)")
+                                    relaunchError = String(
+                                        localized: "ThinkAloud couldn’t relaunch automatically. Quit and reopen the app to apply the language change."
+                                    )
+                                }
+                            }
                         }
                         .controlSize(.small)
+                        .disabled(relaunching)
+                    }
+                    if let relaunchError {
+                        Label(relaunchError, systemImage: "exclamationmark.triangle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                            .textSelection(.enabled)
                     }
                 }
             } header: {
@@ -127,11 +146,27 @@ enum AppLanguage: String, CaseIterable, Identifiable {
 
     /// Launches a fresh instance, then terminates the current one so the new language loads.
     @MainActor
-    static func relaunch() {
+    static func relaunch(completion: @escaping @MainActor (Error?) -> Void) {
         let config = NSWorkspace.OpenConfiguration()
         config.createsNewApplicationInstance = true
-        NSWorkspace.shared.openApplication(at: Bundle.main.bundleURL, configuration: config) { _, _ in
-            Task { @MainActor in NSApplication.shared.terminate(nil) }
+        NSWorkspace.shared.openApplication(at: Bundle.main.bundleURL, configuration: config) { application, error in
+            Task { @MainActor in
+                guard let application, error == nil else {
+                    completion(error ?? RelaunchError.applicationDidNotLaunch)
+                    return
+                }
+                _ = application
+                completion(nil)
+                NSApplication.shared.terminate(nil)
+            }
+        }
+    }
+
+    enum RelaunchError: LocalizedError {
+        case applicationDidNotLaunch
+
+        var errorDescription: String? {
+            String(localized: "macOS did not launch a new ThinkAloud instance.")
         }
     }
 }

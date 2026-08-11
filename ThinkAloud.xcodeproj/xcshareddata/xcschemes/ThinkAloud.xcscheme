@@ -64,6 +64,17 @@
                ReferencedContainer = "container:ThinkAloud.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "17CB0B775E9149C4BDFBC733"
+               BuildableName = "ThinkAloudUITests.xctest"
+               BlueprintName = "ThinkAloudUITests"
+               ReferencedContainer = "container:ThinkAloud.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <CommandLineArguments>
       </CommandLineArguments>

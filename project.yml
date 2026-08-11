@@ -9,7 +9,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "0.5.0"
+    MARKETING_VERSION: "0.6.0"
     CURRENT_PROJECT_VERSION: "1"
     MACOSX_DEPLOYMENT_TARGET: "15.0"
     SWIFT_STRICT_CONCURRENCY: complete
@@ -140,6 +140,35 @@ targets:
         ENABLE_HARDENED_RUNTIME: NO
         DEVELOPMENT_TEAM: ""
         GENERATE_INFOPLIST_FILE: YES
+    postBuildScripts:
+      - name: Embed Localization Catalog Test Fixture
+        script: |
+          set -euo pipefail
+          DESTINATION="$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH"
+          mkdir -p "$DESTINATION"
+          cp "$SRCROOT/ThinkAloud/Resources/Localizable.xcstrings" \
+            "$DESTINATION/LocalizationCatalog.json"
+        inputFiles:
+          - $(SRCROOT)/ThinkAloud/Resources/Localizable.xcstrings
+        outputFiles:
+          - $(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/LocalizationCatalog.json
+
+  ThinkAloudUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: ThinkAloudUITests
+    dependencies:
+      - target: ThinkAloud
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jacoblincool.thinkaloud.uitests
+        CODE_SIGN_IDENTITY: "-"
+        ENABLE_HARDENED_RUNTIME: NO
+        DEVELOPMENT_TEAM: ""
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: ThinkAloud
 
 schemes:
   ThinkAloud:
@@ -150,6 +179,7 @@ schemes:
     test:
       targets:
         - ThinkAloudTests
+        - ThinkAloudUITests
       gatherCoverageData: false
     run:
       config: Debug

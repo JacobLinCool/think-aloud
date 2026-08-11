@@ -1,10 +1,7 @@
 import KeyboardShortcuts
 import SwiftUI
 
-/// Settings → Shortcuts: all three dictation hotkeys in one place. Merging the old "Global" and
-/// "Popup" sections makes the reset's scope unambiguous — it sits at the foot of the one section it
-/// actually clears, behind a confirmation, instead of hiding in the Popup footer where it silently
-/// also wiped the global trigger.
+/// Settings → Shortcuts: all three dictation hotkeys in one place, with one explicit reset scope.
 struct ShortcutsPane: View {
     @State private var showResetConfirm = false
 

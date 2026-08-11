@@ -27,7 +27,7 @@ final class SmokeTestRunnerTests: XCTestCase {
         // Mock returns simplified Chinese text. With .traditional preference, the edited variant
         // must differ from the raw one — proving post-processing actually ran inside the runner.
         let mock = ChineseMockASRRuntime(modelID: "cn-mock", raw: "这是简体中文")
-        let runner = SmokeTestRunner(cacheDirectory: tempDir)
+        let runner = try SmokeTestRunner(cacheDirectory: tempDir)
         let report = try await runner.run(using: mock, postEdit: PostEditConfig(chinese: .traditional))
         XCTAssertEqual(report.postEdit.chinese, .traditional)
         for r in report.results {
@@ -48,11 +48,34 @@ final class SmokeTestRunnerTests: XCTestCase {
         }
 
         let mock = MockASRRuntime(modelID: "mock-model")
-        let runner = SmokeTestRunner(cacheDirectory: tempDir)
+        let runner = try SmokeTestRunner(cacheDirectory: tempDir)
         let report = try await runner.run(using: mock)
         XCTAssertEqual(report.total, 3)
         XCTAssertEqual(report.passed, 3)
         XCTAssertEqual(report.modelID, "mock-model")
+    }
+
+    func testInitializerSurfacesCacheCreationFailure() throws {
+        let fileManager = FileManager.default
+        let root = fileManager.temporaryDirectory
+            .appendingPathComponent("SmokeRunnerInit-\(UUID().uuidString)", isDirectory: true)
+        try fileManager.createDirectory(at: root, withIntermediateDirectories: true)
+        addTeardownBlock {
+            if fileManager.fileExists(atPath: root.path) {
+                try fileManager.removeItem(at: root)
+            }
+        }
+
+        let blockingFile = root.appendingPathComponent("file")
+        try Data("blocked".utf8).write(to: blockingFile)
+        let cacheDirectory = blockingFile.appendingPathComponent("cache", isDirectory: true)
+
+        XCTAssertThrowsError(try SmokeTestRunner(cacheDirectory: cacheDirectory)) { error in
+            guard case SmokeTestError.cacheCreationFailed(let failedURL, _) = error else {
+                return XCTFail("Expected typed cache creation error, got \(error)")
+            }
+            XCTAssertEqual(failedURL, cacheDirectory)
+        }
     }
 }
 

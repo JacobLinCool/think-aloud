@@ -1,11 +1,19 @@
 import SwiftUI
 
 struct IdlePopupView: View {
+    let coordinator: PopupCoordinator
+
     var body: some View {
         VStack(spacing: 8) {
             ProgressView()
             Text("Preparing…")
                 .foregroundStyle(.secondary)
+            Spacer()
+            HStack {
+                Button("Cancel") { coordinator.cancel() }
+                    .keyboardShortcut(.escape, modifiers: [])
+                Spacer()
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -14,13 +22,14 @@ struct IdlePopupView: View {
 struct RecordingPopupView: View {
     @Bindable var viewModel: PopupViewModel
     let coordinator: PopupCoordinator
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "waveform")
                     .foregroundStyle(.red)
-                    .symbolEffect(.pulse, options: .repeat(.continuous))
+                    .symbolEffect(.pulse, options: .repeat(.continuous), isActive: !reduceMotion)
                 // The elapsed clock and the level meter update ~15×/sec. Isolating each in its own
                 // leaf view means only that leaf re-renders on a tick — this VStack (pulse icon,
                 // "Recording" label, buttons) is no longer invalidated on every frame, and the
@@ -52,6 +61,8 @@ private struct RecordingTimerLabel: View {
     var body: some View {
         Text(formattedElapsed)
             .font(.title2.monospacedDigit())
+            .accessibilityLabel(String(localized: "Recording duration"))
+            .accessibilityValue(formattedElapsed)
     }
 
     private var formattedElapsed: String {
@@ -69,6 +80,14 @@ private struct RecordingLevelMeter: View {
 
     var body: some View {
         LevelMeterView(rms: viewModel.levelRMS, peak: viewModel.levelPeak)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(String(localized: "Microphone input level"))
+            .accessibilityValue(accessibilityValue)
+    }
+
+    private var accessibilityValue: String {
+        let normalized = min(max(max(viewModel.levelRMS * 3, viewModel.levelPeak * 2), 0), 1)
+        return Double(normalized).formatted(.percent.precision(.fractionLength(0)))
     }
 }
 
@@ -133,8 +152,21 @@ struct ReviewPopupView: View {
                 .scrollContentBackground(.hidden)
                 .padding(8)
                 .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 8))
-                .disabled(viewModel.isStreaming)
-                .opacity(viewModel.isStreaming ? 0.85 : 1.0)
+                .disabled(viewModel.isStreaming || coordinator.isDeliveryRetry)
+                .opacity(viewModel.isStreaming || coordinator.isDeliveryRetry ? 0.85 : 1.0)
+                .accessibilityLabel(String(localized: "Transcript editor"))
+                .accessibilityValue(
+                    viewModel.editedTranscript.isEmpty
+                        ? String(localized: "Empty")
+                        : viewModel.editedTranscript
+                )
+                .accessibilityHint(
+                    coordinator.isDeliveryRetry
+                        ? String(localized: "The first Insert snapshot is locked while you retry delivery.")
+                        : viewModel.isStreaming
+                        ? String(localized: "The transcript is still streaming and cannot be edited yet.")
+                        : String(localized: "Review or edit the transcript before inserting it.")
+                )
 
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
@@ -146,11 +178,21 @@ struct ReviewPopupView: View {
                                 .foregroundStyle(.secondary)
                         }
                     } else {
+                        let duration = Measurement(
+                            value: Double(viewModel.transcribeDurationMs),
+                            unit: UnitDuration.milliseconds
+                        ).formatted(
+                            .measurement(
+                                width: .abbreviated,
+                                usage: .asProvided,
+                                numberFormatStyle: .number.precision(.fractionLength(0))
+                            )
+                        )
                         Text("Raw: \(viewModel.rawTranscript)")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .lineLimit(2)
-                        Text("Model: \(viewModel.asrModelID) · \(viewModel.transcribeDurationMs) ms")
+                        Text("Model: \(viewModel.asrModelID) · \(duration)")
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
                     }
@@ -164,17 +206,32 @@ struct ReviewPopupView: View {
                     .foregroundStyle(.orange)
             }
 
+            if let notice = viewModel.notice {
+                Label(notice.message, systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
             HStack {
                 Button("Cancel") { coordinator.cancel() }
                     .keyboardShortcut(.escape, modifiers: [])
                 Spacer()
-                Button("Insert") { coordinator.insertOnly() }
+                Button(
+                    coordinator.isDeliveryRetry
+                        ? String(localized: "Retry Insert")
+                        : String(localized: "Insert")
+                ) { coordinator.insertOnly() }
                     .keyboardShortcut("i", modifiers: [.command])
-                    .disabled(viewModel.isStreaming || viewModel.editedTranscript.isEmpty)
+                    .disabled(!coordinator.canInsertCurrentTranscript)
                 Button("Insert & Save") { coordinator.insertAndSave() }
                     .keyboardShortcut(.defaultAction)
                     .buttonStyle(.borderedProminent)
-                    .disabled(viewModel.isStreaming || viewModel.editedTranscript.isEmpty)
+                    .disabled(
+                        viewModel.isStreaming
+                            || viewModel.editedTranscript.isEmpty
+                            || !coordinator.canSaveCurrentTranscript
+                    )
             }
         }
     }
@@ -185,6 +242,7 @@ struct ReviewPopupView: View {
 struct PolishingPopupView: View {
     @Bindable var viewModel: PopupViewModel
     let coordinator: PopupCoordinator
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -193,6 +251,12 @@ struct PolishingPopupView: View {
                     .font(.body)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .textSelection(.enabled)
+                    .accessibilityLabel(String(localized: "Transcript being refined"))
+                    .accessibilityValue(
+                        viewModel.editedTranscript.isEmpty
+                            ? String(localized: "Waiting for refined text")
+                            : viewModel.editedTranscript
+                    )
             }
             .frame(minHeight: 90)
             .padding(8)
@@ -201,7 +265,7 @@ struct PolishingPopupView: View {
             HStack(spacing: 6) {
                 Image(systemName: "wand.and.stars")
                     .foregroundStyle(.tint)
-                    .symbolEffect(.pulse, options: .repeat(.continuous))
+                    .symbolEffect(.pulse, options: .repeat(.continuous), isActive: !reduceMotion)
                 Text("Polishing with AI…")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -212,29 +276,79 @@ struct PolishingPopupView: View {
                 Button("Cancel") { coordinator.cancel() }
                     .keyboardShortcut(.escape, modifiers: [])
                 Spacer()
-                Button("Insert now") { coordinator.insertAndSave() }
+                Button("Insert") { coordinator.insertOnly() }
+                    .keyboardShortcut("i", modifiers: [.command])
+                    .disabled(!coordinator.canInsertCurrentTranscript)
+                Button("Insert & Save") { coordinator.insertAndSave() }
                     .keyboardShortcut(.defaultAction)
                     .buttonStyle(.borderedProminent)
+                    .disabled(!coordinator.canSaveCurrentTranscript)
             }
         }
     }
 }
 
+struct InsertingPopupView: View {
+    var body: some View {
+        VStack(spacing: 12) {
+            ProgressView()
+            Text("Inserting Transcript…")
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+struct SavingDatasetPopupView: View {
+    let insertionSucceeded: Bool
+    let includesDataset: Bool
+
+    var body: some View {
+        VStack(spacing: 12) {
+            ProgressView()
+            Text(
+                includesDataset
+                    ? String(localized: "Saving Session & Dataset…")
+                    : String(localized: "Saving Session…")
+            )
+                .foregroundStyle(.secondary)
+            Text(
+                includesDataset
+                    ? (insertionSucceeded
+                        ? String(localized: "The text was already inserted. ThinkAloud is retrying only the local saves.")
+                        : String(localized: "The delivery attempt is complete. ThinkAloud is retrying only the local saves."))
+                    : String(localized: "The delivery attempt is complete. ThinkAloud is retrying only Insights history.")
+            )
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
 struct ErrorPopupView: View {
-    let message: String
+    let failure: PopupFailure
     let coordinator: PopupCoordinator
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Something went wrong", systemImage: "exclamationmark.triangle.fill")
+            Label(failure.title, systemImage: "exclamationmark.triangle.fill")
                 .foregroundStyle(.orange)
                 .font(.headline)
-            Text(message)
+            Text(failure.message)
                 .foregroundStyle(.secondary)
             Spacer()
             HStack {
-                Button("Open Settings") { coordinator.openSettings(.permissions) }
+                if let destination = failure.destination {
+                    Button(destination.buttonTitle) {
+                        coordinator.openSettings(destination.settingsCategory)
+                    }
+                }
                 Spacer()
+                Button(failure.retryTitle) { coordinator.retry(after: failure) }
+                    .buttonStyle(.borderedProminent)
+                    .keyboardShortcut(.defaultAction)
                 Button("Close") { coordinator.cancel() }
                     .keyboardShortcut(.escape, modifiers: [])
             }

@@ -67,13 +67,30 @@ enum ModelProfile: String, CaseIterable, Identifiable, Sendable {
     /// Rough download size for display before the real byte count is known. The model step
     /// shows live bytes once a download starts; this is just to set expectations up front.
     var estimatedDownloadSize: String {
+        "~\(ByteCountFormatter.string(fromByteCount: estimatedDownloadBytes, countStyle: .file))"
+    }
+
+    var estimatedDownloadBytes: Int64 {
         switch self {
-        case .fast: return "~0.5 GB"
-        case .balanced: return "~1.1 GB"
-        case .accurate: return "~1.9 GB"
-        case .whisperLargeV3Turbo: return "~1.6 GB"
-        case .breezeASR25: return "~3.0 GB"
+        // Exact main-revision totals for `downloadMatchingPatterns`, verified through the
+        // Hugging Face tree API on 2026-07-31. Runtime progress refreshes this total from the API;
+        // these values set expectations and protect the pre-download disk-space check.
+        case .fast: return 712_778_752
+        case .balanced: return 1_607_630_579
+        case .accurate: return 2_467_856_503
+        case .whisperLargeV3Turbo: return 1_613_977_880
+        case .breezeASR25: return 3_092_400_389
         }
+    }
+
+    /// Must stay aligned with `MLXAudioCore.ModelUtils.resolveOrDownloadModel`.
+    /// Metadata totals, progress percentages, and disk-space gates all use this same manifest.
+    var downloadMatchingPatterns: [String] {
+        var patterns = ["*.safetensors", "*.json", "*.txt", "*.wav"]
+        if family == .whisper {
+            patterns.append(contentsOf: ["*.model", "merges.txt", "vocab.json"])
+        }
+        return patterns
     }
 
     /// Sensible default to pre-select in onboarding — matches the app's default profile.

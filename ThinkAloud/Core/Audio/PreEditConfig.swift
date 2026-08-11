@@ -38,29 +38,6 @@ struct PreEditConfig: Codable, Sendable, Equatable {
 
     static let `default` = PreEditConfig()
 
-    /// Restores the memberwise init (suppressed by the custom `init(from:)` below).
-    init(denoise: DenoiseMode = .off) {
-        self.denoise = denoise
-    }
-
-    enum CodingKeys: String, CodingKey { case denoise }
-
-    // Explicit decode so older persisted JSON (`{"denoise": true/false}` — a Bool from when this
-    // was a Bool) still loads. A synthesized Decodable would throw typeMismatch on the old Bool;
-    // ModelManager decodes with `try?` and falls back to `.default`, so that throw would silently
-    // (and then persistently, via didSet) reset the user's denoise choice. Decode the enum first so
-    // re-encoded String values are idempotent and never fall into the Bool branch.
-    init(from decoder: Decoder) throws {
-        let c = try decoder.container(keyedBy: CodingKeys.self)
-        if let mode = try? c.decode(DenoiseMode.self, forKey: .denoise) {
-            denoise = mode
-        } else if let legacy = try? c.decode(Bool.self, forKey: .denoise) {
-            denoise = legacy ? .on : .off   // a past explicit "on" stays always-on, not auto
-        } else {
-            denoise = .off
-        }
-    }
-
     /// Whether the pre-edit stage is *potentially* active (so callers build the denoiser / decode at
     /// 48 kHz / show its UI). `.auto` counts as active; whether DFN actually runs is decided per-clip.
     var isActive: Bool { denoise != .off }

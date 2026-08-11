@@ -1,6 +1,17 @@
 import AppKit
 import SwiftUI
 
+@MainActor
+protocol PopupWindowPresenting: AnyObject {
+    func show(
+        viewModel: PopupViewModel,
+        coordinator: PopupCoordinator,
+        modelManager: ModelManager
+    )
+    func close()
+    var isVisible: Bool { get }
+}
+
 /// NSPanel subclass that can become key (so the TextEditor in review state takes keystrokes)
 /// while leaving the source app's "main" focus untouched.
 final class ThinkAloudPopupPanel: NSPanel {
@@ -9,7 +20,7 @@ final class ThinkAloudPopupPanel: NSPanel {
 }
 
 @MainActor
-final class PopupWindowController: NSObject, NSWindowDelegate {
+final class PopupWindowController: NSObject, NSWindowDelegate, PopupWindowPresenting {
     private var panel: ThinkAloudPopupPanel?
     private var hosting: NSHostingController<PopupRootView>?
 

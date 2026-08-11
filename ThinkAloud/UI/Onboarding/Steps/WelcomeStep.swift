@@ -9,6 +9,7 @@ struct WelcomeStep: View {
             Image(nsImage: NSApp.applicationIconImage)
                 .resizable()
                 .frame(width: 96, height: 96)
+                .accessibilityHidden(true)
 
             VStack(spacing: 6) {
                 Text("Welcome to ThinkAloud")

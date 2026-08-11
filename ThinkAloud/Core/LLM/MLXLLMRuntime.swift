@@ -72,7 +72,10 @@ actor MLXLLMRuntime: LLMRuntime {
                                          downloadedBytes: LLMModelPaths.downloadedBytes(for: modelID, cache: cache),
                                          totalBytes: expectedTotalBytes)
             if expectedTotalBytes == nil {
-                expectedTotalBytes = await HuggingFaceMetadata.totalRepoSize(modelID: modelID)
+                expectedTotalBytes = await HuggingFaceMetadata.downloadSize(
+                    modelID: modelID,
+                    matchingPatterns: ["*.safetensors", "*.json", "*.jinja"]
+                )
                 updateDownloadStatus(currentBytes: LLMModelPaths.downloadedBytes(for: modelID, cache: cache))
             }
             let runtimeRef = self
@@ -94,6 +97,12 @@ actor MLXLLMRuntime: LLMRuntime {
             container = box
             currentStatus = .ready
             NSLog("ThinkAloud: MLXLLMRuntime ready modelID=\(modelID)")
+        } catch is CancellationError {
+            pollingTask?.cancel()
+            container = nil
+            currentStatus = .unloaded
+            expectedTotalBytes = nil
+            throw CancellationError()
         } catch {
             pollingTask?.cancel()
             currentStatus = .failed(String(describing: error))
@@ -138,8 +147,8 @@ actor MLXLLMRuntime: LLMRuntime {
                 box.value,
                 instructions: instructions,
                 generateParameters: GenerateParameters(temperature: params.temperature),
-                // Disable Qwen3's chain-of-thought — we want a clean rewrite, not reasoning. The
-                // popup also strips any `</think>` block as a fallback for models that ignore this.
+                // Disable Qwen3's chain-of-thought — we want a clean rewrite, not reasoning.
+                // Output sanitization independently enforces that contract on emitted text.
                 additionalContext: ["enable_thinking": false]
             )
             // Runaway guard: a faithful cleanup shouldn't exceed the input by much. Cap output chars

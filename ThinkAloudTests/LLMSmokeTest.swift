@@ -2,9 +2,15 @@ import XCTest
 @testable import ThinkAloud
 
 /// Live smoke tests for the on-device LLM stack — DOWNLOAD a real model and generate. Network + GBs
-/// of disk + minutes, so they're skipped in CI (added to the -skip-testing list, like LiveASRSmokeTest)
-/// and run manually to verify the runtime path.
+/// of disk + minutes, so they require an explicit opt-in and run manually to verify the runtime path.
 final class LLMSmokeTest: XCTestCase {
+    override func setUpWithError() throws {
+        try XCTSkipUnless(
+            ProcessInfo.processInfo.environment["RUN_LIVE_LLM_TEST"] == "1",
+            "Set RUN_LIVE_LLM_TEST=1 to run the live LLM smoke tests."
+        )
+    }
+
     private func tempDir() -> URL {
         let d = FileManager.default.temporaryDirectory.appendingPathComponent("llm-smoke-\(UUID().uuidString)", isDirectory: true)
         return d

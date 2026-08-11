@@ -1,8 +1,8 @@
 import Foundation
 
 struct HFPushOptions: Sendable {
-    let repoName: String                 // e.g. "thinkaloud-personal"
-    let organization: String?            // nil → personal namespace
+    let repoName: String  // e.g. "thinkaloud-personal"
+    let organization: String?  // nil → personal namespace
     let isPrivate: Bool
     let includeAudio: Bool
     /// Opt-in (default OFF). When false, `source_app_bundle_id`/`source_app_name` are stripped from
@@ -13,6 +13,53 @@ struct HFPushOptions: Sendable {
     func repoID(defaultOwner: String) -> String {
         let owner = organization ?? defaultOwner
         return "\(owner)/\(repoName)"
+    }
+}
+
+enum HFPushValidation {
+    private static let allowedNameCharacters = CharacterSet.alphanumerics
+        .union(CharacterSet(charactersIn: "-_."))
+
+    static func destinationError(repoName: String, organization: String) -> String? {
+        let repo = repoName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let org = organization.trimmingCharacters(in: .whitespacesAndNewlines)
+        if repo.isEmpty {
+            return String(localized: "Enter a repository name.")
+        }
+        if repo != repoName {
+            return String(localized: "Repository names cannot begin or end with spaces.")
+        }
+        if repo.count > 96 {
+            return String(localized: "Repository names must be 96 characters or fewer.")
+        }
+        if repo.unicodeScalars.contains(where: { !allowedNameCharacters.contains($0) })
+            || repo.contains("..")
+            || repo.contains("--")
+            || repo.hasPrefix(".")
+            || repo.hasPrefix("-")
+            || repo.hasSuffix(".")
+            || repo.hasSuffix("-")
+            || repo.lowercased().hasSuffix(".git")
+        {
+            return String(
+                localized: "Use letters, numbers, hyphens, underscores, or periods in the repository name.")
+        }
+        if !organization.isEmpty && org != organization {
+            return String(localized: "Organization names cannot begin or end with spaces.")
+        }
+        if !org.isEmpty
+            && (org.count > 96
+                || org.unicodeScalars.contains(where: { !allowedNameCharacters.contains($0) })
+                || org.contains("..")
+                || org.contains("--")
+                || org.hasPrefix(".")
+                || org.hasPrefix("-")
+                || org.hasSuffix(".")
+                || org.hasSuffix("-"))
+        {
+            return String(localized: "Enter a valid Hugging Face organization name.")
+        }
+        return nil
     }
 }
 
@@ -34,139 +81,380 @@ struct HFPushProgress: Sendable {
     let currentLabel: String
 }
 
-struct HFPushResult: Sendable {
+struct HFPushCleanupWarning: Sendable, Equatable {
+    let directory: URL
+    let reason: String
+}
+
+struct HFPushResult: Sendable, Equatable {
     let repoID: String
     let commitURL: String?
-    let pageURL: String   // human-friendly dataset page
+    let pageURL: String  // human-friendly dataset page
     let uploadedFileCount: Int
+    let cleanupWarning: HFPushCleanupWarning?
 }
 
 actor HFPushService {
-    private let client: HFHubClient
+    enum PushError: Error, LocalizedError {
+        case emptyDataset
+        case invalidDestination(String)
+        case missingAudioFiles([String])
+        case unreadableAudioFile(String, String)
+        case visibilityMismatch(repoID: String, expectedPrivate: Bool, actualPrivate: Bool)
+        case incompletePreuploadResponse([String])
+        case ignoredRequiredFiles([String])
+        case filePreparationFailed(String, String)
+        case preCommitFailureAndCleanupFailed(
+            recoveryDirectory: URL,
+            operationReason: String,
+            cleanupReason: String,
+            wasCancelled: Bool
+        )
+
+        var errorDescription: String? {
+            switch self {
+            case .emptyDataset:
+                return String(localized: "There are no saved records to upload.")
+            case .invalidDestination(let message):
+                return message
+            case .missingAudioFiles(let paths):
+                return String(
+                    localized:
+                        "Upload stopped because \(paths.count) audio file(s) are missing: \(paths.sorted().joined(separator: ", "))"
+                )
+            case .unreadableAudioFile(let path, let reason):
+                return String(localized: "Upload stopped because \(path) cannot be read: \(reason)")
+            case .visibilityMismatch(let repoID, let expectedPrivate, let actualPrivate):
+                let expected = expectedPrivate ? String(localized: "private") : String(localized: "public")
+                let actual = actualPrivate ? String(localized: "private") : String(localized: "public")
+                return String(
+                    localized:
+                        "Upload stopped because \(repoID) is \(actual), not \(expected). No commit was created."
+                )
+            case .incompletePreuploadResponse(let paths):
+                return String(
+                    localized:
+                        "Hugging Face did not return upload instructions for: \(paths.sorted().joined(separator: ", "))"
+                )
+            case .ignoredRequiredFiles(let paths):
+                return String(
+                    localized:
+                        "Hugging Face refused required dataset files: \(paths.sorted().joined(separator: ", "))"
+                )
+            case .filePreparationFailed(let path, let reason):
+                return String(localized: "Could not prepare \(path) for upload: \(reason)")
+            case .preCommitFailureAndCleanupFailed(
+                let directory,
+                let operationReason,
+                let cleanupReason,
+                let wasCancelled
+            ):
+                if wasCancelled {
+                    return String(
+                        localized:
+                            "Upload was cancelled before a commit was created, and temporary local files could not be removed. The repository or uploaded LFS objects may remain on Hugging Face. Remove \(directory.path) manually. \(cleanupReason)"
+                    )
+                }
+                return String(
+                    localized:
+                        "\(operationReason) Temporary upload files also could not be removed. Remove \(directory.path) manually. \(cleanupReason)"
+                )
+            }
+        }
+    }
+
+    private let client: any HFHubClientProtocol
     private let datasetStore: DatasetStore
     private let audioFileStore: AudioFileStore
-    private let defaultOwner: String   // from whoami
+    private let defaultOwner: String  // from whoami
+    private let fileManager: FileManager
+    private let stagingRoot: URL
+    private let makeStagingID: @Sendable () -> String
 
-    init(client: HFHubClient, datasetStore: DatasetStore, audioFileStore: AudioFileStore, defaultOwner: String) {
+    init(
+        client: any HFHubClientProtocol,
+        datasetStore: DatasetStore,
+        audioFileStore: AudioFileStore,
+        defaultOwner: String,
+        fileManager: FileManager = .default,
+        stagingRoot: URL? = nil,
+        makeStagingID: @escaping @Sendable () -> String = { UUID().uuidString }
+    ) {
         self.client = client
         self.datasetStore = datasetStore
         self.audioFileStore = audioFileStore
         self.defaultOwner = defaultOwner
+        self.fileManager = fileManager
+        self.stagingRoot = stagingRoot ?? fileManager.temporaryDirectory
+        self.makeStagingID = makeStagingID
     }
 
-    func push(options: HFPushOptions, progress: @Sendable (HFPushProgress) async -> Void = { _ in }) async throws -> HFPushResult {
+    func push(options: HFPushOptions, progress: @Sendable (HFPushProgress) async -> Void = { _ in })
+        async throws -> HFPushResult
+    {
+        let organization = options.organization ?? ""
+        if let validationError = HFPushValidation.destinationError(
+            repoName: options.repoName,
+            organization: organization
+        ) {
+            throw PushError.invalidDestination(validationError)
+        }
         let repoID = options.repoID(defaultOwner: defaultOwner)
 
-        // 1. Pull records + stage files on disk. Defense-in-depth: only `savedToDataset` rows are
-        // published (today every row is, but this guards a future "review later" state).
+        // 1. Pull Dataset records + stage files on disk. Usage history lives in a separate table
+        // and therefore cannot enter the publishing path.
         await progress(HFPushProgress(stage: .prepare, completed: 0, total: 0, currentLabel: ""))
-        let records = try await datasetStore.all().filter(\.savedToDataset)
+        let records = try await datasetStore.all()
+        guard !records.isEmpty else { throw PushError.emptyDataset }
         let stats = DatasetStatistics.compute(from: records)
 
-        let staging = try makeStagingDirectory()
-        defer { try? FileManager.default.removeItem(at: staging) }
-
-        let metadataURL = staging.appendingPathComponent("metadata.jsonl")
-        let readmeURL = staging.appendingPathComponent("README.md")
-        let statsURL = staging.appendingPathComponent("statistics.json")
-        try writeMetadataJSONL(records: records, includeAudio: options.includeAudio, includeSourceApp: options.includeSourceApp, to: metadataURL)
-        try writeReadme(stats: stats, options: options, to: readmeURL)
-        try writeStatisticsJSON(stats: stats.publicProjection(), to: statsURL)
-
-        var stagedFiles: [(repoPath: String, localURL: URL)] = [
-            ("metadata.jsonl", metadataURL),
-            ("README.md", readmeURL),
-            ("statistics.json", statsURL)
-        ]
+        var audioURLsByPath: [String: URL] = [:]
         if options.includeAudio {
+            var missingPaths: [String] = []
             for record in records {
-                let src = await audioFileStore.absoluteURL(for: record.audioPath)
-                guard FileManager.default.fileExists(atPath: src.path) else { continue }
-                // Upload at the exact relative path the DB stores in audio_path, so
-                // metadata.jsonl (which encodes record.audioPath as-is) resolves correctly
-                // against the repo layout. AudioFileStore guarantees the path starts with
-                // "audio/" so it sits cleanly inside the dataset repo.
-                stagedFiles.append((record.audioPath, src))
-            }
-        }
-
-        // 2. Create repo (idempotent).
-        await progress(HFPushProgress(stage: .createRepo, completed: 0, total: 1, currentLabel: repoID))
-        try await client.createDatasetRepo(name: options.repoName, organization: options.organization, isPrivate: options.isPrivate)
-
-        // 3. Preupload to determine regular vs LFS routing.
-        await progress(HFPushProgress(stage: .preupload, completed: 0, total: stagedFiles.count, currentLabel: ""))
-        let preuploadEntries: [HFHubClient.PreuploadFileEntry] = try stagedFiles.map { staged in
-            let attrs = try FileManager.default.attributesOfItem(atPath: staged.localURL.path)
-            let size = (attrs[.size] as? Int) ?? 0
-            let sample = try HFHubClient.sampleBase64(fileURL: staged.localURL, bytes: 512)
-            return .init(path: staged.repoPath, sampleBase64: sample, size: size)
-        }
-        let routing = try await client.preupload(repoID: repoID, files: preuploadEntries)
-        let routingByPath = Dictionary(uniqueKeysWithValues: routing.map { ($0.path, $0) })
-
-        // 4. LFS upload pass for files routed to LFS.
-        var commitOps: [HFHubClient.CommitOp] = [
-            .header(summary: "Push from ThinkAloud", description: "Uploaded \(records.count) records on \(ISO8601DateFormatter().string(from: Date())).")
-        ]
-
-        let lfsFiles = stagedFiles.filter { (routingByPath[$0.repoPath]?.uploadMode ?? "regular") == "lfs" }
-        var lfsObjects: [(repoPath: String, localURL: URL, oid: String, size: Int)] = []
-        for (i, staged) in lfsFiles.enumerated() {
-            await progress(HFPushProgress(stage: .lfsUpload, completed: i, total: lfsFiles.count, currentLabel: staged.repoPath))
-            try Task.checkCancellation()
-            let (oid, size) = try HFHubClient.sha256Hex(fileURL: staged.localURL)
-            lfsObjects.append((staged.repoPath, staged.localURL, oid, size))
-        }
-
-        if !lfsObjects.isEmpty {
-            let batch = try await client.lfsBatch(
-                repoID: repoID,
-                objects: lfsObjects.map { .init(oid: $0.oid, size: $0.size) }
-            )
-            let instructionsByOid = Dictionary(uniqueKeysWithValues: batch.map { ($0.oid, $0) })
-            for (i, obj) in lfsObjects.enumerated() {
-                try Task.checkCancellation()
-                await progress(HFPushProgress(stage: .lfsUpload, completed: i, total: lfsObjects.count, currentLabel: obj.repoPath))
-                if let inst = instructionsByOid[obj.oid] {
-                    try await client.lfsUpload(instruction: inst, fileURL: obj.localURL)
-                    try await client.lfsVerify(instruction: inst)
+                let source = try await audioFileStore.validatedAbsoluteURL(for: record.audioPath)
+                guard fileManager.fileExists(atPath: source.path) else {
+                    missingPaths.append(record.audioPath)
+                    continue
                 }
-                // If no instruction returned, object already exists on the server — skip upload.
-                commitOps.append(.lfsFile(path: obj.repoPath, oid: obj.oid, size: obj.size))
+                do {
+                    let handle = try FileHandle(forReadingFrom: source)
+                    try handle.close()
+                } catch {
+                    throw PushError.unreadableAudioFile(record.audioPath, error.localizedDescription)
+                }
+                audioURLsByPath[record.audioPath] = source
+            }
+            guard missingPaths.isEmpty else {
+                throw PushError.missingAudioFiles(missingPaths)
             }
         }
 
-        // 5. Inline-base64 the small files into the commit.
-        let regularFiles = stagedFiles.filter { (routingByPath[$0.repoPath]?.uploadMode ?? "regular") != "lfs" }
-        for staged in regularFiles {
-            let data = try Data(contentsOf: staged.localURL)
-            commitOps.append(.fileBase64(path: staged.repoPath, content: data))
+        let staging = try makeStagingDirectory()
+        do {
+            let metadataURL = staging.appendingPathComponent("metadata.jsonl")
+            let readmeURL = staging.appendingPathComponent("README.md")
+            let statsURL = staging.appendingPathComponent("statistics.json")
+            try writeMetadataJSONL(
+                records: records, includeAudio: options.includeAudio,
+                includeSourceApp: options.includeSourceApp, to: metadataURL)
+            try writeReadme(stats: stats, options: options, to: readmeURL)
+            try writeStatisticsJSON(stats: stats.publicProjection(), to: statsURL)
+
+            var stagedFiles: [(repoPath: String, localURL: URL)] = [
+                ("metadata.jsonl", metadataURL),
+                ("README.md", readmeURL),
+                ("statistics.json", statsURL),
+            ]
+            if options.includeAudio {
+                for record in records {
+                    guard let src = audioURLsByPath[record.audioPath] else {
+                        throw PushError.missingAudioFiles([record.audioPath])
+                    }
+                    // Upload at the exact relative path the DB stores in audio_path, so
+                    // metadata.jsonl (which encodes record.audioPath as-is) resolves correctly
+                    // against the repo layout. AudioFileStore guarantees the path starts with
+                    // "audio/" so it sits cleanly inside the dataset repo.
+                    stagedFiles.append((record.audioPath, src))
+                }
+            }
+
+            // 2. Create repo (idempotent).
+            await progress(
+                HFPushProgress(stage: .createRepo, completed: 0, total: 1, currentLabel: repoID))
+            try await client.createDatasetRepo(
+                name: options.repoName, organization: options.organization, isPrivate: options.isPrivate)
+            try Task.checkCancellation()
+            try await client.updateDatasetRepoVisibility(repoID: repoID, isPrivate: options.isPrivate)
+            let verifiedRepo = try await client.datasetRepoInfo(repoID: repoID)
+            guard verifiedRepo.isPrivate == options.isPrivate else {
+                throw PushError.visibilityMismatch(
+                    repoID: repoID,
+                    expectedPrivate: options.isPrivate,
+                    actualPrivate: verifiedRepo.isPrivate
+                )
+            }
+
+            // 3. Preupload to determine regular vs LFS routing.
+            await progress(
+                HFPushProgress(stage: .preupload, completed: 0, total: stagedFiles.count, currentLabel: ""))
+            let preuploadEntries: [HFHubClient.PreuploadFileEntry] = try stagedFiles.map { staged in
+                let attrs = try fileManager.attributesOfItem(atPath: staged.localURL.path)
+                guard let number = attrs[.size] as? NSNumber, number.intValue >= 0 else {
+                    throw PushError.filePreparationFailed(
+                        staged.localURL.path,
+                        String(localized: "The file size could not be determined.")
+                    )
+                }
+                let size = number.intValue
+                let sample = try HFHubClient.sampleBase64(fileURL: staged.localURL, bytes: 512)
+                return .init(path: staged.repoPath, sampleBase64: sample, size: size)
+            }
+            let routing = try await client.preupload(
+                repoID: repoID, files: preuploadEntries, revision: "main")
+            var routingByPath: [String: HFHubClient.PreuploadResponseFile] = [:]
+            for entry in routing {
+                guard routingByPath.updateValue(entry, forKey: entry.path) == nil else {
+                    throw PushError.incompletePreuploadResponse([entry.path])
+                }
+            }
+            let missingRoutes = stagedFiles.map(\.repoPath).filter { routingByPath[$0] == nil }
+            guard missingRoutes.isEmpty else {
+                throw PushError.incompletePreuploadResponse(missingRoutes)
+            }
+            let ignoredFiles = stagedFiles.map(\.repoPath).filter {
+                routingByPath[$0]?.shouldIgnore == true
+            }
+            guard ignoredFiles.isEmpty else {
+                throw PushError.ignoredRequiredFiles(ignoredFiles)
+            }
+
+            // 4. LFS upload pass for files routed to LFS.
+            var commitOps: [HFHubClient.CommitOp] = [
+                .header(
+                    summary: "Push from ThinkAloud",
+                    description:
+                        "Uploaded \(records.count) records on \(ISO8601DateFormatter().string(from: Date())).")
+            ]
+
+            let lfsFiles = stagedFiles.filter { routingByPath[$0.repoPath]?.uploadMode == "lfs" }
+            var lfsObjects: [(repoPath: String, localURL: URL, oid: String, size: Int)] = []
+            for (i, staged) in lfsFiles.enumerated() {
+                await progress(
+                    HFPushProgress(
+                        stage: .lfsUpload, completed: i, total: lfsFiles.count, currentLabel: staged.repoPath))
+                try Task.checkCancellation()
+                let (oid, size) = try HFHubClient.sha256Hex(fileURL: staged.localURL)
+                lfsObjects.append((staged.repoPath, staged.localURL, oid, size))
+            }
+
+            if !lfsObjects.isEmpty {
+                let batch = try await client.lfsBatch(
+                    repoID: repoID,
+                    objects: lfsObjects.map { .init(oid: $0.oid, size: $0.size) },
+                    revision: "main"
+                )
+                let instructionsByOid = Dictionary(uniqueKeysWithValues: batch.map { ($0.oid, $0) })
+                for (i, obj) in lfsObjects.enumerated() {
+                    try Task.checkCancellation()
+                    await progress(
+                        HFPushProgress(
+                            stage: .lfsUpload, completed: i, total: lfsObjects.count, currentLabel: obj.repoPath))
+                    if let inst = instructionsByOid[obj.oid] {
+                        try await client.lfsUpload(instruction: inst, fileURL: obj.localURL)
+                        try await client.lfsVerify(instruction: inst)
+                    }
+                    // If no instruction returned, object already exists on the server — skip upload.
+                    commitOps.append(.lfsFile(path: obj.repoPath, oid: obj.oid, size: obj.size))
+                }
+            }
+
+            // 5. Inline-base64 the small files into the commit.
+            let regularFiles = stagedFiles.filter { routingByPath[$0.repoPath]?.uploadMode == "regular" }
+            for staged in regularFiles {
+                try Task.checkCancellation()
+                let data = try Data(contentsOf: staged.localURL)
+                commitOps.append(.fileBase64(path: staged.repoPath, content: data))
+            }
+
+            // 6. Commit.
+            try Task.checkCancellation()
+            await progress(HFPushProgress(stage: .commit, completed: 0, total: 1, currentLabel: repoID))
+            try Task.checkCancellation()
+            let result = try await client.commit(repoID: repoID, operations: commitOps, revision: "main")
+
+            let pageURL = "https://huggingface.co/datasets/\(repoID)"
+            let cleanupWarning: HFPushCleanupWarning?
+            do {
+                try fileManager.removeItem(at: staging)
+                cleanupWarning = nil
+            } catch {
+                NSLog(
+                    "ThinkAloud: upload committed, but staging cleanup failed at \(staging.path): \(error)"
+                )
+                cleanupWarning = HFPushCleanupWarning(
+                    directory: staging,
+                    reason: error.localizedDescription
+                )
+            }
+            await progress(
+                HFPushProgress(
+                    stage: .done,
+                    completed: stagedFiles.count,
+                    total: stagedFiles.count,
+                    currentLabel: repoID
+                )
+            )
+            return HFPushResult(
+                repoID: repoID,
+                commitURL: result.commitURL,
+                pageURL: pageURL,
+                uploadedFileCount: stagedFiles.count,
+                cleanupWarning: cleanupWarning
+            )
+        } catch {
+            let operationError = error
+            do {
+                try fileManager.removeItem(at: staging)
+            } catch {
+                NSLog(
+                    "ThinkAloud: pre-commit upload failure cleanup also failed at \(staging.path); operation=\(operationError); cleanup=\(error)"
+                )
+                let wasCancelled = operationError is CancellationError || Task.isCancelled
+                let operationReason =
+                    wasCancelled
+                    ? String(
+                        localized:
+                            "Upload was cancelled before a commit was created. The repository or uploaded LFS objects may remain on Hugging Face."
+                    )
+                    : operationError.localizedDescription
+                throw PushError.preCommitFailureAndCleanupFailed(
+                    recoveryDirectory: staging,
+                    operationReason: operationReason,
+                    cleanupReason: error.localizedDescription,
+                    wasCancelled: wasCancelled
+                )
+            }
+            throw operationError
         }
-
-        // 6. Commit.
-        await progress(HFPushProgress(stage: .commit, completed: 0, total: 1, currentLabel: repoID))
-        let result = try await client.commit(repoID: repoID, operations: commitOps)
-
-        let pageURL = "https://huggingface.co/datasets/\(repoID)"
-        await progress(HFPushProgress(stage: .done, completed: stagedFiles.count, total: stagedFiles.count, currentLabel: repoID))
-        return HFPushResult(repoID: repoID, commitURL: result.commitURL, pageURL: pageURL, uploadedFileCount: stagedFiles.count)
     }
 
     // MARK: - Staging file generation
 
     private func makeStagingDirectory() throws -> URL {
-        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("ThinkAloudPush-\(UUID().uuidString)", isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let resolvedRoot = stagingRoot.standardizedFileURL.resolvingSymlinksInPath()
+        let dir = resolvedRoot
+            .appendingPathComponent(
+                "ThinkAloudPush-\(makeStagingID())",
+                isDirectory: true
+            )
+            .standardizedFileURL
+        guard dir.deletingLastPathComponent() == resolvedRoot,
+              !fileManager.fileExists(atPath: dir.path) else {
+            throw PushError.filePreparationFailed(
+                dir.path,
+                String(localized: "The temporary upload directory already exists or is outside the staging root.")
+            )
+        }
+        try fileManager.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir
     }
 
-    private func writeMetadataJSONL(records: [DatasetRecord], includeAudio: Bool, includeSourceApp: Bool, to url: URL) throws {
+    private func writeMetadataJSONL(
+        records: [DatasetRecord], includeAudio: Bool, includeSourceApp: Bool, to url: URL
+    ) throws {
         var lines: [String] = []
         for record in records {
-            let row = Self.metadataRow(for: record, includeAudio: includeAudio, includeSourceApp: includeSourceApp)
-            let data = try JSONSerialization.data(withJSONObject: row, options: [.sortedKeys, .withoutEscapingSlashes])
-            guard let line = String(data: data, encoding: .utf8) else { continue }
+            let row = Self.metadataRow(
+                for: record, includeAudio: includeAudio, includeSourceApp: includeSourceApp)
+            let data = try JSONSerialization.data(
+                withJSONObject: row, options: [.sortedKeys, .withoutEscapingSlashes])
+            guard let line = String(data: data, encoding: .utf8) else {
+                throw PushError.filePreparationFailed(
+                    "metadata.jsonl",
+                    String(localized: "A metadata row could not be encoded as UTF-8.")
+                )
+            }
             lines.append(line)
         }
         let text = lines.joined(separator: "\n") + "\n"
@@ -174,12 +462,14 @@ actor HFPushService {
     }
 
     /// Explicit upload allowlist. We never serialize the whole `DatasetRecord`, so internal / free-form
-    /// columns (`asr_config_json`, `metadata_json`, `saved_to_dataset`) and the opt-out source-app
+    /// columns (`asr_config_json`, `metadata_json`) and the opt-out source-app
     /// fields can't leak into a (possibly public) repo, and a future schema column won't auto-publish.
-    /// `auto_edited_transcript` and the manual-edit fields are emitted on EVERY row (explicit `null`
-    /// when absent) so the JSONL column type is consistent for HF schema inference.
+    /// Pipeline fields are emitted on every row. Historical intermediates and their derived edit
+    /// metrics are explicit `null` rather than guessed, keeping the JSONL schema stable and truthful.
     /// Static + non-private so the privacy allowlist can be unit-tested directly.
-    static func metadataRow(for r: DatasetRecord, includeAudio: Bool, includeSourceApp: Bool) -> [String: Any] {
+    static func metadataRow(for r: DatasetRecord, includeAudio: Bool, includeSourceApp: Bool)
+        -> [String: Any]
+    {
         let editedN = TextMetrics.normalize(r.editedTranscript, mode: .light)
         var row: [String: Any] = [
             "id": r.id,
@@ -202,16 +492,17 @@ actor HFPushService {
             "edited_char_count": r.editedTranscript.unicodeScalars.count,
             "token_count": TextMetrics.wordTokens(r.editedTranscript).count,
         ]
-        // Manual-edit metrics measure the HUMAN delta on top of the last AUTOMATIC stage: the LLM
-        // rewrite when AI Refine ran, else the deterministic auto-post-edit. Never raw-fallback (the
-        // S↔T conversion / LLM rewrite would otherwise read as a huge "human edit"). Null when neither
-        // intermediate was captured.
+        // Manual-edit metrics use the last captured automatic stage. Never substitute raw/final for
+        // a missing historical intermediate: that would misclassify conversion as a human edit.
         if let base = r.llmEditedTranscript ?? r.autoEditedTranscript {
             let baseN = TextMetrics.normalize(base, mode: .light)
             let dist = TextMetrics.editDistanceScalars(baseN, editedN)
             let refLen = baseN.unicodeScalars.count
             row["manual_edit_distance"] = dist
-            row["manual_edit_rate"] = refLen == 0 ? (editedN.unicodeScalars.isEmpty ? 0.0 : 1.0) : min(1.0, Double(dist) / Double(refLen))
+            row["manual_edit_rate"] =
+                refLen == 0
+                ? (editedN.unicodeScalars.isEmpty ? 0.0 : 1.0)
+                : min(1.0, Double(dist) / Double(refLen))
         } else {
             row["manual_edit_distance"] = NSNull()
             row["manual_edit_rate"] = NSNull()
@@ -244,45 +535,46 @@ actor HFPushService {
 
         let langLine = s.byLanguage.map(\.key).filter { $0 != "unknown" }
         var front = """
-        ---
-        license: other
-        task_categories:
-        - automatic-speech-recognition
-        """
+            ---
+            license: other
+            task_categories:
+            - automatic-speech-recognition
+            """
         if !langLine.isEmpty {
             front += "\nlanguage:\n" + langLine.map { "- \($0)" }.joined(separator: "\n")
         }
         front += "\n---\n"
 
-        var text = front + """
+        var text =
+            front + """
 
-        # ThinkAloud personal dataset
+                # ThinkAloud personal dataset
 
-        Generated by [ThinkAloud](https://github.com/JacobLinCool/think-aloud) on \(ISO8601DateFormatter().string(from: Date())).
+                Generated by [ThinkAloud](https://github.com/JacobLinCool/think-aloud) on \(ISO8601DateFormatter().string(from: Date())).
 
-        Speech paired with transcripts, captured while dictating on macOS. Each row keeps the raw ASR
-        output, the automatically formatted text, and the final text the author kept — useful both for
-        ASR fine-tuning and for studying post-ASR correction.
+                Speech paired with transcripts, captured while dictating on macOS. Each row keeps the raw ASR
+                output, the automatically formatted text, and the final text the author kept — useful both for
+                ASR fine-tuning and for studying post-ASR correction.
 
-        ## Summary
+                ## Summary
 
-        | Metric | Value |
-        | --- | --- |
-        | Recordings | \(s.recordCount) |
-        | Total speech | \(hours(s.audio.totalDurationMs)) hours |
-        | Date range | \(s.firstRecordDay ?? "—") – \(s.lastRecordDay ?? "—") (\(s.activeDayCount) active days) |
-        | Characters (final) | \(s.text.totalEditedChars) |
-        | Tokens (final) | \(s.text.totalTokens) |
-        | Chinese characters | \(s.text.totalEditedChars > 0 ? pct(Double(s.text.totalCJKChars) / Double(s.text.totalEditedChars)) : "—") |
+                | Metric | Value |
+                | --- | --- |
+                | Recordings | \(s.recordCount) |
+                | Total speech | \(hours(s.audio.totalDurationMs)) hours |
+                | Date range | \(s.firstRecordDay ?? "—") – \(s.lastRecordDay ?? "—") (\(s.activeDayCount) active days) |
+                | Characters (final) | \(s.text.totalEditedChars) |
+                | Tokens (final) | \(s.text.totalTokens) |
+                | Chinese characters | \(s.text.totalEditedChars > 0 ? pct(Double(s.text.totalCJKChars) / Double(s.text.totalEditedChars)) : "—") |
 
-        ## Recording length
+                ## Recording length
 
-        | Stat | Value |
-        | --- | --- |
-        | Mean | \(secs(s.audio.meanMs)) |
-        | Median | \(secs(s.audio.medianMs)) |
+                | Stat | Value |
+                | --- | --- |
+                | Mean | \(secs(s.audio.meanMs)) |
+                | Median | \(secs(s.audio.medianMs)) |
 
-        """
+                """
         if s.audio.recordsWithDuration >= 10 {
             text += "| 90th percentile | \(secs(s.audio.p90Ms)) |\n"
         }
@@ -292,15 +584,12 @@ actor HFPushService {
             text += "| \(b.label) | \(b.count) |\n"
         }
 
-        // Transcript quality — eligible (v0.4.0+) records only.
-        if s.editing.eligibleCount > 0 {
-            text += """
+        text += """
 
             ## Transcript quality
 
-            Over the \(s.editing.eligibleCount) recordings that captured the auto-formatted intermediate
-            (ThinkAloud v0.4.0+). `raw` and `auto` distances are baselined on different references, so they
-            are reported as independent rates — not a sum.
+            Across all \(s.recordCount) canonical recordings. `raw` and `auto` distances are baselined
+            on different references, so they are reported as independent rates — not a sum.
 
             | Metric | Value |
             | --- | --- |
@@ -309,7 +598,6 @@ actor HFPushService {
             | Manual edit rate (macro, per-recording mean) | \(pct(s.editing.meanEditRate)) |
 
             """
-        }
 
         if !s.byLanguage.isEmpty {
             text += "\n## Languages\n\n| Language | Recordings |\n| --- | --- |\n"
@@ -321,43 +609,48 @@ actor HFPushService {
         }
 
         let weekdayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-        text += "\n## Activity\n\nAggregate cadence only — no per-recording timestamps are published.\n\n"
-        text += "Recordings by weekday: " + (0..<7).map { "\(weekdayNames[$0]) \(s.activityByWeekday[$0])" }.joined(separator: " · ") + "\n"
+        text +=
+            "\n## Activity\n\nAggregate cadence only — no per-recording timestamps are published.\n\n"
+        text +=
+            "Recordings by weekday: "
+            + (0..<7).map { "\(weekdayNames[$0]) \(s.activityByWeekday[$0])" }.joined(separator: " · ")
+            + "\n"
 
         text += """
 
-        ## Files
+            ## Files
 
-        - `metadata.jsonl` — one JSON object per line (schema below).
-        - `statistics.json` — the aggregate statistics above, machine-readable.
-        """
+            - `metadata.jsonl` — one JSON object per line (schema below).
+            - `statistics.json` — the aggregate statistics above, machine-readable.
+            """
         if options.includeAudio {
-            text += "\n- `audio/<yyyy-mm-dd>/<id>.wav` — 16 kHz mono PCM recordings; path matches each row's `file_name` (and `audio_path`)."
+            text +=
+                "\n- `audio/<yyyy-mm-dd>/<id>.wav` — saved WAV recordings; path matches each row's `file_name` (and `audio_path`)."
         }
 
         text += """
 
 
-        ## Schema (`metadata.jsonl`)
+            ## Schema (`metadata.jsonl`)
 
-        Pipeline: `raw_transcript` (model output) → `auto_edited_transcript` (automatic formatting:
-        Chinese conversion, CJK–Latin spacing, custom dictionary) → `llm_edited_transcript` (optional
-        on-device LLM "AI Refine" rewrite) → `edited_transcript` (final, after any human correction).
+            Pipeline: `raw_transcript` (model output) → `auto_edited_transcript` (automatic formatting:
+            Chinese conversion, CJK–Latin spacing, custom dictionary) → `llm_edited_transcript` (optional
+            on-device LLM "AI Refine" rewrite) → `edited_transcript` (final, after any human correction).
 
-        | Field | Meaning |
-        | --- | --- |
-        | `id`, `created_at` | record id and ISO8601 timestamp |
-        | `duration_ms`, `sample_rate`, `channels` | audio properties |
-        | `language`, `asr_provider`, `asr_model`, `asr_runtime` | recognition engine |
-        | `raw_transcript` / `auto_edited_transcript` / `llm_edited_transcript` / `edited_transcript` | pipeline stages (`auto_edited` is `null` for pre-v0.4.0 rows; `llm_edited` is `null` when AI Refine didn't run) |
-        | `inserted` | whether the text was inserted into the focused app |
-        | `raw_char_count`, `edited_char_count`, `token_count` | derived counts (unicode scalars; tokens per the WER convention) |
-        | `manual_edit_distance`, `manual_edit_rate` | human edits on top of the last automatic stage (`llm_edited` if AI Refine ran, else `auto_edited`); `null` when neither was captured |
-        | `audio_path`\(options.includeAudio ? ", `file_name`" : "") | audio location |
-        \(options.includeSourceApp ? "| `source_app_bundle_id`, `source_app_name` | the app dictated into |\n" : "")
+            | Field | Meaning |
+            | --- | --- |
+            | `id`, `created_at` | record id and ISO8601 timestamp |
+            | `duration_ms`, `sample_rate`, `channels` | audio properties |
+            | `language`, `asr_provider`, `asr_model`, `asr_runtime` | recognition engine |
+            | `raw_transcript` / `auto_edited_transcript` / `llm_edited_transcript` / `edited_transcript` | pipeline stages (`auto_edited` is `null` for pre-v0.4.0 rows; `llm_edited` is `null` when AI Refine didn't run) |
+            | `inserted` | whether the text was inserted into the focused app |
+            | `raw_char_count`, `edited_char_count`, `token_count` | derived counts (unicode scalars; tokens per the WER convention) |
+            | `manual_edit_distance`, `manual_edit_rate` | human edits on top of the last captured automatic stage; `null` when historical intermediates are unavailable |
+            | `audio_path`\(options.includeAudio ? ", `file_name`" : "") | audio location |
+            \(options.includeSourceApp ? "| `source_app_bundle_id`, `source_app_name` | the app dictated into |\n" : "")
 
-        \(options.includeSourceApp ? "Source-app names **are** included in this export." : "Source-app names are **not** included.")
-        """
+            \(options.includeSourceApp ? "Source-app names **are** included in this export." : "Source-app names are **not** included.")
+            """
         try Data(text.utf8).write(to: url, options: .atomic)
     }
 }

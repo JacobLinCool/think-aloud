@@ -15,6 +15,8 @@ struct HFPushView: View {
         }
         .padding(20)
         .frame(width: 520)
+        .interactiveDismissDisabled(controller.isRunning)
+        .task { await controller.prepareForPresentation() }
     }
 
     private var header: some View {
@@ -38,7 +40,15 @@ struct HFPushView: View {
                 TextField(String(localized: "repo-name"), text: $controller.repoName)
                     .textFieldStyle(.roundedBorder)
             }
+            if let validationMessage = controller.validationMessage {
+                Label(validationMessage, systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
             Toggle(String(localized: "Private"), isOn: $controller.isPrivate)
+            Text("ThinkAloud applies the selected visibility to new or existing repositories and verifies it before uploading files.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
             Toggle(String(localized: "Include audio files"), isOn: $controller.includeAudio)
             Toggle(String(localized: "Include source-app names"), isOn: $controller.includeSourceApp)
         }
@@ -54,6 +64,18 @@ struct HFPushView: View {
                 Text("Uploaded \(result.uploadedFileCount) file(s) to \(result.repoID).")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                if let warning = result.cleanupWarning {
+                    Label {
+                        Text(
+                            "The commit succeeded, but temporary local files remain at \(warning.directory.path). Remove this folder manually."
+                        )
+                        .textSelection(.enabled)
+                    } icon: {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                }
                 Button {
                     if let url = URL(string: result.pageURL) {
                         NSWorkspace.shared.open(url)
@@ -71,7 +93,7 @@ struct HFPushView: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 6) {
                     ProgressView().controlSize(.small)
-                    Text(stageLabel)
+                    Text(controller.isCancelling ? String(localized: "Cancelling…") : stageLabel)
                         .font(.callout.weight(.medium))
                 }
                 if controller.stageTotal > 0 {
@@ -91,6 +113,15 @@ struct HFPushView: View {
                     }
                 }
             }
+        } else if controller.wasCancelled {
+            Label(
+                String(
+                    localized: "Upload cancelled before commit. The repository or uploaded LFS objects may remain on Hugging Face."
+                ),
+                systemImage: "xmark.circle"
+            )
+                .font(.caption)
+                .foregroundStyle(.secondary)
         } else {
             consentSummary
         }
@@ -100,11 +131,36 @@ struct HFPushView: View {
     @ViewBuilder
     private var consentSummary: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if let s = controller.summary, !s.isEmpty {
+            switch controller.summaryState {
+            case .idle, .loading:
+                HStack(spacing: 6) {
+                    ProgressView().controlSize(.small)
+                    Text("Loading upload summary…")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            case .failed(let message):
+                VStack(alignment: .leading, spacing: 6) {
+                    Label(message, systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                    Button(String(localized: "Try again")) {
+                        Task { await controller.loadSummary() }
+                    }
+                    .controlSize(.small)
+                }
+            case .loaded(let s) where s.isEmpty:
+                Label(String(localized: "There are no saved records to upload."), systemImage: "tray")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            case .loaded(let s):
                 HStack(spacing: 14) {
-                    summaryStat(String(localized: "Recordings"), "\(s.recordCount)")
-                    summaryStat(String(localized: "Speech"), String(format: "%.1f h", Double(s.audio.totalDurationMs) / 3_600_000))
-                    summaryStat(String(localized: "Languages"), "\(s.byLanguage.count)")
+                    summaryStat(String(localized: "Recordings"), s.recordCount.formatted())
+                    summaryStat(
+                        String(localized: "Speech"),
+                        Self.formattedSpeechDuration(milliseconds: s.audio.totalDurationMs)
+                    )
+                    summaryStat(String(localized: "Languages"), s.byLanguage.count.formatted())
                 }
             }
             Text("This push writes:")
@@ -114,13 +170,13 @@ struct HFPushView: View {
                 bullet(String(localized: "README.md + statistics.json (aggregate stats)"))
                 bullet(String(localized: "metadata.jsonl — one row per recording, with transcripts + derived counts"))
                 if controller.includeAudio {
-                    bullet(String(localized: "audio/… — your 16 kHz recordings (LFS)"))
+                    bullet(String(localized: "audio/… — your saved WAV recordings (LFS when required)"))
                 }
             }
             Label {
                 Text(controller.includeSourceApp
-                     ? String(localized: "Source-app names **are** included.")
-                     : String(localized: "Source-app names are **not** included."))
+                     ? String(localized: "Source-app names are included.")
+                     : String(localized: "Source-app names are not included."))
             } icon: {
                 Image(systemName: controller.includeSourceApp ? "info.circle" : "checkmark.shield")
             }
@@ -128,7 +184,6 @@ struct HFPushView: View {
             .foregroundStyle(controller.includeSourceApp ? Color.secondary : Color.green)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .task { await controller.loadSummary() }
     }
 
     private func summaryStat(_ label: String, _ value: String) -> some View {
@@ -147,12 +202,21 @@ struct HFPushView: View {
 
     private var footer: some View {
         HStack {
-            if controller.isRunning {
+            if controller.canCancel {
                 Button(role: .destructive) {
                     controller.cancel()
                 } label: {
                     Text(String(localized: "Cancel"))
                 }
+            } else if controller.isRunning {
+                Label(
+                    controller.isCancelling
+                        ? String(localized: "Cancellation requested…")
+                        : String(localized: "Commit in progress—this can’t be cancelled."),
+                    systemImage: controller.isCancelling ? "xmark.circle" : "clock"
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
             } else {
                 Button(String(localized: "Close")) { dismiss() }
             }
@@ -169,13 +233,32 @@ struct HFPushView: View {
         }
     }
 
+    static func formattedSpeechDuration(milliseconds: Int) -> String {
+        let seconds = Double(milliseconds) / 1_000
+        let measurement: Measurement<UnitDuration>
+        if seconds < 60 {
+            measurement = Measurement(value: seconds, unit: .seconds)
+        } else if seconds < 3_600 {
+            measurement = Measurement(value: seconds / 60, unit: .minutes)
+        } else {
+            measurement = Measurement(value: seconds / 3_600, unit: .hours)
+        }
+        return measurement.formatted(
+            .measurement(
+                width: .abbreviated,
+                usage: .asProvided,
+                numberFormatStyle: .number.precision(.fractionLength(0...1))
+            )
+        )
+    }
+
     private var stageLabel: String {
         switch controller.stage {
         case .prepare:    return String(localized: "Preparing files…")
         case .createRepo: return String(localized: "Creating repository…")
         case .preupload:  return String(localized: "Checking which files need LFS…")
         case .lfsUpload:  return String(localized: "Uploading large files…")
-        case .commit:     return String(localized: "Committing…")
+        case .commit:     return String(localized: "Finishing commit—this can’t be cancelled…")
         case .done:       return String(localized: "Done.")
         }
     }

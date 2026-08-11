@@ -1,9 +1,8 @@
 import XCTest
 @testable import ThinkAloud
 
-/// Locks the pinned statistics contract: scalar counting unit, eligibility-gated edit metrics,
-/// well-formed empty/degenerate output, nearest-rank quantiles, honest productivity, and the
-/// privacy projection.
+/// Locks the pinned statistics contract: scalar counting unit, canonical edit metrics, well-formed
+/// empty/degenerate output, nearest-rank quantiles, honest productivity, and the privacy projection.
 final class DatasetStatisticsTests: XCTestCase {
 
     // MARK: - Factory
@@ -14,7 +13,8 @@ final class DatasetStatisticsTests: XCTestCase {
         durationMs: Int? = 4_000,
         raw: String,
         edited: String,
-        autoEdited: String? = nil,
+        autoEdited: String,
+        llmEdited: String? = nil,
         inserted: Bool = true,
         language: String? = "zh",
         model: String = "mlx-community/Qwen3-ASR-1.7B-4bit",
@@ -28,9 +28,10 @@ final class DatasetStatisticsTests: XCTestCase {
             sourceAppBundleID: appBundle, sourceAppName: appName,
             asrProvider: "mlx-audio-swift", asrModel: model, asrRuntime: "rt", asrConfigJSON: nil,
             rawTranscript: raw, editedTranscript: edited,
-            inserted: inserted, savedToDataset: true,
+            inserted: inserted,
             language: language, metadataJSON: nil,
-            autoEditedTranscript: autoEdited
+            autoEditedTranscript: autoEdited,
+            llmEditedTranscript: llmEdited
         )
     }
 
@@ -59,6 +60,25 @@ final class DatasetStatisticsTests: XCTestCase {
         XCTAssertFalse(s.productivity.charsPerMinute.isNaN)
     }
 
+    func testLegacyRecordWithoutAutomaticIntermediateIsExcludedWithoutGuessing() {
+        var legacy = rec(
+            id: "legacy",
+            durationMs: 1_000,
+            raw: "简体输出",
+            edited: "人工修改後的文字",
+            autoEdited: "placeholder"
+        )
+        legacy.autoEditedTranscript = nil
+
+        let stats = DatasetStatistics.compute(from: [legacy])
+        XCTAssertEqual(stats.recordCount, 1)
+        XCTAssertEqual(stats.text.totalEditedChars, legacy.editedTranscript.unicodeScalars.count)
+        XCTAssertEqual(stats.editing.eligibleCount, 0)
+        XCTAssertEqual(stats.editing.totalManualEditDistance, 0)
+        XCTAssertEqual(stats.editing.totalAutoFormatDistance, 0)
+        XCTAssertEqual(stats.productivity.estimatedFixSeconds, 0)
+    }
+
     // MARK: - Counting unit = scalars
 
     func testCountingUnitIsUnicodeScalars() {
@@ -72,22 +92,27 @@ final class DatasetStatisticsTests: XCTestCase {
         XCTAssertEqual(s.editing.cleanCount, 1)
     }
 
-    // MARK: - Eligibility gating (the headline blocker)
+    // MARK: - Canonical edit pipeline
 
-    func testHistoricalRecordsExcludedFromEditMetrics() {
-        // A pre-v0.4.0 Traditional-Chinese record: raw is Simplified, edited is Traditional (auto S→T).
-        // Without the captured intermediate we must NOT count it as edited — it has no autoEdited.
-        let historical = rec(id: "old", raw: "简体输出", edited: "簡體輸出", autoEdited: nil)
-        let s = DatasetStatistics.compute(from: [historical])
+    func testCanonicalRecordUsesLastAutomaticStageForManualMetrics() {
+        let record = rec(
+            id: "llm",
+            raw: "teh cat",
+            edited: "the cat",
+            autoEdited: "teh cat",
+            llmEdited: "the cat"
+        )
+        let s = DatasetStatistics.compute(from: [record])
         XCTAssertEqual(s.recordCount, 1)
-        XCTAssertEqual(s.editing.eligibleCount, 0, "no captured intermediate → not eligible")
-        XCTAssertEqual(s.editing.cleanCount, 0)
-        XCTAssertEqual(s.editing.cleanRate, 0)
-        XCTAssertEqual(s.editing.totalManualEditDistance, 0, "must NOT charge the S→T delta as a human edit")
+        XCTAssertEqual(s.editing.eligibleCount, 1)
+        XCTAssertEqual(s.editing.cleanCount, 1)
+        XCTAssertEqual(s.editing.cleanRate, 1)
+        XCTAssertEqual(s.editing.totalManualEditDistance, 0, "the LLM output is the manual baseline")
+        XCTAssertEqual(s.editing.totalAutoFormatDistance, 0, "Auto Post-Edit remains raw → auto")
     }
 
     func testAutoFormatNotCountedAsHumanEdit() {
-        // v0.4.0 record: raw Simplified → auto-edited Traditional → user kept it verbatim.
+        // Raw Simplified → auto-edited Traditional → user kept it verbatim.
         let r = rec(id: "new", raw: "简体输出", edited: "簡體輸出", autoEdited: "簡體輸出")
         let s = DatasetStatistics.compute(from: [r])
         XCTAssertEqual(s.editing.eligibleCount, 1)
@@ -131,7 +156,9 @@ final class DatasetStatisticsTests: XCTestCase {
 
     func testQuantilesExactForKnownN() {
         func p90(_ ms: [Int]) -> Int {
-            DatasetStatistics.compute(from: ms.enumerated().map { rec(id: "r\($0.0)", durationMs: $0.1, raw: "x", edited: "x") }).audio.p90Ms
+            DatasetStatistics.compute(from: ms.enumerated().map {
+                rec(id: "r\($0.0)", durationMs: $0.1, raw: "x", edited: "x", autoEdited: "x")
+            }).audio.p90Ms
         }
         XCTAssertEqual(p90([5_000]), 5_000)                                  // N=1
         XCTAssertEqual(p90([1_000, 2_000]), 2_000)                           // N=2 → ceil(1.8)-1=1
@@ -142,7 +169,9 @@ final class DatasetStatisticsTests: XCTestCase {
 
     func testMedianEvenAndOdd() {
         func med(_ ms: [Int]) -> Int {
-            DatasetStatistics.compute(from: ms.enumerated().map { rec(id: "r\($0.0)", durationMs: $0.1, raw: "x", edited: "x") }).audio.medianMs
+            DatasetStatistics.compute(from: ms.enumerated().map {
+                rec(id: "r\($0.0)", durationMs: $0.1, raw: "x", edited: "x", autoEdited: "x")
+            }).audio.medianMs
         }
         XCTAssertEqual(med([1_000, 3_000, 5_000]), 3_000)                    // odd
         XCTAssertEqual(med([1_000, 3_000]), 2_000)                           // even → avg
@@ -152,11 +181,11 @@ final class DatasetStatisticsTests: XCTestCase {
 
     func testDurationHistogramEdgesAndOverflow() {
         let records = [
-            rec(id: "a", durationMs: 0, raw: "x", edited: "x"),         // invalid (0) → excluded
-            rec(id: "b", durationMs: 2_000, raw: "x", edited: "x"),     // on edge → [2–5s)
-            rec(id: "c", durationMs: 1_999, raw: "x", edited: "x"),     // [0–2s)
-            rec(id: "d", durationMs: 90_000, raw: "x", edited: "x"),    // 60s+ overflow
-            rec(id: "e", durationMs: 7_200_000, raw: "x", edited: "x"), // > 1h → corrupt, excluded
+            rec(id: "a", durationMs: 0, raw: "x", edited: "x", autoEdited: "x"),         // invalid (0) → excluded
+            rec(id: "b", durationMs: 2_000, raw: "x", edited: "x", autoEdited: "x"),     // on edge → [2–5s)
+            rec(id: "c", durationMs: 1_999, raw: "x", edited: "x", autoEdited: "x"),     // [0–2s)
+            rec(id: "d", durationMs: 90_000, raw: "x", edited: "x", autoEdited: "x"),    // 60s+ overflow
+            rec(id: "e", durationMs: 7_200_000, raw: "x", edited: "x", autoEdited: "x"), // > 1h → corrupt, excluded
         ]
         let s = DatasetStatistics.compute(from: records)
         XCTAssertEqual(s.audio.recordsWithDuration, 3, "0 and >1h excluded")
@@ -199,16 +228,18 @@ final class DatasetStatisticsTests: XCTestCase {
 
     func testBreakdownsSortedByCountThenKey() {
         let s = DatasetStatistics.compute(from: [
-            rec(id: "1", raw: "x", edited: "x", language: "en"),
-            rec(id: "2", raw: "x", edited: "x", language: "zh"),
-            rec(id: "3", raw: "x", edited: "x", language: "zh"),
+            rec(id: "1", raw: "x", edited: "x", autoEdited: "x", language: "en"),
+            rec(id: "2", raw: "x", edited: "x", autoEdited: "x", language: "zh"),
+            rec(id: "3", raw: "x", edited: "x", autoEdited: "x", language: "zh"),
         ])
         XCTAssertEqual(s.byLanguage.map(\.key), ["zh", "en"])
         XCTAssertEqual(s.byLanguage.first?.count, 2)
     }
 
     func testModelDisplayNameIsShortened() {
-        let s = DatasetStatistics.compute(from: [rec(id: "1", raw: "x", edited: "x")])
+        let s = DatasetStatistics.compute(from: [
+            rec(id: "1", raw: "x", edited: "x", autoEdited: "x")
+        ])
         XCTAssertEqual(s.byModel.first?.displayName, "Qwen3-ASR-1.7B-4bit")
     }
 
@@ -217,7 +248,13 @@ final class DatasetStatisticsTests: XCTestCase {
     func testWeekdayAndHourActivity() {
         // 2026-06-05 is a Friday (weekday index 5, 0=Sunday); hour 14 UTC.
         let s = DatasetStatistics.compute(from: [
-            rec(id: "r", createdAt: "2026-06-05T14:30:00Z", raw: "x", edited: "x")
+            rec(
+                id: "r",
+                createdAt: "2026-06-05T14:30:00Z",
+                raw: "x",
+                edited: "x",
+                autoEdited: "x"
+            )
         ])
         XCTAssertEqual(s.activityByWeekday[5], 1)
         XCTAssertEqual(s.activityByWeekday.reduce(0, +), 1)
@@ -232,7 +269,13 @@ final class DatasetStatisticsTests: XCTestCase {
         // 06-29,06-30,07-01 = 3 consecutive (crosses the month). 06-05,06-06 = 2. 06-01 alone = 1.
         let days = ["2026-06-01", "2026-06-05", "2026-06-06", "2026-06-29", "2026-06-30", "2026-07-01"]
         let s = DatasetStatistics.compute(from: days.enumerated().map {
-            rec(id: "r\($0.0)", createdAt: "\($0.1)T10:00:00Z", raw: "x", edited: "x")
+            rec(
+                id: "r\($0.0)",
+                createdAt: "\($0.1)T10:00:00Z",
+                raw: "x",
+                edited: "x",
+                autoEdited: "x"
+            )
         })
         XCTAssertEqual(s.longestDayStreak, 3)
         XCTAssertEqual(s.activeDayCount, 6)
@@ -240,7 +283,13 @@ final class DatasetStatisticsTests: XCTestCase {
 
     func testStreakCollapsesDuplicateDays() {
         let s = DatasetStatistics.compute(from: (0..<3).map {
-            rec(id: "r\($0)", createdAt: "2026-06-10T1\($0):00:00Z", raw: "x", edited: "x")
+            rec(
+                id: "r\($0)",
+                createdAt: "2026-06-10T1\($0):00:00Z",
+                raw: "x",
+                edited: "x",
+                autoEdited: "x"
+            )
         })
         XCTAssertEqual(s.longestDayStreak, 1, "three records on one day = a 1-day streak")
     }
@@ -249,7 +298,15 @@ final class DatasetStatisticsTests: XCTestCase {
 
     func testPublicProjectionDropsAppAndDatedActivity() {
         let s = DatasetStatistics.compute(from: [
-            rec(id: "r", createdAt: "2026-06-05T14:30:00Z", raw: "x", edited: "x", appBundle: "com.acme.secret", appName: "Secret")
+            rec(
+                id: "r",
+                createdAt: "2026-06-05T14:30:00Z",
+                raw: "x",
+                edited: "x",
+                autoEdited: "x",
+                appBundle: "com.acme.secret",
+                appName: "Secret"
+            )
         ])
         XCTAssertFalse(s.byApp.isEmpty, "local stats keep the app breakdown")
         let pub = s.publicProjection()

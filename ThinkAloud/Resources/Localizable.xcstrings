@@ -1,12 +1,142 @@
 {
   "sourceLanguage": "en",
   "strings": {
-    "%@ characters": {
+    "%@ / %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ / %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@／%@"
+          }
+        }
+      }
+    },
+    "%@ Temporary upload files also could not be removed. Remove %@ manually. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ Temporary upload files also could not be removed. Remove %2$@ manually. %3$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 也無法移除上傳暫存檔。請手動移除 %@。%@"
+          }
+        }
+      }
+    },
+    "%@ ThinkAloud also couldn’t save the recording to the local dataset or remove its temporary audio. This recovery remains open: choose Retry Save, or check Dataset settings, file permissions, and available disk space before choosing Close again.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ 字元"
+            "value": "%@ ThinkAloud 也無法將錄音儲存至本機資料集或移除其暫存音訊。此復原作業仍待處理：請選擇「重試儲存」，或先檢查「資料集」設定、檔案權限與可用磁碟空間，再次選擇「關閉」。"
+          }
+        }
+      }
+    },
+    "%@ ThinkAloud also couldn’t save the recording to the local dataset. Check Dataset settings and available disk space, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ThinkAloud 也無法將錄音儲存至本機資料集。請檢查「資料集」設定與可用磁碟空間後再試一次。"
+          }
+        }
+      }
+    },
+    "%@ of %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ of %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@／%@"
+          }
+        }
+      }
+    },
+    "%@ records": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 筆紀錄"
+          }
+        }
+      }
+    },
+    "%@ records selected": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已選取 %@ 筆紀錄"
+          }
+        }
+      }
+    },
+    "%@ selected": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已選取 %@"
+          }
+        }
+      }
+    },
+    "%@ · %@ · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$@ · %3$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@ · %@"
+          }
+        }
+      }
+    },
+    "%lld": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
+    "%lld / %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld／%lld"
           }
         }
       }
@@ -21,12 +151,18 @@
         }
       }
     },
-    "%lld min": {
+    "%lld of %lld": {
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld of %2$lld"
+          }
+        },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld 分鐘"
+            "value": "%lld／%lld"
           }
         }
       }
@@ -41,52 +177,28 @@
         }
       }
     },
+    "%lld record(s) were removed, but deletion is incomplete because recovery files could not be purged. Remove this folder manually: %@. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld record(s) were removed, but deletion is incomplete because recovery files could not be purged. Remove this folder manually: %2$@. %3$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 筆紀錄已移除，但因無法清除復原檔案，刪除作業尚未完成。請手動移除此檔案夾：%@。%@"
+          }
+        }
+      }
+    },
     "%lld recordings": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "%lld 筆錄音"
-          }
-        }
-      }
-    },
-    "%lld records": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld 筆"
-          }
-        }
-      }
-    },
-    "%lld records selected": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已選 %lld 筆紀錄"
-          }
-        }
-      }
-    },
-    "%lld sec": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld 秒"
-          }
-        }
-      }
-    },
-    "%lld selected": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已選 %lld 筆"
           }
         }
       }
@@ -141,16 +253,6 @@
         }
       }
     },
-    "(no output — the model declined or isn't ready)": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "（沒有輸出 — 模型拒絕或尚未就緒）"
-          }
-        }
-      }
-    },
     "(your namespace)": {
       "localizations": {
         "zh-Hant": {
@@ -161,22 +263,12 @@
         }
       }
     },
-    "0 sec": {
+    "0–2 sec": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "0 秒"
-          }
-        }
-      }
-    },
-    "0.1–0.3": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "0.1–0.3"
+            "value": "0–2 秒"
           }
         }
       }
@@ -211,12 +303,52 @@
         }
       }
     },
+    "10–20 sec": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10–20 秒"
+          }
+        }
+      }
+    },
+    "20–30 sec": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20–30 秒"
+          }
+        }
+      }
+    },
+    "2–5 sec": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2–5 秒"
+          }
+        }
+      }
+    },
     "30 minutes": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "30 分鐘"
+          }
+        }
+      }
+    },
+    "30–60 sec": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30–60 秒"
           }
         }
       }
@@ -231,22 +363,22 @@
         }
       }
     },
-    "90th pct": {
+    "5–10 sec": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "第 90 百分位"
+            "value": "5–10 秒"
           }
         }
       }
     },
-    "> 0.3": {
+    "60+ sec": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "> 0.3"
+            "value": "60 秒以上"
           }
         }
       }
@@ -256,17 +388,37 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hugging Face Token 可讓你從瀏覽器視窗推送資料集。它儲存於 macOS Keychain。"
+            "value": "Hugging Face 權杖可讓你從資料集瀏覽器視窗推送資料集，並儲存於 macOS 鑰匙圈。"
           }
         }
       }
     },
-    "A few things are still pending — you can finish them now or later in Settings.": {
+    "A metadata row could not be encoded as UTF-8.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "還有幾項尚未完成，你可以現在處理，或之後在「設定」中完成。"
+            "value": "無法將其中一筆中繼資料編碼為 UTF-8。"
+          }
+        }
+      }
+    },
+    "A recovery file already exists at %@.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "復原檔案已存在於 %@。"
+          }
+        }
+      }
+    },
+    "A reliable balance of quality and speed. Recommended.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在品質與速度間取得可靠平衡。建議使用。"
           }
         }
       }
@@ -296,7 +448,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "已儲存 Token。貼上新的 Token 即可取代。"
+            "value": "已儲存權杖。貼上新的權杖即可取代。"
           }
         }
       }
@@ -311,22 +463,32 @@
         }
       }
     },
-    "ASR Model": {
+    "AI refinement failed. The unrefined transcript is shown; verify the selected refinement engine and try again.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "ASR 模型"
+            "value": "AI 潤飾失敗。畫面顯示的是未潤飾的逐字稿；請確認所選潤飾引擎後再試一次。"
           }
         }
       }
     },
-    "Accessibility": {
+    "AI refinement returned no usable text. The unrefined transcript is shown.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "輔助使用"
+            "value": "AI 潤飾未傳回可用文字。畫面顯示的是未潤飾的逐字稿。"
+          }
+        }
+      }
+    },
+    "Accessibility (Optional)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輔助使用（選用）"
           }
         }
       }
@@ -341,12 +503,22 @@
         }
       }
     },
-    "Accessibility permission missing. Text copied to clipboard — please paste manually.": {
+    "Accessibility permission is required to paste text into other apps.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "缺少輔助使用權限。文字已複製到剪貼簿，請手動貼上。"
+            "value": "需要「輔助使用」權限，才能將文字貼入其他 App。"
+          }
+        }
+      }
+    },
+    "Accessibility · Optional": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輔助使用 · 選用"
           }
         }
       }
@@ -366,7 +538,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "精準 (Qwen3-ASR-1.7B-8bit)"
+            "value": "精準（Qwen3-ASR-1.7B-8bit）"
           }
         }
       }
@@ -441,6 +613,16 @@
         }
       }
     },
+    "Adjust the current position in the recording.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "調整錄音目前的播放位置。"
+          }
+        }
+      }
+    },
     "Advanced": {
       "localizations": {
         "zh-Hant": {
@@ -456,7 +638,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "轉錄後，由裝置端的語言模型改寫文字 — 修掉贅詞、文法與標點 — 再讓你插入。"
+            "value": "轉錄後，裝置端語言模型會先改寫文字，修正贅詞、文法與標點，再供你插入。"
           }
         }
       }
@@ -471,16 +653,6 @@
         }
       }
     },
-    "All records deleted.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已刪除所有紀錄。"
-          }
-        }
-      }
-    },
     "Already downloaded": {
       "localizations": {
         "zh-Hant": {
@@ -491,12 +663,42 @@
         }
       }
     },
+    "An interrupted-save manifest already exists at %@. Reopen ThinkAloud so it can reconcile that save before recording again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中斷儲存的復原資訊檔已存在於 %@。請重新開啟 ThinkAloud，讓 App 先完成該次儲存的復原，再次錄音。"
+          }
+        }
+      }
+    },
     "Analyzing & cleaning… (the first run downloads the denoiser)": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "分析與清理中…(首次執行會下載降噪器)"
+            "value": "分析與清理中…（首次執行會下載降噪器）"
+          }
+        }
+      }
+    },
+    "Another dataset deletion is already in progress. Wait for it to finish and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "另一項資料集刪除作業正在進行中。請等待完成後再試一次。"
+          }
+        }
+      }
+    },
+    "Another interrupted-save recovery is already in progress. Wait for it to finish and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "另一項中斷儲存復原作業正在進行中。請等待完成後再試一次。"
           }
         }
       }
@@ -516,7 +718,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apple 智慧"
+            "value": "Apple Intelligence"
           }
         }
       }
@@ -526,7 +728,27 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "這台 Mac 無法使用 Apple 智慧；改用已下載的模型。"
+            "value": "這台 Mac 無法使用 Apple Intelligence；改用已下載的模型。"
+          }
+        }
+      }
+    },
+    "Apple Intelligence isn't available right now.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Intelligence 目前無法使用。"
+          }
+        }
+      }
+    },
+    "Applied to every app without its own override. The system prompt steers how the model rewrites your dictation.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "套用至所有沒有個別覆寫設定的 App。系統提示會引導模型如何改寫你的口述內容。"
           }
         }
       }
@@ -541,6 +763,22 @@
         }
       }
     },
+    "Assumes typing ≈ %lld Latin / %lld CJK characters per minute.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Assumes typing ≈ %1$lld Latin / %2$lld CJK characters per minute."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "假設打字速度約為每分鐘 %lld 個拉丁字元／%lld 個中日韓字元。"
+          }
+        }
+      }
+    },
     "Audio cleanup": {
       "localizations": {
         "zh-Hant": {
@@ -551,12 +789,62 @@
         }
       }
     },
-    "Audio denoising": {
+    "Audio cleanup couldn’t be prepared. Choose Off, or check Audio Cleanup settings and retry.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "音訊降噪"
+            "value": "無法準備音訊清理。請選擇「關閉」，或檢查「音訊清理」設定後再試一次。"
+          }
+        }
+      }
+    },
+    "Audio cleanup failed": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音訊清理失敗"
+          }
+        }
+      }
+    },
+    "Audio cleanup failed. Retry or choose Auto/Off in Output settings.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音訊清理失敗。請重試，或在「輸出」設定中選擇「自動」或「關閉」。"
+          }
+        }
+      }
+    },
+    "Audio cleanup is set to On, so ThinkAloud stopped instead of transcribing uncleaned audio. Retry, or change Audio cleanup to Auto or Off.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音訊清理設為「開啟」，因此 ThinkAloud 已停止作業，而未轉錄未清理的音訊。請重試，或將音訊清理改為「自動」或「關閉」。"
+          }
+        }
+      }
+    },
+    "Audio error: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音訊錯誤：%@"
+          }
+        }
+      }
+    },
+    "Audio preparation failed": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音訊準備失敗"
           }
         }
       }
@@ -571,16 +859,6 @@
         }
       }
     },
-    "Auth failed: %@": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "驗證失敗：%@"
-          }
-        }
-      }
-    },
     "Auto": {
       "localizations": {
         "zh-Hant": {
@@ -591,42 +869,12 @@
         }
       }
     },
-    "Auto Post-Edit": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自動後製編輯"
-          }
-        }
-      }
-    },
-    "Auto Pre-Edit": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自動前製編輯"
-          }
-        }
-      }
-    },
     "Auto cleans only clips it detects as noisy; On always cleans (DeepFilterNet).": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "「自動」只清理偵測到有噪音的片段;「開啟」則一律清理(DeepFilterNet)。"
-          }
-        }
-      }
-    },
-    "Auto inspects each recording and denoises only noisy clips; On always denoises (DeepFilterNet). Downloads a small model on first use.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自動會檢查每段錄音、只對吵雜的片段降噪；開啟則一律降噪（DeepFilterNet）。首次使用會下載一個小型模型。"
+            "value": "「自動」只清理偵測到有噪音的片段；「開啟」則一律使用 DeepFilterNet 清理。"
           }
         }
       }
@@ -636,7 +884,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Auto 會清理這段錄音"
+            "value": "「自動」會清理這段錄音"
           }
         }
       }
@@ -646,7 +894,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Auto 會維持這段錄音原樣"
+            "value": "「自動」會維持這段錄音原樣"
           }
         }
       }
@@ -671,12 +919,12 @@
         }
       }
     },
-    "Automatic follows your system language. Changes take effect after relaunch.": {
+    "Automatic audio cleanup failed, so this recording was transcribed without cleanup. Review Audio cleanup settings if this continues.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "「自動」會跟隨系統語言。變更需重新啟動後才會完整生效。"
+            "value": "自動音訊清理失敗，因此這段錄音未經清理便已轉錄。若問題持續，請檢查音訊清理設定。"
           }
         }
       }
@@ -697,16 +945,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "自動下載並安裝更新"
-          }
-        }
-      }
-    },
-    "Average latency: %lld ms": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "平均延遲：%lld 毫秒"
           }
         }
       }
@@ -776,7 +1014,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "均衡 (Qwen3-ASR-1.7B-4bit)"
+            "value": "均衡（Qwen3-ASR-1.7B-4bit）"
           }
         }
       }
@@ -796,17 +1034,27 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Benchmark"
+            "value": "基準測試"
           }
         }
       }
     },
-    "Benchmark failed: %@": {
+    "Benchmark cancelled.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Benchmark 失敗：%@"
+            "value": "基準測試已取消。"
+          }
+        }
+      }
+    },
+    "Benchmark error: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "基準測試錯誤：%@"
           }
         }
       }
@@ -817,16 +1065,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "準確度最佳，推薦給多數較新的 Mac。"
-          }
-        }
-      }
-    },
-    "Both default to ⌥Space — popup phase decides which fires.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "兩者預設皆為 ⌥Space，依 popup 目前階段觸發。"
           }
         }
       }
@@ -846,7 +1084,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Breeze-ASR-25（中文）"
+            "value": "Breeze-ASR-25（華語）"
           }
         }
       }
@@ -871,12 +1109,42 @@
         }
       }
     },
+    "CER %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CER %@"
+          }
+        }
+      }
+    },
+    "CER 0.1–0.3": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CER 0.1–0.3"
+          }
+        }
+      }
+    },
     "CER < 0.1": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "CER < 0.1"
+          }
+        }
+      }
+    },
+    "CER > 0.3": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CER > 0.3"
           }
         }
       }
@@ -891,36 +1159,6 @@
         }
       }
     },
-    "Cache Size": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "快取大小"
-          }
-        }
-      }
-    },
-    "Cache size": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "快取大小"
-          }
-        }
-      }
-    },
-    "Came out clean": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "免修正"
-          }
-        }
-      }
-    },
     "Cancel": {
       "localizations": {
         "zh-Hant": {
@@ -931,22 +1169,142 @@
         }
       }
     },
-    "Cancelled.": {
+    "Cancel %@ Download": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "已取消。"
+            "value": "取消下載 %@"
           }
         }
       }
     },
-    "Change it if it clashes with another app.": {
+    "Cancel %@ download": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "若與其他 app 衝突,可在此更改。"
+            "value": "取消下載 %@"
+          }
+        }
+      }
+    },
+    "Cancel Download": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消下載"
+          }
+        }
+      }
+    },
+    "Cancel Model Load": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消載入模型"
+          }
+        }
+      }
+    },
+    "Cancel Test": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消測試"
+          }
+        }
+      }
+    },
+    "Cancel Transcription": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消轉錄"
+          }
+        }
+      }
+    },
+    "Cancel speech model download": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消下載語音模型"
+          }
+        }
+      }
+    },
+    "Canceling Model Load…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在取消載入模型…"
+          }
+        }
+      }
+    },
+    "Canceling Test…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在取消測試…"
+          }
+        }
+      }
+    },
+    "Canceling…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在取消…"
+          }
+        }
+      }
+    },
+    "Cancellation requested. The download stops when the server responds.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已要求取消。伺服器回應後，下載便會停止。"
+          }
+        }
+      }
+    },
+    "Cancellation requested…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已要求取消…"
+          }
+        }
+      }
+    },
+    "Cancelling…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在取消…"
+          }
+        }
+      }
+    },
+    "Change the affected setting again. If this message remains, quit and reopen ThinkAloud before relying on the change.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請再次變更受影響的設定。若此訊息仍然出現，請結束並重新開啟 ThinkAloud，確認設定已生效。"
           }
         }
       }
@@ -971,6 +1329,36 @@
         }
       }
     },
+    "Character error rate above 0.3": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字元錯誤率高於 0.3"
+          }
+        }
+      }
+    },
+    "Character error rate below 0.1": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字元錯誤率低於 0.1"
+          }
+        }
+      }
+    },
+    "Character error rate between 0.1 and 0.3": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字元錯誤率介於 0.1 與 0.3 之間"
+          }
+        }
+      }
+    },
     "Check for Updates…": {
       "localizations": {
         "zh-Hant": {
@@ -981,22 +1369,22 @@
         }
       }
     },
+    "Check the microphone input and record again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請檢查麥克風輸入後重新錄音。"
+          }
+        }
+      }
+    },
     "Checking which files need LFS…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "檢查哪些檔案需要 LFS…"
-          }
-        }
-      }
-    },
-    "Chinese": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "中文"
           }
         }
       }
@@ -1036,7 +1424,17 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "清理錄音"
+            "value": "清除錄音雜訊"
+          }
+        }
+      }
+    },
+    "Clean up this dictated text into clear, well-punctuated writing. Fix obvious speech errors, remove filler words (um, uh, like), and apply correct capitalization and punctuation. Keep the original meaning and language. Output ONLY the cleaned text — no preamble, no commentary.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請將這段口述文字整理成清楚、標點完整的文章。修正明顯的口誤、移除贅詞（例如「嗯」、「呃」、「就是」），並正確使用大小寫與標點。保留原意與原語言。只輸出整理後的文字，不要加上前言或說明。"
           }
         }
       }
@@ -1061,16 +1459,6 @@
         }
       }
     },
-    "Clear All": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "清除全部"
-          }
-        }
-      }
-    },
     "Clear all": {
       "localizations": {
         "zh-Hant": {
@@ -1081,12 +1469,22 @@
         }
       }
     },
-    "Clear cache": {
+    "Clear all…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "清除快取"
+            "value": "全部清除…"
+          }
+        }
+      }
+    },
+    "Clear…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除…"
           }
         }
       }
@@ -1101,12 +1499,12 @@
         }
       }
     },
-    "Committing…": {
+    "Commit in progress—this can’t be cancelled.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Commit 中…"
+            "value": "正在提交，無法取消。"
           }
         }
       }
@@ -1121,12 +1519,12 @@
         }
       }
     },
-    "Connection failed: %@": {
+    "Contains an enable switch, source term, replacement text, and remove button.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "連線失敗：%@"
+            "value": "包含啟用開關、來源詞、取代文字與移除按鈕。"
           }
         }
       }
@@ -1161,12 +1559,136 @@
         }
       }
     },
+    "Copy Record ID": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "複製紀錄 ID"
+          }
+        }
+      }
+    },
+    "Could not create the recovery manifest at %@: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Could not create the recovery manifest at %1$@: %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法在 %@ 建立復原資訊檔：%@"
+          }
+        }
+      }
+    },
+    "Could not enumerate the audio folder: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法列舉音訊檔案夾：%@"
+          }
+        }
+      }
+    },
+    "Could not find %lld record(s): %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Could not find %1$lld record(s): %2$@."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "找不到 %lld 筆紀錄：%@。"
+          }
+        }
+      }
+    },
     "Could not insert text": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "無法插入文字"
+          }
+        }
+      }
+    },
+    "Could not prepare %@ for deletion: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Could not prepare %1$@ for deletion: %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法準備刪除 %@：%@"
+          }
+        }
+      }
+    },
+    "Could not prepare %@ for upload: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法準備 %@ 以上傳：%@"
+          }
+        }
+      }
+    },
+    "Could not read audio storage metadata for %@: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Could not read audio storage metadata for %1$@: %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法讀取 %@ 的音訊儲存中繼資料：%@"
+          }
+        }
+      }
+    },
+    "Couldn’t download %@. Check your connection and available disk space, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法下載 %@。請檢查網路連線與可用磁碟空間後再試一次。"
+          }
+        }
+      }
+    },
+    "Couldn’t remove %@. Check file permissions, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法移除 %@。請檢查檔案權限後再試一次。"
+          }
+        }
+      }
+    },
+    "Count": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "數量"
           }
         }
       }
@@ -1186,7 +1708,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "建立 repository…"
+            "value": "正在建立儲存庫…"
           }
         }
       }
@@ -1221,16 +1743,6 @@
         }
       }
     },
-    "Current Model": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "目前模型"
-          }
-        }
-      }
-    },
     "Current version": {
       "localizations": {
         "zh-Hant": {
@@ -1247,16 +1759,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "目前：%@"
-          }
-        }
-      }
-    },
-    "Custom Dictionary": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自定義字典"
           }
         }
       }
@@ -1291,12 +1793,32 @@
         }
       }
     },
+    "Dataset Browser Section": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "資料集瀏覽器區段"
+          }
+        }
+      }
+    },
     "Dataset is empty — nothing to benchmark.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "資料集為空，無法 benchmark。"
+            "value": "資料集為空，無法執行基準測試。"
+          }
+        }
+      }
+    },
+    "Day": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "天"
           }
         }
       }
@@ -1326,57 +1848,17 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "刪除 %lld 筆紀錄與對應音訊檔？無法復原。"
+            "value": "要刪除 %lld 筆紀錄及其音訊檔嗎？此操作無法復原。"
           }
         }
       }
     },
-    "Delete all %lld records and %@ of audio? This cannot be undone.": {
+    "Delete Selected Records": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "刪除全部 %lld 筆記錄與 %@ 的音訊?此動作無法復原。"
-          }
-        }
-      }
-    },
-    "Delete all dataset records and their audio files? This cannot be undone.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "刪除所有資料集紀錄與音訊檔？無法復原。"
-          }
-        }
-      }
-    },
-    "Delete all downloaded model files? The model will re-download on next use.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "刪除已下載的模型檔？下次使用時會重新下載。"
-          }
-        }
-      }
-    },
-    "Delete failed: %@": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "刪除失敗：%@"
-          }
-        }
-      }
-    },
-    "Delete record": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "刪除紀錄"
+            "value": "刪除所選紀錄"
           }
         }
       }
@@ -1401,12 +1883,100 @@
         }
       }
     },
-    "Delete this record? The audio file is removed too. This cannot be undone.": {
+    "Delete this record and its audio file? This cannot be undone.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "刪除此筆紀錄？對應的音訊檔也會一起移除，無法復原。"
+            "value": "要刪除此筆紀錄及其音訊檔嗎？此操作無法復原。"
+          }
+        }
+      }
+    },
+    "Deleted %lld records, but %lld audio files were already missing.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Deleted %1$lld records, but %2$lld audio files were already missing."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已刪除 %lld 筆紀錄，但其中 %lld 個音訊檔原本就不存在。"
+          }
+        }
+      }
+    },
+    "Deleted %lld records.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已刪除 %lld 筆紀錄。"
+          }
+        }
+      }
+    },
+    "Deleted %lld records. %lld audio file(s) were already missing.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Deleted %1$lld records. %2$lld audio file(s) were already missing."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已刪除 %lld 筆紀錄。其中 %lld 個音訊檔原本就不存在。"
+          }
+        }
+      }
+    },
+    "Deletes word replacement %lld.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除第 %lld 項詞語取代規則。"
+          }
+        }
+      }
+    },
+    "Deleting captured records… This operation can’t be cancelled.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在刪除已擷取的紀錄… 此操作無法取消。"
+          }
+        }
+      }
+    },
+    "Deleting selected records… This operation can’t be cancelled.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在刪除所選紀錄… 此操作無法取消。"
+          }
+        }
+      }
+    },
+    "Deletion stopped, but %lld audio file(s) could not be restored. Recovery folder: %@. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Deletion stopped, but %1$lld audio file(s) could not be restored. Recovery folder: %2$@. %3$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除作業已停止，但有 %lld 個音訊檔無法還原。復原檔案夾：%@。%@"
           }
         }
       }
@@ -1427,26 +1997,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "降噪器"
-          }
-        }
-      }
-    },
-    "Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Auto only denoises clips it detects as noisy (and loads the model lazily on the first such clip); On always denoises. Use Benchmark to compare Off / Auto / On.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "降噪會在音訊降採樣給 ASR 模型之前以 48 kHz 執行。自動只對偵測為吵雜的片段降噪（並在第一個這種片段時才延遲載入模型）；開啟則一律降噪。可用 Benchmark 比較 關閉／自動／開啟。"
-          }
-        }
-      }
-    },
-    "Denoising runs at 48 kHz before the audio is downsampled for the ASR model. Best for noisy environments; may not help (or slightly hurt) clean recordings — use Benchmark to compare.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "降噪會在音訊被降採樣給 ASR 模型之前以 48 kHz 執行。最適合吵雜環境；對乾淨錄音可能無感（甚至略有損害）——可用 Benchmark 比較。"
           }
         }
       }
@@ -1541,16 +2091,6 @@
         }
       }
     },
-    "Dictated": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已口述"
-          }
-        }
-      }
-    },
     "Dictionary (%lld)": {
       "localizations": {
         "zh-Hant": {
@@ -1567,6 +2107,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "差異"
+          }
+        }
+      }
+    },
+    "Discard Changes": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "捨棄更改"
           }
         }
       }
@@ -1611,6 +2161,26 @@
         }
       }
     },
+    "Download %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載 %@"
+          }
+        }
+      }
+    },
+    "Download %@ and Run": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載 %@ 並執行"
+          }
+        }
+      }
+    },
     "Download & load model": {
       "localizations": {
         "zh-Hant": {
@@ -1621,12 +2191,12 @@
         }
       }
     },
-    "Download additional variants ahead of time, or remove ones you no longer use to reclaim disk space.": {
+    "Download a speech model": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "預先下載其他變體，或移除不再使用的以釋放磁碟空間。"
+            "value": "下載語音模型"
           }
         }
       }
@@ -1641,22 +2211,22 @@
         }
       }
     },
-    "Download failed: %@": {
+    "Download model and run benchmark?": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "下載失敗：%@"
+            "value": "要下載模型並執行基準測試嗎？"
           }
         }
       }
     },
-    "Download later": {
+    "Download one model to use the Downloaded-model backend. Qwen3 are text models; Qwen3.5 are larger multimodal models run text-only. The selected model is shared across all apps.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "稍後下載"
+            "value": "請下載一個模型以使用「已下載模型」後端。Qwen3 是文字模型；Qwen3.5 是體積較大的多模態模型，會以純文字模式執行。所選模型由所有 App 共用。"
           }
         }
       }
@@ -1696,7 +2266,17 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "下載中 %lld%% (%@ / %@)"
+            "value": "正在下載 %lld%%（%@／%@）"
+          }
+        }
+      }
+    },
+    "Downloading model (%@)": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在下載模型（%@）"
           }
         }
       }
@@ -1716,17 +2296,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "下載中… (%@)"
-          }
-        }
-      }
-    },
-    "Downloads three short clips from JacobLinCool/audio-testing and runs them through the current model. ~5 MB.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "從 JacobLinCool/audio-testing 下載三段短音訊以目前模型試跑。約 5 MB。"
+            "value": "下載中…（%@）"
           }
         }
       }
@@ -1747,6 +2317,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "編輯"
+          }
+        }
+      }
+    },
+    "Edit %@ Override…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "編輯 %@ 覆寫設定…"
           }
         }
       }
@@ -1781,6 +2361,62 @@
         }
       }
     },
+    "Edit…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "編輯…"
+          }
+        }
+      }
+    },
+    "Empty": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空白"
+          }
+        }
+      }
+    },
+    "Enable word replacement": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟用詞語取代規則"
+          }
+        }
+      }
+    },
+    "Enable word replacement %lld": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟用第 %lld 項詞語取代規則"
+          }
+        }
+      }
+    },
+    "Enable word replacement %lld for %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Enable word replacement %1$lld for %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "為 %2$@ 啟用第 %1$lld 項詞語取代規則"
+          }
+        }
+      }
+    },
     "Engine": {
       "localizations": {
         "zh-Hant": {
@@ -1791,22 +2427,52 @@
         }
       }
     },
+    "Enter a repository name.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請輸入儲存庫名稱。"
+          }
+        }
+      }
+    },
+    "Enter a valid Hugging Face organization name.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請輸入有效的 Hugging Face 組織名稱。"
+          }
+        }
+      }
+    },
+    "Enter the text that replaces the source term in word replacement %lld.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸入第 %lld 項詞語取代規則中，要取代來源詞的文字。"
+          }
+        }
+      }
+    },
+    "Enter the text to find for word replacement %lld.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸入第 %lld 項詞語取代規則中要尋找的文字。"
+          }
+        }
+      }
+    },
     "Error": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "錯誤"
-          }
-        }
-      }
-    },
-    "Error: %@": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "錯誤：%@"
           }
         }
       }
@@ -1841,12 +2507,42 @@
         }
       }
     },
+    "Explain Time Saved Estimate": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "說明節省時間的估算方式"
+          }
+        }
+      }
+    },
     "Explorer": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "探索者"
+          }
+        }
+      }
+    },
+    "Export": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "匯出"
+          }
+        }
+      }
+    },
+    "Export Dataset": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "匯出資料集"
           }
         }
       }
@@ -1861,22 +2557,12 @@
         }
       }
     },
-    "Export JSONL": {
+    "Export JSONL…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "匯出 JSONL"
-          }
-        }
-      }
-    },
-    "Export failed: %@": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "匯出失敗：%@"
+            "value": "匯出 JSONL…"
           }
         }
       }
@@ -1901,12 +2587,32 @@
         }
       }
     },
+    "Exporting dataset…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在匯出資料集…"
+          }
+        }
+      }
+    },
     "Extra (model hallucinated)": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "多餘字（模型多說了）"
+            "value": "額外內容（模型幻覺）"
+          }
+        }
+      }
+    },
+    "Extra: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "額外：%@"
           }
         }
       }
@@ -1917,56 +2623,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "失敗"
-          }
-        }
-      }
-    },
-    "Failed to compute statistics: %@": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "計算統計失敗：%@"
-          }
-        }
-      }
-    },
-    "Failed to load records: %@": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "載入紀錄失敗：%@"
-          }
-        }
-      }
-    },
-    "Failed to send paste event. Text copied — please paste manually.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "傳送貼上事件失敗。文字已複製，請手動貼上。"
-          }
-        }
-      }
-    },
-    "Failed to write to clipboard.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "寫入剪貼簿失敗。"
-          }
-        }
-      }
-    },
-    "Failed: %@": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "失敗：%@"
           }
         }
       }
@@ -1986,7 +2642,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "快速 (Qwen3-ASR-0.6B-4bit)"
+            "value": "快速（Qwen3-ASR-0.6B-4bit）"
           }
         }
       }
@@ -2001,12 +2657,22 @@
         }
       }
     },
-    "Fires from anywhere to open the popup and start recording.": {
+    "Finish": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "在任何 app 都能觸發，開啟 popup 並開始錄音。"
+            "value": "完成"
+          }
+        }
+      }
+    },
+    "Finishing commit—this can’t be cancelled…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在完成提交，此操作無法取消…"
           }
         }
       }
@@ -2026,37 +2692,17 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "前往處理"
+            "value": "修正"
           }
         }
       }
     },
-    "Free model weights from memory? It will reload on next use.": {
+    "Fix %@": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "從記憶體釋放模型權重？下次使用時會重新載入。"
-          }
-        }
-      }
-    },
-    "Free the denoiser weights from memory? It will reload on next use.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "要從記憶體釋放降噪器權重嗎？下次使用時會重新載入。"
-          }
-        }
-      }
-    },
-    "General": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一般"
+            "value": "修正 %@"
           }
         }
       }
@@ -2071,12 +2717,32 @@
         }
       }
     },
-    "Global": {
+    "Grant microphone access": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "全域"
+            "value": "授予麥克風權限"
+          }
+        }
+      }
+    },
+    "Grant microphone access and download a speech model before finishing.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請先授予麥克風權限並下載語音模型，再完成設定。"
+          }
+        }
+      }
+    },
+    "Grant microphone access in Settings, then try recording again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請在「設定」中授予麥克風權限後，再次錄音。"
           }
         }
       }
@@ -2111,12 +2777,22 @@
         }
       }
     },
-    "Hotkey": {
+    "Hide Sidebar": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "快捷鍵"
+            "value": "隱藏側邊欄"
+          }
+        }
+      }
+    },
+    "Highest quality rewrites. Needs RAM headroom.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最高品質的改寫。需要較充裕的記憶體。"
           }
         }
       }
@@ -2141,12 +2817,112 @@
         }
       }
     },
-    "Hugging Face": {
+    "Hugging Face could not complete the large-file upload. Check your connection and try again.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hugging Face"
+            "value": "Hugging Face 無法完成大型檔案上傳。請檢查網路連線後再試一次。"
+          }
+        }
+      }
+    },
+    "Hugging Face could not complete the request. Check your connection and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 無法完成要求。請檢查網路連線後再試一次。"
+          }
+        }
+      }
+    },
+    "Hugging Face could not find this dataset repository. Check the destination and your repository access.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 找不到此資料集儲存庫。請檢查目的地及你的儲存庫存取權。"
+          }
+        }
+      }
+    },
+    "Hugging Face did not return upload instructions for %lld file(s). Try again later; no commit was created.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 未傳回 %lld 個檔案的上傳指示。請稍後再試；未建立提交。"
+          }
+        }
+      }
+    },
+    "Hugging Face did not return upload instructions for: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 未傳回下列項目的上傳指示：%@"
+          }
+        }
+      }
+    },
+    "Hugging Face is receiving too many requests. Wait a moment, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 收到過多要求。請稍候再試。"
+          }
+        }
+      }
+    },
+    "Hugging Face is temporarily unavailable. Try again later.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 暫時無法使用。請稍後再試。"
+          }
+        }
+      }
+    },
+    "Hugging Face refused %lld required dataset file(s). Check repository access and try again; no commit was created.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 拒絕接收 %lld 個必要的資料集檔案。請檢查儲存庫存取權後再試；未建立提交。"
+          }
+        }
+      }
+    },
+    "Hugging Face refused required dataset files: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 拒絕接收必要的資料集檔案：%@"
+          }
+        }
+      }
+    },
+    "Hugging Face reports a different repository visibility than selected. Correct the visibility and try again; no commit was created.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 回報的儲存庫可見度與所選設定不同。請更正可見度後再試；未建立提交。"
+          }
+        }
+      }
+    },
+    "Hugging Face returned a response ThinkAloud could not understand. Try again; if the problem continues, check for an app update.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 傳回 ThinkAloud 無法辨識的回應。請再試一次；若問題持續，請檢查 App 更新。"
           }
         }
       }
@@ -2157,26 +2933,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "ID"
-          }
-        }
-      }
-    },
-    "Identifier": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "識別碼"
-          }
-        }
-      }
-    },
-    "Idle": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "閒置"
           }
         }
       }
@@ -2241,12 +2997,32 @@
         }
       }
     },
+    "Insert & Save Now": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即插入並儲存"
+          }
+        }
+      }
+    },
     "Insert & save": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "插入並儲存"
+          }
+        }
+      }
+    },
+    "Insert Now": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即插入"
           }
         }
       }
@@ -2261,12 +3037,22 @@
         }
       }
     },
-    "Insert now": {
+    "Insert and save shortcut": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "立即插入"
+            "value": "插入並儲存快捷鍵"
+          }
+        }
+      }
+    },
+    "Inserted with a clipboard warning": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已插入，但剪貼簿有警告"
           }
         }
       }
@@ -2281,12 +3067,42 @@
         }
       }
     },
+    "Inserted. Newer clipboard contents were preserved.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已插入。較新的剪貼簿內容已保留。"
+          }
+        }
+      }
+    },
+    "Inserting Transcript…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在插入逐字稿…"
+          }
+        }
+      }
+    },
     "Insights": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "統計"
+          }
+        }
+      }
+    },
+    "Insights Couldn’t Load": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法載入統計資料"
           }
         }
       }
@@ -2301,22 +3117,12 @@
         }
       }
     },
-    "Keychain clear failed: %@": {
+    "Invalid recording date": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keychain 清除失敗：%@"
-          }
-        }
-      }
-    },
-    "Keychain save failed: %@": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Keychain 儲存失敗：%@"
+            "value": "錄音日期無效"
           }
         }
       }
@@ -2351,12 +3157,22 @@
         }
       }
     },
+    "Latest Qwen, strong multilingual rewriting. Larger download.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最新 Qwen，具備優異的多語改寫能力。下載檔案較大。"
+          }
+        }
+      }
+    },
     "Lets ThinkAloud paste the transcription into the focused app. Optional — without it, text is copied to your clipboard instead (press ⌘V). After you enable it in System Settings, this updates on its own.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "讓 ThinkAloud 將轉錄結果貼到目前使用中的 App。此為選用;若未授予,文字會改為複製到剪貼簿(按 ⌘V)。在「系統設定」中啟用後,這裡會自動更新。"
+            "value": "讓 ThinkAloud 將轉錄結果貼入目前使用中的 App。此權限為選用；若未授予，文字會改為複製到剪貼簿（按 ⌘V）。在「系統設定」中啟用後，此狀態會自動更新。"
           }
         }
       }
@@ -2386,7 +3202,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "「載入」會將模型保留在記憶體中以便即時轉錄;「卸載」則釋放它。「閒置時自動釋放」會在所選的閒置時間後釋放權重,並於下次使用時重新載入。"
+            "value": "「載入」會將模型保留在記憶體中，以便立即轉錄；「卸載」則會釋放模型。「閒置時自動釋放」會在所選閒置時間後釋放權重，並在下次使用時重新載入。"
           }
         }
       }
@@ -2411,6 +3227,46 @@
         }
       }
     },
+    "Loaded audio duration unavailable": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法取得已載入音訊的長度"
+          }
+        }
+      }
+    },
+    "Loaded audio: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已載入音訊：%@"
+          }
+        }
+      }
+    },
+    "Loading audio": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在載入音訊"
+          }
+        }
+      }
+    },
+    "Loading dataset storage…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在載入資料集儲存空間…"
+          }
+        }
+      }
+    },
     "Loading model": {
       "localizations": {
         "zh-Hant": {
@@ -2421,22 +3277,42 @@
         }
       }
     },
+    "Loading model into memory": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在將模型載入記憶體"
+          }
+        }
+      }
+    },
+    "Loading records": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在載入紀錄"
+          }
+        }
+      }
+    },
+    "Loading upload summary…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在載入上傳摘要…"
+          }
+        }
+      }
+    },
     "Login": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "登入"
-          }
-        }
-      }
-    },
-    "Longest": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "最長"
           }
         }
       }
@@ -2481,16 +3357,6 @@
         }
       }
     },
-    "Memory": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "記憶體"
-          }
-        }
-      }
-    },
     "Memory & performance": {
       "localizations": {
         "zh-Hant": {
@@ -2501,12 +3367,12 @@
         }
       }
     },
-    "Microphone": {
+    "Microphone (Required)": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "麥克風"
+            "value": "麥克風（必要）"
           }
         }
       }
@@ -2531,22 +3397,42 @@
         }
       }
     },
-    "Microphone access not granted": {
+    "Microphone access is required": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "尚未授予麥克風權限"
+            "value": "需要麥克風權限"
           }
         }
       }
     },
-    "Microphone permission is required. Open Settings to grant access, then try again.": {
+    "Microphone access is required to dictate. Accessibility is optional and lets ThinkAloud paste for you.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "需要麥克風權限。請開啟設定授權後再試。"
+            "value": "口述需要麥克風權限。「輔助使用」為選用，可讓 ThinkAloud 代你貼上文字。"
+          }
+        }
+      }
+    },
+    "Microphone input level": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "麥克風輸入音量"
+          }
+        }
+      }
+    },
+    "Microphone · Required": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "麥克風 · 必要"
           }
         }
       }
@@ -2566,7 +3452,17 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "漏字（模型沒說）"
+            "value": "缺漏（模型遺漏）"
+          }
+        }
+      }
+    },
+    "Missing: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "缺少：%@"
           }
         }
       }
@@ -2581,42 +3477,22 @@
         }
       }
     },
-    "Model error: %@": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "模型錯誤：%@"
-          }
-        }
-      }
-    },
     "Model is loading — your recording is ready. Transcribing as soon as the model is ready.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "模型載入中 — 錄音已完成。模型就緒後立即轉錄。"
+            "value": "模型正在載入；錄音已完成。模型就緒後會立即轉錄。"
           }
         }
       }
     },
-    "Model preload failed: %@": {
+    "Model unavailable": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "模型載入失敗：%@"
-          }
-        }
-      }
-    },
-    "Model ready": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "模型就緒"
+            "value": "模型無法使用"
           }
         }
       }
@@ -2631,12 +3507,18 @@
         }
       }
     },
-    "Model: %@ · %lld ms": {
+    "Model: %@ · %@": {
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Model: %1$@ · %2$@"
+          }
+        },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "模型：%@ · %lld 毫秒"
+            "value": "模型：%@ · %@"
           }
         }
       }
@@ -2661,12 +3543,22 @@
         }
       }
     },
+    "No audio was captured. Check microphone access and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未擷取到音訊。請檢查麥克風權限後再試一次。"
+          }
+        }
+      }
+    },
     "No clear speech detected (too little dynamic range). Try again and speak a full sentence.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "未偵測到清晰的語音(動態範圍太小)。請重試並說完整一句話。"
+            "value": "未偵測到清晰的語音（動態範圍太小）。請再試一次，並說出完整的句子。"
           }
         }
       }
@@ -2676,7 +3568,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "未啟用任何格式化步驟 — 輸出與輸入相同。"
+            "value": "未啟用任何格式化步驟；輸出與輸入相同。"
           }
         }
       }
@@ -2711,6 +3603,42 @@
         }
       }
     },
+    "No records were deleted and live audio was restored, but temporary recovery copies remain at %@. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "No records were deleted and live audio was restored, but temporary recovery copies remain at %1$@. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未刪除任何紀錄，原始音訊已還原，但暫存復原副本仍位於 %@。%@"
+          }
+        }
+      }
+    },
+    "No records were deleted. Audio was restored after the database operation failed: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未刪除任何紀錄。資料庫操作失敗後，音訊已還原：%@"
+          }
+        }
+      }
+    },
+    "No records were selected for deletion.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未選取任何要刪除的紀錄。"
+          }
+        }
+      }
+    },
     "No records yet": {
       "localizations": {
         "zh-Hant": {
@@ -2731,22 +3659,22 @@
         }
       }
     },
-    "No transcription produced.": {
+    "No speech was detected": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "未產生轉錄結果。"
+            "value": "未偵測到語音"
           }
         }
       }
     },
-    "Normalize (lowercase + strip punctuation + 全→半形)": {
+    "Normalize (lowercase + strip punctuation + full-width → half-width)": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "正規化（小寫 + 去標點 + 全→半形）"
+            "value": "正規化（轉成小寫 + 移除標點 + 全形轉半形）"
           }
         }
       }
@@ -2757,6 +3685,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "未下載"
+          }
+        }
+      }
+    },
+    "Not downloaded · %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未下載 · %@"
           }
         }
       }
@@ -2781,6 +3719,16 @@
         }
       }
     },
+    "Not selected": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未選取"
+          }
+        }
+      }
+    },
     "Not set": {
       "localizations": {
         "zh-Hant": {
@@ -2797,6 +3745,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "小說家"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "好"
           }
         }
       }
@@ -2821,16 +3779,6 @@
         }
       }
     },
-    "On this Mac only · never uploaded": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "僅在此 Mac · 不會上傳"
-          }
-        }
-      }
-    },
     "One hotkey to record, transcribe, and insert.": {
       "localizations": {
         "zh-Hant": {
@@ -2841,62 +3789,72 @@
         }
       }
     },
-    "One shortcut does everything. Press it three times in a row:": {
+    "Open Accessibility Settings…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "一個快捷鍵搞定一切，連續按三次："
+            "value": "開啟「輔助使用」設定…"
           }
         }
       }
     },
-    "Only %@ free on the models volume. Continue downloading?": {
+    "Open Audio Cleanup Settings…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "模型所在磁碟僅剩 %@ 可用，仍要下載嗎？"
+            "value": "開啟「音訊清理」設定…"
           }
         }
       }
     },
-    "Open Folder": {
+    "Open Dataset Settings…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "開啟資料夾"
+            "value": "開啟「資料集」設定…"
           }
         }
       }
     },
-    "Open Settings": {
+    "Open Microphone Settings…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "開啟設定"
+            "value": "開啟「麥克風」設定…"
           }
         }
       }
     },
-    "Open System Settings": {
+    "Open Model Settings…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "開啟系統設定"
+            "value": "開啟「模型」設定…"
           }
         }
       }
     },
-    "Open Voice Input": {
+    "Open Permissions Settings…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "開啟語音輸入"
+            "value": "開啟「權限」設定…"
+          }
+        }
+      }
+    },
+    "Open Shortcuts Settings…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟「快捷鍵」設定…"
           }
         }
       }
@@ -2941,12 +3899,32 @@
         }
       }
     },
+    "Optional": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選用"
+          }
+        }
+      }
+    },
     "Organization": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Organization"
+            "value": "組織"
+          }
+        }
+      }
+    },
+    "Organization names cannot begin or end with spaces.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "組織名稱的開頭或結尾不可包含空白。"
           }
         }
       }
@@ -2991,22 +3969,28 @@
         }
       }
     },
-    "Passed: %lld / %lld": {
+    "Passed: %lld / %lld · Average latency: %@": {
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Passed: %1$lld / %2$lld · Average latency: %3$@"
+          }
+        },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "通過：%lld / %lld"
+            "value": "通過：%lld／%lld · 平均延遲：%@"
           }
         }
       }
     },
-    "Passed: %lld / %lld · Average latency: %lld ms": {
+    "Pause audio": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "通過：%lld / %lld · 平均延遲：%lld ms"
+            "value": "暫停音訊"
           }
         }
       }
@@ -3021,12 +4005,38 @@
         }
       }
     },
+    "Permanently delete %@ captured records and %@ of audio? Records created after this confirmation will be kept. This cannot be undone.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Permanently delete %1$@ captured records and %2$@ of audio? Records created after this confirmation will be kept. This cannot be undone."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要永久刪除已擷取的 %@ 筆紀錄及其共 %@ 的音訊檔嗎？此確認後建立的紀錄會保留。此操作無法復原。"
+          }
+        }
+      }
+    },
     "Permissions": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "權限"
+          }
+        }
+      }
+    },
+    "Pick an app and give it a tailored style — e.g. formal prose for work apps, casual for chat. Per-app prompts stay on this Mac and are never uploaded.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選擇 App 並為它設定專屬風格，例如工作 App 使用正式文體、聊天 App 使用輕鬆口吻。各 App 的提示只會留在這部 Mac，絕不會上傳。"
           }
         }
       }
@@ -3046,7 +4056,47 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "選擇轉錄引擎 — 點一下模型即設為使用中。較大的模型更準確,但較慢、佔用更多磁碟空間。使用中的模型會在首次使用時下載;可在此下載或移除各種模型。"
+            "value": "選擇轉錄引擎：按一下模型即可設為使用中。較大的模型更準確，但速度較慢，也會占用更多磁碟空間。使用中的模型會在首次使用時下載；你也可以在此預先下載或移除其他版本。"
+          }
+        }
+      }
+    },
+    "Play audio": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放音訊"
+          }
+        }
+      }
+    },
+    "Playback could not start.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法開始播放。"
+          }
+        }
+      }
+    },
+    "Playback position": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放位置"
+          }
+        }
+      }
+    },
+    "Plays or pauses the selected recording.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放或暫停所選錄音。"
           }
         }
       }
@@ -3071,16 +4121,6 @@
         }
       }
     },
-    "Popup": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Popup"
-          }
-        }
-      }
-    },
     "Prefer Simplified (简体)": {
       "localizations": {
         "zh-Hant": {
@@ -3101,22 +4141,32 @@
         }
       }
     },
-    "Preference": {
+    "Preparing benchmark": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "偏好"
+            "value": "正在準備基準測試"
           }
         }
       }
     },
-    "Preload": {
+    "Preparing deletion…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "載入"
+            "value": "正在準備刪除…"
+          }
+        }
+      }
+    },
+    "Preparing denoiser": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在準備降噪器"
           }
         }
       }
@@ -3141,16 +4191,6 @@
         }
       }
     },
-    "Press %@ again to stop & transcribe": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "再按一次 %@ 停止並轉錄"
-          }
-        }
-      }
-    },
     "Press %@ anywhere to start talking. ThinkAloud lives in your menu bar.": {
       "localizations": {
         "zh-Hant": {
@@ -3161,12 +4201,12 @@
         }
       }
     },
-    "Press %@ once more to insert": {
+    "Press %@ to insert & save": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "再按一次 %@ 插入文字"
+            "value": "按 %@ 插入並儲存"
           }
         }
       }
@@ -3181,22 +4221,32 @@
         }
       }
     },
-    "Press the hotkey, dictate, then choose Insert & save. Your time saved, accuracy, and dataset shape show up here.": {
+    "Press %@ to stop & transcribe": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "按下快速鍵、口述，然後選擇「插入並儲存」。你節省的時間、正確率與資料集樣貌都會顯示在這裡。"
+            "value": "按 %@ 停止並轉錄"
           }
         }
       }
     },
-    "Press ⌥Space, dictate, then choose Insert & save to add the first record.": {
+    "Press %@, dictate, then choose Insert & Save to add the first record.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "按 ⌥Space 講話，再選「插入並儲存」即可新增第一筆紀錄。"
+            "value": "按下 %@、開始口述，然後選擇「插入並儲存」以加入第一筆紀錄。"
+          }
+        }
+      }
+    },
+    "Press %@, dictate, then choose Insert & save to add the first record.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按下 %@、開始聽寫，然後選擇「插入並儲存」以加入第一筆紀錄。"
           }
         }
       }
@@ -3221,16 +4271,6 @@
         }
       }
     },
-    "Profile": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "配置"
-          }
-        }
-      }
-    },
     "Prolific": {
       "localizations": {
         "zh-Hant": {
@@ -3241,22 +4281,12 @@
         }
       }
     },
-    "Prompt": {
+    "Push Dataset to Hugging Face": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "請求授權"
-          }
-        }
-      }
-    },
-    "Push": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "推送"
+            "value": "將資料集推送至 Hugging Face"
           }
         }
       }
@@ -3267,16 +4297,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "推送完成"
-          }
-        }
-      }
-    },
-    "Push failed: %@": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "推送失敗：%@"
           }
         }
       }
@@ -3301,22 +4321,22 @@
         }
       }
     },
-    "Quality": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "品質"
-          }
-        }
-      }
-    },
     "Quiet enough — clear gaps between speech (signal-to-noise ≈ %@ dB, at/above the %@ dB threshold).": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "夠安靜 — 語句間有明顯停頓(訊噪比約 %@ dB,達到或高於 %@ dB 門檻)。"
+            "value": "環境夠安靜，語音之間有明顯間隔（訊噪比約 %@ dB，達到或高於 %@ dB 門檻）。"
+          }
+        }
+      }
+    },
+    "Quit": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "結束"
           }
         }
       }
@@ -3331,6 +4351,46 @@
         }
       }
     },
+    "Qwen3 0.6B": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qwen3 0.6B"
+          }
+        }
+      }
+    },
+    "Qwen3 1.7B": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qwen3 1.7B"
+          }
+        }
+      }
+    },
+    "Qwen3.5 2B": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qwen3.5 2B"
+          }
+        }
+      }
+    },
+    "Qwen3.5 4B": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qwen3.5 4B"
+          }
+        }
+      }
+    },
     "README.md + statistics.json (aggregate stats)": {
       "localizations": {
         "zh-Hant": {
@@ -3341,22 +4401,22 @@
         }
       }
     },
+    "Range": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "範圍"
+          }
+        }
+      }
+    },
     "Raw": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "原始"
-          }
-        }
-      }
-    },
-    "Raw (model output)": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "原始（模型輸出）"
           }
         }
       }
@@ -3391,12 +4451,54 @@
         }
       }
     },
-    "Reclaim disk": {
+    "Record %@ now points to a different audio path after the database operation reported %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Record %1$@ now points to a different audio path after the database operation reported %2$@."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "紀錄 %@ 現在指向不同的音訊路徑；資料庫操作回報：%@。"
+          }
+        }
+      }
+    },
+    "Record %@ now points to a different audio path.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "回收磁碟"
+            "value": "紀錄 %@ 現在指向不同的音訊路徑。"
+          }
+        }
+      }
+    },
+    "Record %@ is missing its required Auto Post-Edit text.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "紀錄 %@ 缺少必要的「自動後製」文字。"
+          }
+        }
+      }
+    },
+    "Record %@ points to %@, but %@ names %@. Both were left unchanged; restore from backup or contact support.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Record %1$@ points to %2$@, but %3$@ names %4$@. Both were left unchanged; restore from backup or contact support."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "紀錄 %@ 指向 %@，但 %@ 的名稱是 %@。兩者皆保持不變；請從備份還原或聯絡支援人員。"
           }
         }
       }
@@ -3427,6 +4529,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "錄音 30 分鐘"
+          }
+        }
+      }
+    },
+    "Record Again": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新錄音"
           }
         }
       }
@@ -3471,6 +4583,36 @@
         }
       }
     },
+    "Recording data is incomplete": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音資料不完整"
+          }
+        }
+      }
+    },
+    "Recording duration": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音長度"
+          }
+        }
+      }
+    },
+    "Recording failed": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音失敗"
+          }
+        }
+      }
+    },
     "Recording length": {
       "localizations": {
         "zh-Hant": {
@@ -3491,12 +4633,12 @@
         }
       }
     },
-    "Recording… %llds": {
+    "Recording… %@": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "錄音中… %lld 秒"
+            "value": "錄音中… %@"
           }
         }
       }
@@ -3516,7 +4658,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "錄幾秒鐘,讓你看看 Auto 會不會清理它 — 像平常一樣說一句話,然後按停止。"
+            "value": "錄製幾秒鐘，確認「自動」模式是否會清理音訊。請像平常一樣說一句話，再按「停止」。"
           }
         }
       }
@@ -3541,6 +4683,26 @@
         }
       }
     },
+    "Refinement failed. Verify that the selected engine is available, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "潤飾失敗。請確認所選引擎可用後再試一次。"
+          }
+        }
+      }
+    },
+    "Refinement returned no usable text.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "潤飾未傳回可用文字。"
+          }
+        }
+      }
+    },
     "Refresh": {
       "localizations": {
         "zh-Hant": {
@@ -3551,12 +4713,12 @@
         }
       }
     },
-    "Refresh failed: %@": {
+    "Refresh Records": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "重新整理失敗：%@"
+            "value": "重新整理紀錄"
           }
         }
       }
@@ -3571,12 +4733,22 @@
         }
       }
     },
-    "Relaunch now": {
+    "Relaunch Now": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "立即重新啟動"
+          }
+        }
+      }
+    },
+    "Relaunching…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在重新啟動…"
           }
         }
       }
@@ -3591,12 +4763,38 @@
         }
       }
     },
-    "Remove failed: %@": {
+    "Remove %@": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "移除失敗：%@"
+            "value": "移除 %@"
+          }
+        }
+      }
+    },
+    "Remove %@ (%@)?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Remove %1$@ (%2$@)?"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要移除 %@（%@）嗎？"
+          }
+        }
+      }
+    },
+    "Remove %@ Override": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除 %@ 覆寫設定"
           }
         }
       }
@@ -3606,7 +4804,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "移除設定"
+            "value": "移除覆寫設定"
           }
         }
       }
@@ -3626,7 +4824,43 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "從 macOS Keychain 移除已儲存的 Hugging Face Token?"
+            "value": "要從 macOS 鑰匙圈移除已儲存的 Hugging Face 權杖嗎？"
+          }
+        }
+      }
+    },
+    "Remove this app’s refinement override?": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要移除此 App 的潤飾覆寫設定嗎？"
+          }
+        }
+      }
+    },
+    "Remove word replacement %lld": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除第 %lld 項詞語取代規則"
+          }
+        }
+      }
+    },
+    "Remove word replacement %lld for %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Remove word replacement %1$lld for %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除第 %lld 項適用於 %@ 的詞語取代規則"
           }
         }
       }
@@ -3636,7 +4870,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "在轉錄前移除背景噪音。「自動」只清理偵測到有噪音的片段,並於首次使用時下載一個小型模型。可在「進階」中管理降噪器;在 Benchmark 中比較關閉 / 自動 / 開啟。"
+            "value": "在轉錄前移除背景噪音。「自動」只清理偵測到有噪音的片段，並於首次使用時下載小型模型。你可以在「進階」中管理降噪器，並在「基準測試」中比較「關閉」、「自動」與「開啟」。"
           }
         }
       }
@@ -3651,32 +4885,12 @@
         }
       }
     },
-    "Replacements run last — after Chinese conversion and CJK–Latin spacing — and the longest matching term wins. Write terms the way the text looks after those steps. Longer, distinctive terms are safer; very short terms can fire inside unrelated words.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "取代會在最後執行——在中文轉換與中英排版之後——且最長的匹配詞優先。請依照經過那些步驟後的文字樣子來撰寫詞條。較長、獨特的詞比較安全；太短的詞可能會在不相關的字詞裡被誤觸發。"
-          }
-        }
-      }
-    },
-    "Replacements run last — after Chinese conversion and spacing — and the longest matching term wins. Write terms the way the text looks after those steps. Longer, distinctive terms are safer; very short terms can fire inside unrelated words.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "替換在最後執行 — 在中文轉換與加空格之後 — 並由最長的相符詞勝出。請依照那些步驟後文字的樣子來填寫詞語。較長、獨特的詞語較安全;非常短的詞語可能在不相關的字詞中被觸發。"
-          }
-        }
-      }
-    },
     "Replacements run last — after Chinese conversion and spacing — and the longest matching term wins. Write terms the way the text looks after those steps; use the Preview below to check. Longer, distinctive terms are safer; very short terms can fire inside unrelated words.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "替換在最後執行 — 在中文轉換與加空格之後 — 並由最長的相符詞勝出。請依照那些步驟後文字的樣子來填寫詞語,可用下方的「預覽」確認。較長、獨特的詞語較安全;非常短的詞語可能在不相關的字詞中被觸發。"
+            "value": "詞語取代會在最後執行，也就是中文轉換與間距調整之後；最長的相符詞優先。請依照完成前述處理後的文字填寫詞語，並使用下方「預覽」確認。較長且具辨識度的詞語較安全；太短的詞語可能在不相關的文字中誤觸。"
           }
         }
       }
@@ -3686,37 +4900,57 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repository"
+            "value": "儲存庫"
           }
         }
       }
     },
-    "Request": {
+    "Repository names cannot begin or end with spaces.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "要求授權"
+            "value": "儲存庫名稱的開頭或結尾不可包含空白。"
           }
         }
       }
     },
-    "Request access": {
+    "Repository names must be 96 characters or fewer.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "要求授權"
+            "value": "儲存庫名稱不可超過 96 個字元。"
           }
         }
       }
     },
-    "Required to paste the transcription into the focused app. macOS doesn't allow in-app prompts — grant it in System Settings.": {
+    "Request Accessibility Access…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "用於將轉錄結果貼入目前 app。macOS 不允許 app 內請求，請至系統設定授權。"
+            "value": "要求「輔助使用」權限…"
+          }
+        }
+      }
+    },
+    "Request Microphone Access…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要求麥克風權限…"
+          }
+        }
+      }
+    },
+    "Required": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "必要"
           }
         }
       }
@@ -3741,12 +4975,22 @@
         }
       }
     },
+    "Reset Invalid Setting": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重設無效設定"
+          }
+        }
+      }
+    },
     "Reset Start recording, Stop & transcribe, and Insert & save to ⌥Space?": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "將「開始錄音」、「停止並轉錄」與「插入並儲存」重設為 ⌥Space?"
+            "value": "要將「開始錄音」、「停止並轉錄」與「插入並儲存」重設為 ⌥Space 嗎？"
           }
         }
       }
@@ -3757,26 +5001,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "重設全部 3 個快捷鍵"
-          }
-        }
-      }
-    },
-    "Reset all hotkeys": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "重設全部快捷鍵"
-          }
-        }
-      }
-    },
-    "Reset to defaults": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "重設為預設值"
           }
         }
       }
@@ -3801,6 +5025,36 @@
         }
       }
     },
+    "Retry": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重試"
+          }
+        }
+      }
+    },
+    "Retry Loading Speech Model": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重試載入語音模型"
+          }
+        }
+      }
+    },
+    "Retry Save": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重試儲存"
+          }
+        }
+      }
+    },
     "Reveal in Finder": {
       "localizations": {
         "zh-Hant": {
@@ -3811,12 +5065,22 @@
         }
       }
     },
-    "Revisit the welcome flow to grant permissions or download a model.": {
+    "Review Accessibility": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "重新進入歡迎流程以授予權限或下載模型。"
+            "value": "檢查「輔助使用」"
+          }
+        }
+      }
+    },
+    "Review or edit the transcript before inserting it.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請在插入前檢查或編輯逐字稿。"
           }
         }
       }
@@ -3826,27 +5090,17 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "回合"
+            "value": "執行紀錄"
           }
         }
       }
     },
-    "Run Setup Assistant again": {
+    "Run Setup Assistant…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "重新執行設定精靈"
-          }
-        }
-      }
-    },
-    "Run Smoke Test (audio-testing)": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "執行 Smoke 測試 (audio-testing)"
+            "value": "執行設定輔助程式…"
           }
         }
       }
@@ -3856,17 +5110,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "執行 Benchmark"
-          }
-        }
-      }
-    },
-    "Run smoke test": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "執行 smoke 測試"
+            "value": "執行基準測試"
           }
         }
       }
@@ -3886,27 +5130,27 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "對所有紀錄跑一次完整 pipeline"
+            "value": "對每筆紀錄執行完整處理流程"
           }
         }
       }
     },
-    "Running": {
+    "Running benchmark": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "執行中"
+            "value": "正在執行基準測試"
           }
         }
       }
     },
-    "Running…": {
+    "Runs the default style on whatever you type, using the same model and prompt your dictations will use. First run loads the model, which can take a few seconds.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "執行中…"
+            "value": "使用目前口述所用的相同模型與提示，以預設風格處理你輸入的文字。第一次執行會載入模型，可能需要幾秒鐘。"
           }
         }
       }
@@ -3916,17 +5160,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "對你輸入的文字執行完整的文字 pipeline — 先中文轉換、再加空格、最後套用你的詞語替換 — 並顯示每個啟用步驟的變化。最後一行是最終插入的文字。"
-          }
-        }
-      }
-    },
-    "Runtime Status": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Runtime 狀態"
+            "value": "對輸入文字執行完整處理流程：依序進行中文轉換、間距調整與詞語取代，並顯示每個啟用步驟造成的變化。最後一行就是最終插入的文字。"
           }
         }
       }
@@ -3941,12 +5175,62 @@
         }
       }
     },
-    "Save failed: %@": {
+    "Save changes before changing selection?": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "儲存失敗：%@"
+            "value": "要先儲存更改，再變更所選項目嗎？"
+          }
+        }
+      }
+    },
+    "Save changes before closing?": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要先儲存更改，再關閉嗎？"
+          }
+        }
+      }
+    },
+    "Save changes before leaving Records?": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要先儲存更改，再離開「紀錄」嗎？"
+          }
+        }
+      }
+    },
+    "Save error: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "儲存錯誤：%@"
+          }
+        }
+      }
+    },
+    "Save or discard transcript changes before refreshing.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新整理前，請先儲存或捨棄逐字稿更改。"
+          }
+        }
+      }
+    },
+    "Save or discard transcript changes before searching.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜尋前，請先儲存或捨棄逐字稿更改。"
           }
         }
       }
@@ -3956,7 +5240,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "儲存 Token"
+            "value": "儲存權杖"
           }
         }
       }
@@ -3971,6 +5255,46 @@
         }
       }
     },
+    "Saved to Dataset, but the transcript wasn’t inserted. %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存至資料集，但未插入逐字稿。%@"
+          }
+        }
+      }
+    },
+    "Saving changes": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在儲存更改"
+          }
+        }
+      }
+    },
+    "Saving to Dataset…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在儲存至資料集…"
+          }
+        }
+      }
+    },
+    "Search transcripts, apps, or IDs": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜尋逐字稿、App 或 ID"
+          }
+        }
+      }
+    },
     "Select a record": {
       "localizations": {
         "zh-Hant": {
@@ -3981,12 +5305,62 @@
         }
       }
     },
-    "Set an HF token in Settings → Advanced first.": {
+    "Selected": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "請先在「設定 → 進階」設定 HF token。"
+            "value": "已選取"
+          }
+        }
+      }
+    },
+    "Selected, downloaded": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已選取且已下載"
+          }
+        }
+      }
+    },
+    "Selected, not downloaded": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已選取但尚未下載"
+          }
+        }
+      }
+    },
+    "Sessions": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "口述次數"
+          }
+        }
+      }
+    },
+    "Set a Hugging Face token in Settings → Dataset first.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請先在「設定」→「資料集」中設定 Hugging Face 權杖。"
+          }
+        }
+      }
+    },
+    "Set a Start Recording shortcut before creating your first record.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請先設定「開始錄音」快捷鍵，再建立第一筆紀錄。"
           }
         }
       }
@@ -3996,7 +5370,17 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "設定 app 的介面語言,而非轉錄輸出。「自動」會跟隨系統語言。變更會在重新啟動後生效。"
+            "value": "設定 App 的介面語言，不會影響轉錄輸出。「自動」會跟隨系統語言。重新啟動後生效。"
+          }
+        }
+      }
+    },
+    "Settings Not Saved": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定未儲存"
           }
         }
       }
@@ -4021,12 +5405,22 @@
         }
       }
     },
-    "Setup Assistant…": {
+    "Setup is not complete": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "設定精靈…"
+            "value": "設定尚未完成"
+          }
+        }
+      }
+    },
+    "Setup progress": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定進度"
           }
         }
       }
@@ -4051,12 +5445,38 @@
         }
       }
     },
-    "Shown for recordings made in v0.4.0+": {
+    "Shortcuts…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "僅顯示 v0.4.0 之後的錄音"
+            "value": "快捷鍵…"
+          }
+        }
+      }
+    },
+    "Show Sidebar": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "顯示側邊欄"
+          }
+        }
+      }
+    },
+    "Showing %@ of %@ records": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Showing %1$@ of %2$@ records"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正顯示 %@／%@ 筆紀錄"
           }
         }
       }
@@ -4081,22 +5501,12 @@
         }
       }
     },
-    "Smoke Test": {
+    "Smallest and fastest. Best for low-RAM Macs and casual cleanup.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Smoke 測試"
-          }
-        }
-      }
-    },
-    "Smoke test": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Smoke 測試"
+            "value": "體積最小、速度最快。最適合記憶體較少的 Mac 與一般文字整理。"
           }
         }
       }
@@ -4111,16 +5521,6 @@
         }
       }
     },
-    "Something went wrong": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "出問題了"
-          }
-        }
-      }
-    },
     "Source": {
       "localizations": {
         "zh-Hant": {
@@ -4131,22 +5531,22 @@
         }
       }
     },
-    "Source-app names **are** included.": {
+    "Source-app names are included.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "**會**包含來源 App 名稱。"
+            "value": "會包含來源 App 名稱。"
           }
         }
       }
     },
-    "Source-app names are **not** included.": {
+    "Source-app names are not included.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "**不會**包含來源 App 名稱。"
+            "value": "不會包含來源 App 名稱。"
           }
         }
       }
@@ -4191,12 +5591,22 @@
         }
       }
     },
-    "Speech model not downloaded yet": {
+    "Speech model": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "語音模型尚未下載"
+            "value": "語音模型"
+          }
+        }
+      }
+    },
+    "Speech model failed to load. Retry or open Model settings.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "語音模型載入失敗。請重試或開啟「模型」設定。"
           }
         }
       }
@@ -4211,12 +5621,22 @@
         }
       }
     },
+    "Start Recording": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開始錄音"
+          }
+        }
+      }
+    },
     "Start ThinkAloud automatically when you log in, so the dictation hotkey is ready without launching it by hand.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "登入時自動啟動 ThinkAloud,這樣不必手動開啟就能使用聽寫快捷鍵。"
+            "value": "登入時自動啟動 ThinkAloud，這樣不必手動開啟，就能使用聽寫快捷鍵。"
           }
         }
       }
@@ -4227,16 +5647,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "開始使用 ThinkAloud"
-          }
-        }
-      }
-    },
-    "Start Voice Input": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "開始語音輸入"
           }
         }
       }
@@ -4256,7 +5666,17 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "「開始錄音」可在任何地方觸發以開啟彈出視窗。「停止並轉錄」與「插入並儲存」皆預設為 ⌥Space — 由彈出視窗當下的階段決定觸發哪一個。"
+            "value": "「開始錄音」可在任何地方觸發並開啟彈出視窗。「停止並轉錄」與「插入並儲存」皆預設為 ⌥Space；彈出視窗會依目前階段決定觸發哪一項。"
+          }
+        }
+      }
+    },
+    "Start recording shortcut": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開始錄音快捷鍵"
           }
         }
       }
@@ -4271,22 +5691,28 @@
         }
       }
     },
-    "Status": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "狀態"
-          }
-        }
-      }
-    },
     "Steady background noise detected (signal-to-noise ≈ %@ dB, below the %@ dB threshold).": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "偵測到穩定的背景噪音(訊噪比約 %@ dB,低於 %@ dB 門檻)。"
+            "value": "偵測到穩定的背景噪音（訊噪比約 %@ dB，低於 %@ dB 門檻）。"
+          }
+        }
+      }
+    },
+    "Step %lld of %lld: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Step %1$lld of %2$lld: %3$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 %lld／%lld 步：%@"
           }
         }
       }
@@ -4321,12 +5747,22 @@
         }
       }
     },
+    "Stop and transcribe shortcut": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止並轉錄快捷鍵"
+          }
+        }
+      }
+    },
     "Storage": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "儲存"
+            "value": "儲存空間"
           }
         }
       }
@@ -4341,22 +5777,12 @@
         }
       }
     },
-    "Suppress background noise with DeepFilterNet before transcription. Downloads a small model on first use.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "轉寫前以 DeepFilterNet 抑制背景雜訊。首次使用會下載一個小型模型。"
-          }
-        }
-      }
-    },
     "Sync / Upload": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "同步 / 上傳"
+            "value": "同步／上傳"
           }
         }
       }
@@ -4411,16 +5837,6 @@
         }
       }
     },
-    "Test — type to preview…": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "測試 — 輸入以預覽…"
-          }
-        }
-      }
-    },
     "Testing…": {
       "localizations": {
         "zh-Hant": {
@@ -4441,12 +5857,102 @@
         }
       }
     },
+    "Text inserted, but save failed": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字已插入，但儲存失敗"
+          }
+        }
+      }
+    },
+    "Text wasn’t inserted, and save failed": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字未插入，且儲存失敗"
+          }
+        }
+      }
+    },
+    "The Apple Intelligence model is still downloading.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Intelligence 模型仍在下載中。"
+          }
+        }
+      }
+    },
+    "The Hugging Face token in Keychain is unreadable. Replace or clear it in Dataset settings.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "鑰匙圈中的 Hugging Face 權杖無法讀取。請在「資料集」設定中取代或清除它。"
+          }
+        }
+      }
+    },
+    "The app will return to the default refinement style. This cannot be undone.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App 將恢復使用預設潤飾風格。此操作無法復原。"
+          }
+        }
+      }
+    },
+    "The audio file is missing: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "找不到音訊檔：%@"
+          }
+        }
+      }
+    },
     "The audio is clipping (too loud) — cleaning is forced. Move back from the mic or lower the input level.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "音訊發生削峰(太大聲)— 會強制清理。請離麥克風遠一點或調低輸入音量。"
+            "value": "音訊發生削峰（音量過大），因此會強制清理。請離麥克風遠一點，或調低輸入音量。"
+          }
+        }
+      }
+    },
+    "The audio path is invalid: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音訊路徑無效：%@"
+          }
+        }
+      }
+    },
+    "The benchmark couldn’t finish. Verify the selected model and saved audio files, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "基準測試無法完成。請確認所選模型與已儲存的音訊檔後再試一次。"
+          }
+        }
+      }
+    },
+    "The benchmark model couldn’t be prepared. Check Model settings, available storage, and your connection, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法準備基準測試所用的模型。請檢查「模型」設定、可用儲存空間與網路連線後再試一次。"
           }
         }
       }
@@ -4456,7 +5962,395 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "錄音太短,無法判斷。請錄幾秒鐘。"
+            "value": "錄音太短，無法判斷。請錄製幾秒鐘。"
+          }
+        }
+      }
+    },
+    "The commit succeeded, but temporary local files remain at %@. Remove this folder manually.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提交成功，但本機暫存檔仍留在 %@。請手動移除此檔案夾。"
+          }
+        }
+      }
+    },
+    "The database operation reported %@, and its resulting row state could not be read: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "The database operation reported %1$@, and its resulting row state could not be read: %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "資料庫操作回報 %@，但無法讀取操作後的資料列狀態：%@"
+          }
+        }
+      }
+    },
+    "The dataset state could not be read: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法讀取資料集狀態：%@"
+          }
+        }
+      }
+    },
+    "The dataset store is not ready.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "資料集儲存區尚未就緒。"
+          }
+        }
+      }
+    },
+    "The downloaded model couldn’t be removed. Check storage access and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法移除已下載的模型。請檢查儲存空間存取權後再試一次。"
+          }
+        }
+      }
+    },
+    "The file size could not be determined.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法判定檔案大小。"
+          }
+        }
+      }
+    },
+    "The file size is unavailable.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法取得檔案大小。"
+          }
+        }
+      }
+    },
+    "The in-memory recovery identity does not match the durable manifest.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體中的復原識別資料與持久保存的復原資訊檔不符。"
+          }
+        }
+      }
+    },
+    "The interrupted-save recovery folder at %@ is invalid. Keep it unchanged and check its permissions. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "The interrupted-save recovery folder at %1$@ is invalid. Keep it unchanged and check its permissions. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位於 %@ 的中斷儲存復原檔案夾無效。請保持原狀並檢查其權限。%@"
+          }
+        }
+      }
+    },
+    "The manifest filename does not match its record identifier.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "復原資訊檔的檔名與其紀錄識別碼不符。"
+          }
+        }
+      }
+    },
+    "The manifest is not a direct, non-symbolic-link JSON file.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "復原資訊檔並非直接位於預期位置的非符號連結 JSON 檔案。"
+          }
+        }
+      }
+    },
+    "The microphone’s audio format isn’t supported. Choose another input device and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "麥克風的音訊格式不受支援。請選擇其他輸入裝置後再試一次。"
+          }
+        }
+      }
+    },
+    "The model couldn’t be downloaded. Check your connection and available storage, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法下載模型。請檢查網路連線與可用儲存空間後再試一次。"
+          }
+        }
+      }
+    },
+    "The model test couldn’t finish. Check the model, your connection, and available storage, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型測試無法完成。請檢查模型、網路連線與可用儲存空間後再試一次。"
+          }
+        }
+      }
+    },
+    "The recording couldn’t be loaded. Verify the audio file, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法載入錄音。請確認音訊檔後再試一次。"
+          }
+        }
+      }
+    },
+    "The recording couldn’t be played. Verify the audio file, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法播放錄音。請確認音訊檔後再試一次。"
+          }
+        }
+      }
+    },
+    "The recording identifier is empty or contains a path separator.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音識別碼不可為空，也不可包含路徑分隔符號。"
+          }
+        }
+      }
+    },
+    "The recording’s audio file is unavailable. Refresh the dataset after restoring the file.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錄音的音訊檔無法使用。還原檔案後，請重新整理資料集。"
+          }
+        }
+      }
+    },
+    "The recovery batch is not a direct, non-symbolic-link directory.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "復原批次並非直接位於預期位置的非符號連結目錄。"
+          }
+        }
+      }
+    },
+    "The recovery copy is missing.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "找不到復原副本。"
+          }
+        }
+      }
+    },
+    "The recovery manifest contains duplicate or inconsistent records and audio paths.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "復原資訊檔包含重複或不一致的紀錄與音訊路徑。"
+          }
+        }
+      }
+    },
+    "The recovery manifest is not a regular file inside its batch.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "復原資訊檔不是其批次中的一般檔案。"
+          }
+        }
+      }
+    },
+    "The recovery manifest version is unsupported.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不支援此復原資訊檔版本。"
+          }
+        }
+      }
+    },
+    "The recovery root must be a non-symbolic-link directory.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "復原根目錄必須是非符號連結的目錄。"
+          }
+        }
+      }
+    },
+    "The refinement model isn’t ready. Open AI Refine settings and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "潤飾模型尚未就緒。請開啟「AI 潤飾」設定後再試一次。"
+          }
+        }
+      }
+    },
+    "The saved AI refinement model setting is invalid. Reset it, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存的 AI 潤飾模型設定無效。請重設後再試一次。"
+          }
+        }
+      }
+    },
+    "The saved AI refinement settings are invalid. Reset them, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存的 AI 潤飾設定無效。請重設後再試一次。"
+          }
+        }
+      }
+    },
+    "The saved audio cleanup settings are invalid. Reset them, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存的音訊清理設定無效。請重設後再試一次。"
+          }
+        }
+      }
+    },
+    "The saved model idle-time setting is invalid. Reset it, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存的模型閒置時間設定無效。請重設後再試一次。"
+          }
+        }
+      }
+    },
+    "The saved speech model setting is invalid. Reset it, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存的語音模型設定無效。請重設後再試一次。"
+          }
+        }
+      }
+    },
+    "The saved transcript editing settings are invalid. Reset them, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存的逐字稿編輯設定無效。請重設後再試一次。"
+          }
+        }
+      }
+    },
+    "The selected %@ model is not downloaded. Benchmark will download approximately %@, then load it into memory before processing records.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "The selected %1$@ model is not downloaded. Benchmark will download approximately %2$@, then load it into memory before processing records."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所選 %@ 模型尚未下載。基準測試會先下載約 %@，接著載入記憶體，再處理紀錄。"
+          }
+        }
+      }
+    },
+    "The speech model could not process this recording. Verify the model, then run the benchmark again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "語音模型無法處理這段錄音。請確認模型後再次執行基準測試。"
+          }
+        }
+      }
+    },
+    "The speech model couldn’t transcribe this recording. Verify that the selected model is downloaded and ready, then record again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "語音模型無法轉錄這段錄音。請確認所選模型已下載並就緒後，再次錄音。"
+          }
+        }
+      }
+    },
+    "The speech model isn’t ready. Open Model settings and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "語音模型尚未就緒。請開啟「模型」設定後再試一次。"
+          }
+        }
+      }
+    },
+    "The temporary upload directory already exists or is outside the staging root.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳暫存目錄已存在，或位於暫存根目錄之外。"
+          }
+        }
+      }
+    },
+    "The test-audio address for %@ is invalid. Update ThinkAloud and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 的測試音訊位址無效。請更新 ThinkAloud 後再試一次。"
           }
         }
       }
@@ -4471,6 +6365,146 @@
         }
       }
     },
+    "The text was already inserted. ThinkAloud is retrying only the save.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字已插入。ThinkAloud 只會重試儲存。"
+          }
+        }
+      }
+    },
+    "The transcript is on the clipboard. Paste it manually, or enable Accessibility in Settings.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "逐字稿已放在剪貼簿。請手動貼上，或在「設定」中啟用「輔助使用」。"
+          }
+        }
+      }
+    },
+    "The transcript is still streaming and cannot be edited yet.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "逐字稿仍在串流中，目前無法編輯。"
+          }
+        }
+      }
+    },
+    "The transcript was copied for manual paste instead of being inserted.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "逐字稿已複製供你手動貼上，並未直接插入。"
+          }
+        }
+      }
+    },
+    "The transcript was inserted, but ThinkAloud couldn’t restore the previous clipboard contents.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "逐字稿已插入，但 ThinkAloud 無法還原先前的剪貼簿內容。"
+          }
+        }
+      }
+    },
+    "The transcript wasn’t inserted. ThinkAloud is retrying only the dataset save; you can retry insertion after saving.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "逐字稿未插入。ThinkAloud 只會重試儲存至資料集；儲存後你可以再次嘗試插入。"
+          }
+        }
+      }
+    },
+    "The upload couldn’t finish. Check your connection, repository access, and available storage, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳無法完成。請檢查網路連線、儲存庫存取權與可用儲存空間後再試一次。"
+          }
+        }
+      }
+    },
+    "The upload request is too large. Reduce the dataset size and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳要求過大。請縮小資料集後再試一次。"
+          }
+        }
+      }
+    },
+    "There are no records to delete.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒有可刪除的紀錄。"
+          }
+        }
+      }
+    },
+    "There are no saved records to upload.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒有可上傳的已儲存紀錄。"
+          }
+        }
+      }
+    },
+    "There is no active recording to stop.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前沒有可停止的錄音。"
+          }
+        }
+      }
+    },
+    "These are your current global shortcuts. They may share one key because each acts in a different popup state.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這些是目前的全域快捷鍵。它們可以共用同一按鍵，因為各自在不同的彈出視窗階段中生效。"
+          }
+        }
+      }
+    },
+    "ThinkAloud": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud"
+          }
+        }
+      }
+    },
+    "ThinkAloud Couldn’t Start": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法啟動"
+          }
+        }
+      }
+    },
     "ThinkAloud Settings": {
       "localizations": {
         "zh-Hant": {
@@ -4481,12 +6515,880 @@
         }
       }
     },
-    "ThinkAloud needs two macOS permissions. You can change these anytime in System Settings.": {
+    "ThinkAloud applies the selected visibility to new or existing repositories and verifies it before uploading files.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "ThinkAloud 需要兩項 macOS 權限。你隨時可以在「系統設定」中變更。"
+            "value": "ThinkAloud 會將所選可見度套用至新的或既有的儲存庫，並在上傳檔案前確認設定。"
+          }
+        }
+      }
+    },
+    "ThinkAloud could not compare %@ with the local dataset. The manifest and audio were left unchanged. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud could not compare %1$@ with the local dataset. The manifest and audio were left unchanged. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法比對 %@ 與本機資料集。復原資訊檔與音訊皆保持不變。%@"
+          }
+        }
+      }
+    },
+    "ThinkAloud could not complete %@ because record %@ is not in the local dataset.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud could not complete %1$@ because record %2$@ is not in the local dataset."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法完成 %@，因為本機資料集中沒有紀錄 %@。"
+          }
+        }
+      }
+    },
+    "ThinkAloud could not confirm whether the dataset deletion committed. Audio recovery was retained at %@; do not remove or change it. Reopen the app to retry reconciliation. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud could not confirm whether the dataset deletion committed. Audio recovery was retained at %1$@; do not remove or change it. Reopen the app to retry reconciliation. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法確認資料集刪除作業是否已提交。音訊復原資料保留在 %@；請勿移除或變更。請重新開啟 App 以重試復原。%@"
+          }
+        }
+      }
+    },
+    "ThinkAloud could not create the interrupted-save manifest at %@. No audio was written. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud could not create the interrupted-save manifest at %1$@. No audio was written. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法在 %@ 建立中斷儲存的復原資訊檔。未寫入任何音訊。%@"
+          }
+        }
+      }
+    },
+    "ThinkAloud could not inspect interrupted deletions in %@. Keep this folder unchanged and check its permissions before reopening the app. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud could not inspect interrupted deletions in %1$@. Keep this folder unchanged and check its permissions before reopening the app. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法檢查 %@ 中的中斷刪除作業。請保持此檔案夾原狀，並在重新開啟 App 前檢查其權限。%@"
+          }
+        }
+      }
+    },
+    "ThinkAloud could not inspect interrupted saves in %@. Keep this folder unchanged and check its permissions before reopening the app. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud could not inspect interrupted saves in %1$@. Keep this folder unchanged and check its permissions before reopening the app. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法檢查 %@ 中的中斷儲存作業。請保持此檔案夾原狀，並在重新開啟 App 前檢查其權限。%@"
+          }
+        }
+      }
+    },
+    "ThinkAloud could not remove the unsaved audio at %@. The recovery manifest was retained so Close or the next launch can retry. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud could not remove the unsaved audio at %1$@. The recovery manifest was retained so Close or the next launch can retry. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法移除 %@ 中未儲存的音訊。復原資訊檔已保留，因此「關閉」或下次啟動時可再次嘗試。%@"
+          }
+        }
+      }
+    },
+    "ThinkAloud could not restore %@ from interrupted deletion %@. Keep this folder unchanged and restore from backup or contact support. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud could not restore %1$@ from interrupted deletion %2$@. Keep this folder unchanged and restore from backup or contact support. %3$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法還原 %@；中斷刪除的復原目錄為 %@。請保持該目錄原狀，並從備份還原或聯絡支援人員。%@"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t access Application Support. Check available storage and folder permissions, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法存取 Application Support。請檢查可用儲存空間與檔案夾權限後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t access the Hugging Face token in Keychain. Check Keychain access and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法存取鑰匙圈中的 Hugging Face 權杖。請檢查鑰匙圈存取權後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t analyze or clean the test recording. Check Audio cleanup settings, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法分析或清理測試錄音。請檢查音訊清理設定後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t check available storage. Check storage access and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法檢查可用儲存空間。請檢查儲存空間存取權後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t clear the token from Keychain. Check Keychain access and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法清除鑰匙圈中的權杖。請檢查鑰匙圈存取權後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t connect to Hugging Face. Check your connection and token, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法連線至 Hugging Face。請檢查網路連線與權杖後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t copy the transcript. Keep this window open and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法複製逐字稿。請保持此視窗開啟後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t create the recording file. Check available storage and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法建立錄音檔。請檢查可用儲存空間後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t delete the captured records. Refresh the dataset and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法刪除已擷取的紀錄。請重新整理資料集後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t delete the selected records. Refresh the dataset and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法刪除所選紀錄。請重新整理資料集後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t download %@. Check your internet connection and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法下載 %@。請檢查網路連線後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t export the benchmark report. Choose a writable folder and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法匯出基準測試報告。請選擇可寫入的檔案夾後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t export the dataset. Choose a writable folder and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法匯出資料集。請選擇可寫入的檔案夾後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t load Insights. Check Dataset settings and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法載入統計資料。請檢查「資料集」設定後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t load dataset storage. Check available storage and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法載入資料集儲存空間。請檢查可用儲存空間後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t load records for the benchmark. Refresh the dataset and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法載入基準測試所需的紀錄。請重新整理資料集後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t load the dataset. Retry; if the problem continues, check Dataset settings and available storage.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法載入資料集。請重試；若問題持續，請檢查「資料集」設定與可用儲存空間。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t load the refinement model. Open AI Refine settings and retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法載入潤飾模型。請開啟「AI 潤飾」設定後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t load the speech model. Open Model settings and retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法載入語音模型。請開啟「模型」設定後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t load the upload summary. Refresh the dataset and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法載入上傳摘要。請重新整理資料集後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t open its local dataset. The database was left unchanged. Check that Application Support is available and writable, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法開啟本機資料集。資料庫保持不變。請確認 Application Support 可用且可寫入後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t paste automatically. The transcript is on the clipboard for manual pasting.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法自動貼上。逐字稿已放在剪貼簿，可手動貼上。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t paste into the previous app. The transcript remains on the clipboard.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法貼入先前使用的 App。逐字稿仍留在剪貼簿。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t prepare a local file for upload. Check available storage and folder permissions, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法準備要上傳的本機檔案。請檢查可用儲存空間與檔案夾權限後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t prepare its Application Support folders. Check available storage and folder permissions, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法準備 Application Support 檔案夾。請檢查可用儲存空間與檔案夾權限後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t prepare microphone audio. Reconnect the microphone and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法準備麥克風音訊。請重新連接麥克風後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t prepare the dataset for export. Try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法準備要匯出的資料集。請再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t prepare the deletion. Refresh the dataset and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法準備刪除作業。請重新整理資料集後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t prepare the model-test folder. Check available storage and folder permissions, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法準備模型測試檔案夾。請檢查可用儲存空間與檔案夾權限後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t prepare this recording for the speech model. Record again; if the problem continues, review Audio cleanup settings.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法準備這段錄音以供語音模型使用。請重新錄音；若問題持續，請檢查音訊清理設定。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t process the recording’s audio format. Record it again and retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法處理錄音的音訊格式。請重新錄音後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t read a file selected for upload. Restore the file or exclude audio, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法讀取所選的上傳檔案。請還原檔案或排除音訊後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t read the recording. Record the audio again and retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法讀取錄音。請重新錄製音訊後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t relaunch automatically. Quit and reopen the app to apply the language change.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法自動重新啟動。請結束並重新開啟 App，以套用語言變更。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t safely reconcile an interrupted dataset deletion. Its recovery files were left unchanged. Retry; if the problem continues, restore from backup or contact support.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法安全完成中斷資料集刪除作業的復原。復原檔案保持不變。請重試；若問題持續，請從備份還原或聯絡支援人員。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t safely reconcile an interrupted dataset save. Its recovery files and audio were left unchanged. Retry; if the problem continues, restore from backup or contact support.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法安全完成中斷資料集儲存作業的復原。復原檔案與音訊保持不變。請重試；若問題持續，請從備份還原或聯絡支援人員。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save %@ in the model-test folder. Check available storage and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法將 %@ 儲存至模型測試檔案夾。請檢查可用儲存空間後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save the AI refinement model setting. Try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法儲存 AI 潤飾模型設定。請再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save the AI refinement settings. Try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法儲存 AI 潤飾設定。請再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save the audio cleanup settings. Try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法儲存音訊清理設定。請再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save the export. Choose another folder and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法儲存匯出檔案。請選擇其他檔案夾後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save the model idle-time setting. Try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法儲存模型閒置時間設定。請再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save the recording to the local dataset or remove its temporary audio. This recovery remains open: choose Retry Save, or check Dataset settings, file permissions, and available disk space before choosing Close again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法將錄音儲存至本機資料集或移除其暫存音訊。此復原作業仍待處理：請選擇「重試儲存」，或先檢查「資料集」設定、檔案權限與可用磁碟空間，再次選擇「關閉」。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save the recording to the local dataset. Check Dataset settings and available disk space, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法將錄音儲存至本機資料集。請檢查「資料集」設定與可用磁碟空間後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save the speech model setting. Try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法儲存語音模型設定。請再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save the token in Keychain. Check Keychain access and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法將權杖儲存至鑰匙圈。請檢查鑰匙圈存取權後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save the transcript edit. Refresh the record and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法儲存逐字稿編輯內容。請重新整理紀錄後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save the transcript editing settings. Try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法儲存逐字稿編輯設定。請再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t start the microphone. Check its connection and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法啟動麥克風。請檢查連線後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t start the test recording. Check microphone access and the selected input, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法開始測試錄音。請檢查麥克風權限與所選輸入來源後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t transcribe test sample %@. Check the model status and retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法轉錄測試樣本 %@。請檢查模型狀態後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t update Open at Login. Check System Settings → General → Login Items and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法更新「登入時開啟」。請檢查「系統設定」→「一般」→「登入項目與延伸功能」後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t use the microphone. Confirm microphone access and the selected input device, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法使用麥克風。請確認麥克風權限與所選輸入裝置後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t verify the Hugging Face token. Check your connection and token, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法驗證 Hugging Face 權杖。請檢查網路連線與權杖後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t write the transcript to the clipboard.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法將逐字稿寫入剪貼簿。"
+          }
+        }
+      }
+    },
+    "ThinkAloud encountered an unexpected startup problem. Quit and reopen the app; if the problem continues, check for an update.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 啟動時發生非預期問題。請結束並重新開啟 App；若問題持續，請檢查是否有更新。"
+          }
+        }
+      }
+    },
+    "ThinkAloud found a partially committed deletion at %@. %lld record(s) still exist and %lld are missing. Keep this folder unchanged and restore from backup or contact support.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud found a partially committed deletion at %1$@. %2$lld record(s) still exist and %3$lld are missing. Keep this folder unchanged and restore from backup or contact support."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 在 %@ 發現部分提交的刪除作業。仍有 %lld 筆紀錄存在，%lld 筆紀錄已不存在。請保持此檔案夾原狀，並從備份還原或聯絡支援人員。"
+          }
+        }
+      }
+    },
+    "ThinkAloud found an invalid interrupted-deletion batch at %@. Keep this folder unchanged and restore it from backup or contact support. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud found an invalid interrupted-deletion batch at %1$@. Keep this folder unchanged and restore it from backup or contact support. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 在 %@ 發現無效的中斷刪除批次。請保持此檔案夾原狀，並從備份還原或聯絡支援人員。%@"
+          }
+        }
+      }
+    },
+    "ThinkAloud found an invalid interrupted-save manifest at %@. It was left unchanged. Restore it from backup or contact support. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud found an invalid interrupted-save manifest at %1$@. It was left unchanged. Restore it from backup or contact support. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 在 %@ 發現無效的中斷儲存復原資訊檔。檔案保持不變。請從備份還原或聯絡支援人員。%@"
+          }
+        }
+      }
+    },
+    "ThinkAloud reconciled the interrupted deletion but could not remove %@. Check the folder permissions and reopen the app. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud reconciled the interrupted deletion but could not remove %1$@. Check the folder permissions and reopen the app. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 已完成中斷刪除作業的復原，但無法移除 %@。請檢查檔案夾權限後重新開啟 App。%@"
+          }
+        }
+      }
+    },
+    "ThinkAloud reconciled the interrupted save but could not remove %@. Check the folder permissions and try again. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "ThinkAloud reconciled the interrupted save but could not remove %1$@. Check the folder permissions and try again. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 已完成中斷儲存作業的復原，但無法移除 %@。請檢查檔案夾權限後再試一次。%@"
+          }
+        }
+      }
+    },
+    "ThinkAloud stopped before inserting or saving because the required Auto Post-Edit transcript was unavailable. Record again to create a complete dataset record.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "因缺少必要的「自動後製」逐字稿，ThinkAloud 已在插入或儲存前停止。請重新錄音，以建立完整的資料集紀錄。"
+          }
+        }
+      }
+    },
+    "ThinkAloud — Dataset Save Failed": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud：資料集儲存失敗"
+          }
+        }
+      }
+    },
+    "ThinkAloud — Inserting": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud：正在插入"
+          }
+        }
+      }
+    },
+    "ThinkAloud — Needs Attention": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud：需要處理"
+          }
+        }
+      }
+    },
+    "ThinkAloud — Polishing": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud：正在潤飾"
+          }
+        }
+      }
+    },
+    "ThinkAloud — Ready": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud：已就緒"
+          }
+        }
+      }
+    },
+    "ThinkAloud — Ready to Insert": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud：可插入"
+          }
+        }
+      }
+    },
+    "ThinkAloud — Recording": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud：正在錄音"
+          }
+        }
+      }
+    },
+    "ThinkAloud — Saving": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud：正在儲存"
+          }
+        }
+      }
+    },
+    "ThinkAloud — Transcribing": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud：正在轉錄"
           }
         }
       }
@@ -4496,7 +7398,17 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "這台 Mac 不支援 Apple 智慧。"
+            "value": "這台 Mac 不支援 Apple Intelligence。"
+          }
+        }
+      }
+    },
+    "This adds a brief “Polishing…” step after dictation. It needs a downloaded model below. If refinement fails, ThinkAloud keeps the original transcript and shows the failure before insertion.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這會在口述後加入短暫的「潤飾中…」步驟，且需要下方已下載的模型。如果潤飾失敗，ThinkAloud 會保留原始逐字稿，並在插入前顯示錯誤。"
           }
         }
       }
@@ -4507,6 +7419,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "現在就下載所選模型，讓你第一次轉錄不需等待。"
+          }
+        }
+      }
+    },
+    "This model may need about %@ at peak for the temporary Hugging Face blob, installed snapshot, and safety margin, but only %@ is available. Continue downloading?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "This model may need about %1$@ at peak for the temporary Hugging Face blob, installed snapshot, and safety margin, but only %2$@ is available. Continue downloading?"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此模型在下載高峰可能需要約 %@，供 Hugging Face 暫存檔、已安裝快照與安全預留空間使用，但目前只有 %@ 可用。仍要繼續下載嗎？"
           }
         }
       }
@@ -4531,6 +7459,36 @@
         }
       }
     },
+    "This recording contains no decodable audio. Restore a valid file, then run the benchmark again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這段錄音不含可解碼的音訊。請還原有效檔案後再次執行基準測試。"
+          }
+        }
+      }
+    },
+    "This recording’s audio could not be prepared. Verify the file, then run the benchmark again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法準備這段錄音的音訊。請確認檔案後再次執行基準測試。"
+          }
+        }
+      }
+    },
+    "This recording’s audio file is unavailable. Restore the file, then run the benchmark again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這段錄音的音訊檔無法使用。請還原檔案後再次執行基準測試。"
+          }
+        }
+      }
+    },
     "This week: %lld sessions": {
       "localizations": {
         "zh-Hant": {
@@ -4541,22 +7499,12 @@
         }
       }
     },
-    "Time saved": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "節省時間"
-          }
-        }
-      }
-    },
     "Token": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Token"
+            "value": "權杖"
           }
         }
       }
@@ -4586,7 +7534,37 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "轉錄中…（streaming）"
+            "value": "轉錄中…（串流）"
+          }
+        }
+      }
+    },
+    "Transcript being refined": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在潤飾逐字稿"
+          }
+        }
+      }
+    },
+    "Transcript editor": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "逐字稿編輯器"
+          }
+        }
+      }
+    },
+    "Transcription failed": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉錄失敗"
           }
         }
       }
@@ -4597,6 +7575,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "嘗試 3 種模型"
+          }
+        }
+      }
+    },
+    "Try Again": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再試一次"
           }
         }
       }
@@ -4626,7 +7614,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "由聯發科研究院針對台灣中文最佳化。"
+            "value": "由聯發科技研究院針對臺灣華語最佳化。"
           }
         }
       }
@@ -4636,7 +7624,17 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "請在「系統設定」中開啟 Apple 智慧。"
+            "value": "請在「系統設定」中開啟 Apple Intelligence。"
+          }
+        }
+      }
+    },
+    "Turns word replacement %lld on or off.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟或關閉第 %lld 項詞語取代規則。"
           }
         }
       }
@@ -4661,6 +7659,16 @@
         }
       }
     },
+    "Unavailable": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法使用"
+          }
+        }
+      }
+    },
     "Unknown": {
       "localizations": {
         "zh-Hant": {
@@ -4671,12 +7679,12 @@
         }
       }
     },
-    "Unload": {
+    "Unknown range": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "釋放"
+            "value": "未知範圍"
           }
         }
       }
@@ -4711,22 +7719,22 @@
         }
       }
     },
+    "Unsupported manifest version %lld.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不支援復原資訊檔版本 %lld。"
+          }
+        }
+      }
+    },
     "Updates": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "更新"
-          }
-        }
-      }
-    },
-    "Updates are downloaded from GitHub Releases and verified with a cryptographic signature before installing.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "更新會從 GitHub Releases 下載，並在安裝前以密碼學簽章驗證。"
           }
         }
       }
@@ -4741,6 +7749,118 @@
         }
       }
     },
+    "Upload cancelled before commit. The repository or uploaded LFS objects may remain on Hugging Face.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳在提交前取消。儲存庫或已上傳的 LFS 物件可能仍留在 Hugging Face。"
+          }
+        }
+      }
+    },
+    "Upload failed before a commit was created, and temporary files could not be removed. Remove %@ manually, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳在建立提交前失敗，且無法移除暫存檔。請手動移除 %@ 後再試一次。"
+          }
+        }
+      }
+    },
+    "Upload stopped because %@ cannot be read: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Upload stopped because %1$@ cannot be read: %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "因無法讀取 %@，上傳已停止：%@"
+          }
+        }
+      }
+    },
+    "Upload stopped because %@ is %@, not %@. No commit was created.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳已停止，因為 %@ 是 %@ 儲存庫，而不是 %@ 儲存庫。未建立任何提交。"
+          }
+        }
+      }
+    },
+    "Upload stopped because %lld audio file(s) are missing: %@": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已停止上傳，因為缺少 %lld 個音訊檔：%@"
+          }
+        }
+      }
+    },
+    "Upload stopped because %lld saved audio file(s) are missing. Restore the files or turn off Include audio files, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "因缺少 %lld 個已儲存的音訊檔，上傳已停止。請還原檔案或關閉「包含音訊檔」後再試一次。"
+          }
+        }
+      }
+    },
+    "Upload stopped because a saved audio file couldn’t be read. Restore the file or turn off Include audio files, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "因無法讀取已儲存的音訊檔，上傳已停止。請還原檔案或關閉「包含音訊檔」後再試一次。"
+          }
+        }
+      }
+    },
+    "Upload was cancelled before a commit was created, and temporary files could not be removed. Some uploaded objects may remain on Hugging Face. Remove %@ manually.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳在建立提交前取消，且無法移除暫存檔。部分已上傳的物件可能仍留在 Hugging Face。請手動移除 %@。"
+          }
+        }
+      }
+    },
+    "Upload was cancelled before a commit was created, and temporary local files could not be removed. The repository or uploaded LFS objects may remain on Hugging Face. Remove %@ manually. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Upload was cancelled before a commit was created, and temporary local files could not be removed. The repository or uploaded LFS objects may remain on Hugging Face. Remove %1$@ manually. %2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳在建立提交前取消，且無法移除本機暫存檔。儲存庫或已上傳的 LFS 物件可能仍留在 Hugging Face。請手動移除 %@。%@"
+          }
+        }
+      }
+    },
+    "Upload was cancelled before a commit was created. The repository or uploaded LFS objects may remain on Hugging Face.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳在建立提交前取消。儲存庫或已上傳的 LFS 物件可能仍留在 Hugging Face。"
+          }
+        }
+      }
+    },
     "Uploaded %lld file(s) to %@.": {
       "localizations": {
         "zh-Hant": {
@@ -4751,22 +7871,32 @@
         }
       }
     },
-    "Uploaded as `metadata.jsonl` + audio files (LFS). Audio is uploaded — only push if you've reviewed the contents.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "上傳成 `metadata.jsonl` + 音訊檔（走 LFS）。音檔會一同上傳——推送前請確認沒有敏感內容。"
-          }
-        }
-      }
-    },
     "Uploading large files…": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "上傳大檔案中…"
+          }
+        }
+      }
+    },
+    "Use %@ for AI refinement": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 %@ 進行 AI 潤飾"
+          }
+        }
+      }
+    },
+    "Use %@ for transcription": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 %@ 進行轉錄"
           }
         }
       }
@@ -4801,12 +7931,12 @@
         }
       }
     },
-    "Use model default": {
+    "Use letters, numbers, hyphens, underscores, or periods in the repository name.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "依照模型"
+            "value": "儲存庫名稱只能使用英文字母、數字、連字號、底線或句點。"
           }
         }
       }
@@ -4831,32 +7961,22 @@
         }
       }
     },
-    "Used to push the dataset from the browser window. Token is stored in macOS Keychain.": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "在瀏覽器視窗用來推送資料集。Token 儲存於 macOS Keychain。"
-          }
-        }
-      }
-    },
-    "View insights": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "查看統計"
-          }
-        }
-      }
-    },
     "Voice Veteran": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "口述老手"
+          }
+        }
+      }
+    },
+    "Waiting for refined text": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在等待潤飾後的文字"
           }
         }
       }
@@ -4887,6 +8007,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "持續一週"
+          }
+        }
+      }
+    },
+    "Welcome": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "歡迎"
           }
         }
       }
@@ -4951,6 +8081,42 @@
         }
       }
     },
+    "Word replacement %lld of %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Word replacement %1$lld of %2$lld"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 %lld／%lld 項詞語取代規則"
+          }
+        }
+      }
+    },
+    "Word replacement %lld replacement text": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 %lld 項詞語取代規則的取代文字"
+          }
+        }
+      }
+    },
+    "Word replacement %lld source term": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 %lld 項詞語取代規則的來源詞"
+          }
+        }
+      }
+    },
     "Word replacements": {
       "localizations": {
         "zh-Hant": {
@@ -4971,12 +8137,32 @@
         }
       }
     },
-    "You're all set": {
+    "You can finish these now or later in Settings.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "設定完成"
+            "value": "你可以現在完成，也可以稍後在「設定」中完成。"
+          }
+        }
+      }
+    },
+    "Your Hugging Face account does not have permission to update this dataset. Check the token permissions and repository access.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的 Hugging Face 帳號無權更新此資料集。請檢查權杖權限與儲存庫存取權。"
+          }
+        }
+      }
+    },
+    "Your Hugging Face token is invalid or expired. Update the token and try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 權杖無效或已過期。請更新權杖後再試一次。"
           }
         }
       }
@@ -4986,7 +8172,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "你目前的模式是「關閉」,因此不會清理任何錄音。切換到「自動」或「開啟」才會作用。"
+            "value": "你目前的模式是「關閉」，因此不會清理任何錄音。請切換至「自動」或「開啟」以使用此功能。"
           }
         }
       }
@@ -4996,7 +8182,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "你目前的模式是「開啟」,因此每段錄音都會被清理。"
+            "value": "你目前的模式是「開啟」，因此每段錄音都會經過清理。"
           }
         }
       }
@@ -5011,12 +8197,12 @@
         }
       }
     },
-    "Your insights appear after your first save": {
+    "Your edited transcript has unsaved changes.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "完成第一次儲存後即可看到統計"
+            "value": "編輯過的逐字稿有尚未儲存的更改。"
           }
         }
       }
@@ -5031,22 +8217,22 @@
         }
       }
     },
-    "Your time saved, accuracy, and dataset shape — open the dataset window for the full breakdown.": {
+    "You’re ready": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "你節省的時間、正確率與資料集樣貌 — 開啟資料集視窗查看完整分析。"
+            "value": "一切就緒"
           }
         }
       }
     },
-    "audio/… — your 16 kHz recordings (LFS)": {
+    "audio/… — your saved WAV recordings (LFS when required)": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "audio/… — 你的 16 kHz 錄音（LFS）"
+            "value": "audio/…：已儲存的 WAV 錄音（需要時使用 LFS）"
           }
         }
       }
@@ -5091,16 +8277,6 @@
         }
       }
     },
-    "hr": {
-      "localizations": {
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "小時"
-          }
-        }
-      }
-    },
     "inserted with no manual edits": {
       "localizations": {
         "zh-Hant": {
@@ -5121,12 +8297,42 @@
         }
       }
     },
+    "macOS did not launch a new ThinkAloud instance.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS 未啟動新的 ThinkAloud 實例。"
+          }
+        }
+      }
+    },
     "metadata.jsonl — one row per recording, with transcripts + derived counts": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "metadata.jsonl — 每筆錄音一列，含逐字稿與衍生統計"
+            "value": "metadata.jsonl：每筆錄音一列，包含逐字稿與衍生統計"
+          }
+        }
+      }
+    },
+    "private": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "私人"
+          }
+        }
+      }
+    },
+    "public": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "公開"
           }
         }
       }
@@ -5181,6 +8387,16 @@
         }
       }
     },
+    "·": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        }
+      }
+    },
     "· %@": {
       "localizations": {
         "zh-Hant": {
@@ -5191,28 +8407,282 @@
         }
       }
     },
-    "“Test the model” downloads three short clips from JacobLinCool/audio-testing (~5 MB) and runs them through the current model to verify it works.": {
+    "“Test the model” downloads three short clips from JacobLinCool/audio-testing (~5 MB) and runs them through the current model. Cancel takes effect after the model finishes the sample it is currently transcribing.": {
       "localizations": {
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "「測試模型」會從 JacobLinCool/audio-testing 下載三段短音訊(約 5 MB),並以目前的模型執行以確認運作正常。"
+            "value": "「測試模型」會從 JacobLinCool/audio-testing 下載三段短音訊（約 5 MB），並以目前的模型處理。取消會在模型完成目前正在轉錄的樣本後生效。"
           }
         }
       }
     },
-    "中文偏好": {
+    "•": {
       "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chinese preference"
-          }
-        },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "中文偏好"
+            "value": "•"
+          }
+        }
+      }
+    },
+    "The local database is not ready.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本機資料庫尚未就緒。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t open its local data. The database was left unchanged. Check that Application Support is available and writable, then retry.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法開啟本機資料。資料庫未受變更。請確認「Application Support」可用且可寫入，然後再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t load Insights from local usage history. Try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法從本機使用紀錄載入「洞察」。請再試一次。"
+          }
+        }
+      }
+    },
+    "ThinkAloud stopped before inserting or saving because the speech model didn’t return a complete final result. Record again to create a complete session.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "語音模型未傳回完整的最終結果，因此 ThinkAloud 已在插入或儲存前停止。請重新錄音以建立完整的工作階段。"
+          }
+        }
+      }
+    },
+    "The transcript was already inserted.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉錄文字已插入。"
+          }
+        }
+      }
+    },
+    "The insertion attempt is complete.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "插入嘗試已完成。"
+          }
+        }
+      }
+    },
+    "Usage history wasn’t saved": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未儲存使用紀錄"
+          }
+        }
+      }
+    },
+    "%@ ThinkAloud couldn’t save this session to local Insights history. Retry saves only the history and will not insert the text again. Closing discards this session from Insights.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ThinkAloud 無法將此工作階段儲存至本機「洞察」紀錄。重試只會儲存紀錄，不會再次插入文字。關閉會從「洞察」捨棄此工作階段。"
+          }
+        }
+      }
+    },
+    "Retry History Save": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重試儲存紀錄"
+          }
+        }
+      }
+    },
+    "Local saves need attention": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本機儲存需要處理"
+          }
+        }
+      }
+    },
+    "ThinkAloud couldn’t save this session to Insights history. %@ Retry saves only the missing local data and will not insert the text again. Closing discards the missing Insights session.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ThinkAloud 無法將此工作階段儲存至「洞察」紀錄。%@ 重試只會儲存缺少的本機資料，不會再次插入文字。關閉會捨棄缺少的「洞察」工作階段。"
+          }
+        }
+      }
+    },
+    "Retry Saves": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重試儲存"
+          }
+        }
+      }
+    },
+    "Retry Insert": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重試插入"
+          }
+        }
+      }
+    },
+    "The first Insert snapshot is locked while you retry delivery.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重試交付時，第一次插入的文字快照會保持鎖定。"
+          }
+        }
+      }
+    },
+    "Full transcripts stay on this Mac. Audio is saved only when you choose Insert & Save.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完整轉錄文字只保留在這部 Mac。只有選擇「插入並儲存」時才會保存音訊。"
+          }
+        }
+      }
+    },
+    "finished with no manual edits": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成時沒有手動編輯"
+          }
+        }
+      }
+    },
+    "%lld of %lld finished with no edits": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%2$lld 次中有 %1$lld 次完成時未經編輯"
+          }
+        }
+      }
+    },
+    "Based on %lld Insert attempts with a measured length, including failed delivery attempts.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "根據 %lld 次有測得錄音長度的插入嘗試估算，包含交付失敗的嘗試。"
+          }
+        }
+      }
+    },
+    "Your insights appear after your first Insert": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第一次插入後就會顯示洞察"
+          }
+        }
+      }
+    },
+    "Press the hotkey, dictate, then choose Insert or Insert & Save. Usage, time saved, and accuracy will appear here.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按下快速鍵並開始口述，接著選擇「插入」或「插入並儲存」。使用次數、節省時間與準確度會顯示在這裡。"
+          }
+        }
+      }
+    },
+    "Full transcripts stay on this Mac. Audio is saved only when you add a recording to Dataset.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完整轉錄文字只保留在這部 Mac。只有將錄音加入「資料集」時才會保存音訊。"
+          }
+        }
+      }
+    },
+    "Saving Session & Dataset…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在儲存工作階段與資料集⋯"
+          }
+        }
+      }
+    },
+    "Saving Session…": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在儲存工作階段⋯"
+          }
+        }
+      }
+    },
+    "The text was already inserted. ThinkAloud is retrying only the local saves.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字已插入。ThinkAloud 只會重試本機儲存。"
+          }
+        }
+      }
+    },
+    "The delivery attempt is complete. ThinkAloud is retrying only the local saves.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "交付嘗試已完成。ThinkAloud 只會重試本機儲存。"
+          }
+        }
+      }
+    },
+    "The delivery attempt is complete. ThinkAloud is retrying only Insights history.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "交付嘗試已完成。ThinkAloud 只會重試儲存「洞察」紀錄。"
           }
         }
       }

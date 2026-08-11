@@ -1,6 +1,6 @@
 import Foundation
 
-/// A single unlockable milestone, evaluated from `DatasetStatistics`. A curated set — tasteful, not
+/// A single usage milestone, evaluated from local dictation-session statistics. A curated set — tasteful, not
 /// exhaustive — spanning the dimensions a dictation habit naturally grows along: how often, how long,
 /// how much, how consistently, and how broadly you use the app.
 struct Achievement: Identifiable, Sendable {
@@ -30,7 +30,7 @@ struct Achievement: Identifiable, Sendable {
         Set(all.filter { $0.isUnlocked(stats) }.map(\.id))
     }
 
-    /// Curated catalogue. IDs are stable tokens (persisted), so never renumber an existing one.
+    /// Curated usage catalogue. IDs are stored only in the usage-achievement namespace.
     static let all: [Achievement] = [
         // Sessions — how often you dictate.
         Achievement(id: "sessions.10", dimension: .sessions, symbol: "mic.fill",

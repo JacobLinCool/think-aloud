@@ -25,10 +25,11 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
         }
         guard let container else { return }
 
-        let router = SettingsRouter(initial: category)
+        let router = SettingsRouter(initial: category, defaults: container.settingsDefaults)
         self.router = router
 
         let hosting = NSHostingController(rootView: SettingsRootView(router: router).environment(container))
+        hosting.view.setAccessibilityLabel(String(localized: "ThinkAloud Settings"))
         // The window owns hard min/max; the SwiftUI root only hints ideal size. Stop the hosting
         // controller from re-fitting the window to content (which would fight `.resizable`).
         hosting.sizingOptions = []
@@ -40,8 +41,8 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        // Visible title is owned by the detail pane's `navigationTitle`; this static value remains
-        // only as the window-menu / accessibility name.
+        // The detail pane has its own visible heading; the stable window title supplies the
+        // Window menu and top-level accessibility name.
         window.title = String(localized: "ThinkAloud Settings")
         window.contentViewController = hosting
         window.isReleasedWhenClosed = false

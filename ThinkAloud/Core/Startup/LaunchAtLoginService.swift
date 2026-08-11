@@ -1,3 +1,4 @@
+import Foundation
 import Observation
 import ServiceManagement
 
@@ -39,7 +40,10 @@ final class LaunchAtLoginService {
             }
             lastError = nil
         } catch {
-            lastError = error.localizedDescription
+            NSLog("ThinkAloud: launch-at-login update failed: \(error)")
+            lastError = String(
+                localized: "ThinkAloud couldn’t update Open at Login. Check System Settings → General → Login Items and try again."
+            )
         }
         // Re-read so the toggle reflects what actually happened, not what we asked for.
         refresh()

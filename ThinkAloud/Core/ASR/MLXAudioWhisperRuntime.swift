@@ -16,6 +16,7 @@ private func loadWhisperModel(modelID: String, cache: HubCache) async throws -> 
 actor MLXAudioWhisperRuntime: ASRRuntime {
     let id: String = "mlx-audio-swift-whisper"
     let modelID: String
+    private let matchingPatterns: [String]
     private let cache: HubCache
     private let cacheDirectory: URL?
 
@@ -23,8 +24,9 @@ actor MLXAudioWhisperRuntime: ASRRuntime {
     private var currentStatus: ASRRuntimeStatus = .unloaded
     private var expectedTotalBytes: Int64?
 
-    init(modelID: String, cacheDirectory: URL? = nil) {
+    init(modelID: String, matchingPatterns: [String], cacheDirectory: URL? = nil) {
         self.modelID = modelID
+        self.matchingPatterns = matchingPatterns
         self.cacheDirectory = cacheDirectory
         if let cacheDirectory {
             self.cache = HubCache(cacheDirectory: cacheDirectory)
@@ -65,7 +67,10 @@ actor MLXAudioWhisperRuntime: ASRRuntime {
 
             if expectedTotalBytes == nil {
                 let modelID = modelID
-                let total = await HuggingFaceMetadata.totalRepoSize(modelID: modelID)
+                let total = await HuggingFaceMetadata.downloadSize(
+                    modelID: modelID,
+                    matchingPatterns: matchingPatterns
+                )
                 expectedTotalBytes = total
                 updateDownloadStatus(currentBytes: ASRRuntimeFactory.downloadedBytes(for: modelID, snapshotDir: snapshotDir, cache: cache))
             }
@@ -86,6 +91,10 @@ actor MLXAudioWhisperRuntime: ASRRuntime {
             currentStatus = .loading
             model = box
             currentStatus = .ready
+        } catch is CancellationError {
+            pollingTask?.cancel()
+            currentStatus = .unloaded
+            throw CancellationError()
         } catch {
             pollingTask?.cancel()
             currentStatus = .failed(String(describing: error))

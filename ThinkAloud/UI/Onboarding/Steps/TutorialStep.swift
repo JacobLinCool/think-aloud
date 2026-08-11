@@ -2,50 +2,47 @@ import KeyboardShortcuts
 import SwiftUI
 
 struct TutorialStep: View {
-    /// Live binding to the user's actual shortcut (defaults to ⌥Space), so the tutorial
-    /// stays correct even if they've rebound it in Settings.
-    private var shortcut: String {
-        KeyboardShortcuts.getShortcut(for: .startRecording).map { "\($0)" } ?? "⌥Space"
-    }
+    private var startShortcut: String { shortcutText(for: .startRecording) }
+    private var stopShortcut: String { shortcutText(for: .stopAndTranscribe) }
+    private var insertShortcut: String { shortcutText(for: .insertAndSave) }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 OnboardingHeader(
                     title: "How to use ThinkAloud",
-                    subtitle: "One shortcut does everything. Press it three times in a row:"
+                    subtitle: "These are your current global shortcuts. They may share one key because each acts in a different popup state."
                 )
 
-                stepRow(
-                    number: 1,
-                    icon: "mic.fill",
-                    title: "Press \(shortcut) to start recording",
-                    detail: "A small popup appears. Start talking."
-                ) {
-                    HStack(spacing: 8) {
-                        KeyboardShortcuts.Recorder("", name: .startRecording)
-                        Text("Change it if it clashes with another app.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                OnboardingCard {
+                    VStack(spacing: 12) {
+                        stepRow(
+                            number: 1,
+                            icon: "mic.fill",
+                            title: "Press \(startShortcut) to start recording",
+                            detail: "A small popup appears. Start talking."
+                        )
+                        Divider().padding(.leading, 44)
+                        stepRow(
+                            number: 2,
+                            icon: "waveform",
+                            title: "Press \(stopShortcut) to stop & transcribe",
+                            detail: "Your speech is transcribed on-device. Review and edit if needed."
+                        )
+                        Divider().padding(.leading, 44)
+                        stepRow(
+                            number: 3,
+                            icon: "text.cursor",
+                            title: "Press \(insertShortcut) to insert & save",
+                            detail: "The text is pasted into whatever app had focus."
+                        )
                     }
-                    .padding(.top, 4)
                 }
-                stepRow(
-                    number: 2,
-                    icon: "waveform",
-                    title: "Press \(shortcut) again to stop & transcribe",
-                    detail: "Your speech is transcribed on-device. Review and edit if needed."
-                )
-                stepRow(
-                    number: 3,
-                    icon: "text.cursor",
-                    title: "Press \(shortcut) once more to insert",
-                    detail: "The text is pasted into whatever app had focus."
-                )
 
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Image(systemName: "info.circle")
                         .foregroundStyle(.secondary)
+                        .accessibilityHidden(true)
                     Text("Without Accessibility access, ThinkAloud copies the text to your clipboard instead of pasting it — just press ⌘V.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
@@ -57,31 +54,32 @@ struct TutorialStep: View {
         }
     }
 
-    private func stepRow<Accessory: View>(
+    private func shortcutText(for name: KeyboardShortcuts.Name) -> String {
+        KeyboardShortcuts.getShortcut(for: name).map(String.init(describing:))
+            ?? String(localized: "Not set")
+    }
+
+    private func stepRow(
         number: Int,
         icon: String,
         title: LocalizedStringKey,
-        detail: LocalizedStringKey,
-        @ViewBuilder accessory: () -> Accessory = { EmptyView() }
+        detail: LocalizedStringKey
     ) -> some View {
-        OnboardingCard {
-            HStack(alignment: .top, spacing: 14) {
-                ZStack {
-                    Circle().fill(Color.accentColor.opacity(0.15)).frame(width: 34, height: 34)
-                    Text("\(number)").font(.headline).foregroundStyle(.tint)
-                }
-                VStack(alignment: .leading, spacing: 3) {
-                    Label(title, systemImage: icon)
-                        .font(.headline)
-                        .labelStyle(.titleAndIcon)
-                    Text(detail)
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    accessory()
-                }
-                Spacer(minLength: 0)
+        HStack(alignment: .top, spacing: 12) {
+            Text("\(number)")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.tint)
+                .frame(width: 28, height: 28)
+                .background(Color.accentColor.opacity(0.12), in: Circle())
+            VStack(alignment: .leading, spacing: 2) {
+                Label(title, systemImage: icon)
+                    .font(.headline)
+                Text(detail)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            Spacer(minLength: 0)
         }
     }
 }

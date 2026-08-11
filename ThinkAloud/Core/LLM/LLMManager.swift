@@ -11,33 +11,33 @@ import Observation
 @Observable
 final class LLMManager {
     private let cacheDirectory: URL
+    private let defaults: UserDefaults
 
-    private let modelKey = "ThinkAloud.llmModelProfile"
+    private static let modelKey = SavedSettingsError.Field.refineModel.preferenceKey
     /// The globally-selected MLX model (one warm model serves every app; per-app varies only prompt).
     private(set) var selectedModel: LLMModelProfile {
         didSet {
-            UserDefaults.standard.set(selectedModel.rawValue, forKey: modelKey)
+            defaults.set(selectedModel.rawValue, forKey: Self.modelKey)
             if selectedModel != oldValue { rebuildRuntime() }
         }
     }
 
-    private let configKey = "ThinkAloud.llmPostEditConfig"
+    private static let configKey = SavedSettingsError.Field.refineConfiguration.preferenceKey
     var config: LLMPostEditConfig {
         didSet {
-            if let data = try? JSONEncoder().encode(config) {
-                UserDefaults.standard.set(data, forKey: configKey)
-            }
+            persist(config, forKey: Self.configKey, field: .refineConfiguration)
         }
     }
 
     // Shares the user's existing idle-unload setting (set in Settings → Model) — no new control.
-    private let idleTimeoutKey = "ThinkAloud.idleTimeout"
-    private var idleTimeout: IdleTimeout {
-        UserDefaults.standard.string(forKey: idleTimeoutKey).flatMap(IdleTimeout.init(rawValue:)) ?? .tenMinutes
-    }
+    private static let idleTimeoutKey = SavedSettingsError.Field.idleTimeout.preferenceKey
 
     private(set) var runtimeStatus: ASRRuntimeStatus = .unloaded
+    private(set) var settingsError: SavedSettingsError?
     private(set) var profileDownloadStatus: [LLMModelProfile: ASRRuntimeStatus] = [:]
+    /// Cached as observable state so removing or downloading a non-selected profile redraws its
+    /// row immediately. A computed filesystem lookup alone does not emit an Observation change.
+    private(set) var downloadedProfiles: Set<LLMModelProfile>
     private(set) var lastActivityAt: Date = .distantPast
 
     private var runtimeRef: MLXLLMRuntime
@@ -45,20 +45,54 @@ final class LLMManager {
     private var statusPollingTask: Task<Void, Never>?
     private var idleEvictionTask: Task<Void, Never>?
 
-    init(cacheDirectory: URL) {
+    init(cacheDirectory: URL, defaults: UserDefaults = .standard) throws {
+        let model = try SavedSettingsReader.enumValue(
+            LLMModelProfile.self,
+            defaults: defaults,
+            key: Self.modelKey,
+            field: .refineModel
+        ) ?? .recommended
+        let storedConfig = try SavedSettingsReader.decodableValue(
+            LLMPostEditConfig.self,
+            defaults: defaults,
+            key: Self.configKey,
+            field: .refineConfiguration
+        ) ?? .default
+        _ = try SavedSettingsReader.enumValue(
+            IdleTimeout.self,
+            defaults: defaults,
+            key: Self.idleTimeoutKey,
+            field: .idleTimeout
+        )
+
         self.cacheDirectory = cacheDirectory
-        let model = UserDefaults.standard.string(forKey: modelKey).flatMap(LLMModelProfile.init(rawValue:)) ?? .recommended
+        self.defaults = defaults
         self.selectedModel = model
-        if let data = UserDefaults.standard.data(forKey: configKey),
-           let cfg = try? JSONDecoder().decode(LLMPostEditConfig.self, from: data) {
-            self.config = cfg
-        } else {
-            self.config = .default
-        }
+        self.config = storedConfig
+        let cache = HubCache(cacheDirectory: cacheDirectory)
+        self.downloadedProfiles = Set(
+            LLMModelProfile.allCases.filter {
+                LLMModelPaths.hasModelFiles(for: $0.modelID, cache: cache)
+            }
+        )
         self.runtimeRef = MLXLLMRuntime(modelID: model.modelID, cacheDirectory: cacheDirectory)
     }
 
     func setModel(_ new: LLMModelProfile) { selectedModel = new }
+
+    private func persist<Value: Encodable>(
+        _ value: Value,
+        forKey key: String,
+        field: SavedSettingsError.Field
+    ) {
+        do {
+            defaults.set(try JSONEncoder().encode(value), forKey: key)
+            settingsError = nil
+        } catch {
+            NSLog("ThinkAloud: failed to encode saved setting for key \(key): \(error)")
+            settingsError = .encodingFailed(field)
+        }
+    }
 
     // MARK: - Resolution
 
@@ -109,10 +143,12 @@ final class LLMManager {
 
     func preloadNow() {
         let runtime = runtimeRef
+        let profile = selectedModel
         startStatusPolling()
         Task { @MainActor in
             do {
                 try await runtime.preload()
+                self.downloadedProfiles.insert(profile)
                 self.recordActivity()
             } catch {
                 NSLog("ThinkAloud: LLM preload failed: \(error)")
@@ -162,6 +198,21 @@ final class LLMManager {
 
     private func scheduleIdleEvictionIfNeeded() {
         idleEvictionTask?.cancel()
+        let idleTimeout: IdleTimeout
+        do {
+            idleTimeout = try SavedSettingsReader.enumValue(
+                IdleTimeout.self,
+                defaults: defaults,
+                key: Self.idleTimeoutKey,
+                field: .idleTimeout
+            ) ?? .tenMinutes
+        } catch let error as SavedSettingsError {
+            settingsError = error
+            return
+        } catch {
+            assertionFailure("SavedSettingsReader threw an unexpected error: \(error)")
+            return
+        }
         guard let timeout = idleTimeout.seconds else { return }
         let runtime = runtimeRef
         let activityAt = lastActivityAt
@@ -184,7 +235,7 @@ final class LLMManager {
     private var cache: HubCache { HubCache(cacheDirectory: cacheDirectory) }
 
     func isDownloaded(_ profile: LLMModelProfile) -> Bool {
-        LLMModelPaths.hasModelFiles(for: profile.modelID, cache: cache)
+        downloadedProfiles.contains(profile)
     }
 
     func cacheSize(for profile: LLMModelProfile) -> Int64 {
@@ -194,16 +245,30 @@ final class LLMManager {
     /// Downloads a model's weights. For the active model this reuses the live runtime (stays loaded);
     /// for others it spins up a transient runtime, fetches, then unloads.
     func downloadModel(_ profile: LLMModelProfile) async throws {
+        try Task.checkCancellation()
         if profile == selectedModel {
             let poll = startModelDownloadPolling(profile: profile, runtime: runtimeRef)
             defer { poll.cancel(); profileDownloadStatus[profile] = nil }
-            try await runtimeRef.preload()
+            let runtime = runtimeRef
+            try await withTaskCancellationHandler {
+                try await runtime.preload()
+                try Task.checkCancellation()
+            } onCancel: {
+                Task { await runtime.unload() }
+            }
+            downloadedProfiles.insert(profile)
             return
         }
         let transient = MLXLLMRuntime(modelID: profile.modelID, cacheDirectory: cacheDirectory)
         let poll = startModelDownloadPolling(profile: profile, runtime: transient)
         defer { poll.cancel(); profileDownloadStatus[profile] = nil }
-        try await transient.preload()
+        try await withTaskCancellationHandler {
+            try await transient.preload()
+            try Task.checkCancellation()
+        } onCancel: {
+            Task { await transient.unload() }
+        }
+        downloadedProfiles.insert(profile)
         await transient.unload()
     }
 
@@ -222,5 +287,6 @@ final class LLMManager {
     func removeModel(_ profile: LLMModelProfile) throws {
         if profile == selectedModel { unloadNow() }
         try LLMModelPaths.remove(modelID: profile.modelID, cache: cache)
+        downloadedProfiles.remove(profile)
     }
 }

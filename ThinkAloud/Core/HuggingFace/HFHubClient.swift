@@ -1,35 +1,74 @@
 import CryptoKit
 import Foundation
+import OSLog
+
+protocol HFHubClientProtocol: Sendable {
+    func whoami() async throws -> HFHubClient.WhoAmI
+    func createDatasetRepo(name: String, organization: String?, isPrivate: Bool) async throws
+    func updateDatasetRepoVisibility(repoID: String, isPrivate: Bool) async throws
+    func datasetRepoInfo(repoID: String) async throws -> HFHubClient.DatasetRepoInfo
+    func preupload(repoID: String, files: [HFHubClient.PreuploadFileEntry], revision: String) async throws -> [HFHubClient.PreuploadResponseFile]
+    func lfsBatch(repoID: String, objects: [HFHubClient.LFSObject], revision: String) async throws -> [HFHubClient.LFSUploadInstruction]
+    func lfsUpload(instruction: HFHubClient.LFSUploadInstruction, fileURL: URL) async throws
+    func lfsVerify(instruction: HFHubClient.LFSUploadInstruction) async throws
+    func commit(repoID: String, operations: [HFHubClient.CommitOp], revision: String) async throws -> HFHubClient.CommitResult
+}
 
 /// Minimal Hugging Face Hub API client. Implements just the endpoints needed to push a
 /// ThinkAloud dataset (whoami / create repo / preupload / LFS batch / S3 PUT / commit).
 /// All requests authenticate with a personal access token.
-actor HFHubClient {
+actor HFHubClient: HFHubClientProtocol {
     enum HFError: Error, LocalizedError {
-        case httpStatus(Int, String)
+        case httpStatus(Int)
         case malformedResponse(String)
         case lfsError(String)
+        case fileReadFailed(String, String)
 
         var errorDescription: String? {
             switch self {
-            case .httpStatus(let code, let body):
-                let snippet = body.count > 240 ? String(body.prefix(240)) + "…" : body
-                return "HTTP \(code) — \(snippet)"
-            case .malformedResponse(let msg):
-                return "Malformed response: \(msg)"
-            case .lfsError(let msg):
-                return "LFS: \(msg)"
+            case .httpStatus(401):
+                return String(localized: "Your Hugging Face token is invalid or expired. Update the token and try again.")
+            case .httpStatus(403):
+                return String(localized: "Your Hugging Face account does not have permission to update this dataset. Check the token permissions and repository access.")
+            case .httpStatus(404):
+                return String(localized: "Hugging Face could not find this dataset repository. Check the destination and your repository access.")
+            case .httpStatus(413):
+                return String(localized: "The upload request is too large. Reduce the dataset size and try again.")
+            case .httpStatus(429):
+                return String(localized: "Hugging Face is receiving too many requests. Wait a moment, then try again.")
+            case .httpStatus(let code) where (500...599).contains(code):
+                return String(localized: "Hugging Face is temporarily unavailable. Try again later.")
+            case .httpStatus:
+                return String(localized: "Hugging Face could not complete the request. Check your connection and try again.")
+            case .malformedResponse:
+                return String(localized: "Hugging Face returned a response ThinkAloud could not understand. Try again; if the problem continues, check for an app update.")
+            case .lfsError:
+                return String(localized: "Hugging Face could not complete the large-file upload. Check your connection and try again.")
+            case .fileReadFailed:
+                return String(
+                    localized: "ThinkAloud couldn’t read a file selected for upload. Restore the file or exclude audio, then try again."
+                )
             }
         }
     }
 
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "ThinkAloud",
+        category: "HuggingFace"
+    )
+
     private let token: String
     private let session: URLSession
-    private let base = URL(string: "https://huggingface.co")!
+    private let base: URL
 
-    init(token: String, session: URLSession = .shared) {
+    init(
+        token: String,
+        session: URLSession = .shared,
+        baseURL: URL = URL(string: "https://huggingface.co")!
+    ) {
         self.token = token
         self.session = session
+        self.base = baseURL
     }
 
     // MARK: - whoami
@@ -65,6 +104,37 @@ actor HFHubClient {
         try assertOK(response, data: data)
     }
 
+    struct DatasetRepoInfo: Sendable, Equatable {
+        let id: String
+        let isPrivate: Bool
+    }
+
+    /// Applies visibility to both new and existing repos. `createDatasetRepo` is intentionally not
+    /// trusted as proof because a 409 means an existing repo kept its previous visibility.
+    func updateDatasetRepoVisibility(repoID: String, isPrivate: Bool) async throws {
+        let url = base.appendingPathComponent("api/datasets/\(repoID)/settings")
+        let (data, response) = try await put(
+            url,
+            json: ["visibility": isPrivate ? "private" : "public"]
+        )
+        try assertOK(response, data: data)
+    }
+
+    func datasetRepoInfo(repoID: String) async throws -> DatasetRepoInfo {
+        let url = base.appendingPathComponent("api/datasets/\(repoID)")
+        let (data, response) = try await get(url)
+        try assertOK(response, data: data)
+        guard let object = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let id = object["id"] as? String,
+              let isPrivate = object["private"] as? Bool else {
+            throw HFError.malformedResponse("dataset info is missing id or private")
+        }
+        guard id.caseInsensitiveCompare(repoID) == .orderedSame else {
+            throw HFError.malformedResponse("dataset info returned a different repository id")
+        }
+        return DatasetRepoInfo(id: id, isPrivate: isPrivate)
+    }
+
     // MARK: - Preupload (dedup + LFS routing)
 
     struct PreuploadFileEntry: Sendable {
@@ -94,11 +164,17 @@ actor HFHubClient {
               let arr = obj["files"] as? [[String: Any]] else {
             throw HFError.malformedResponse("preupload missing files[]")
         }
-        return arr.map {
-            PreuploadResponseFile(
-                path: ($0["path"] as? String) ?? "",
-                uploadMode: ($0["uploadMode"] as? String) ?? "regular",
-                shouldIgnore: ($0["shouldIgnore"] as? Bool) ?? false
+        return try arr.map { entry in
+            guard let path = entry["path"] as? String,
+                  let uploadMode = entry["uploadMode"] as? String,
+                  ["regular", "lfs"].contains(uploadMode),
+                  let shouldIgnore = entry["shouldIgnore"] as? Bool else {
+                throw HFError.malformedResponse("preupload contains an invalid file entry")
+            }
+            return PreuploadResponseFile(
+                path: path,
+                uploadMode: uploadMode,
+                shouldIgnore: shouldIgnore
             )
         }
     }
@@ -273,11 +349,15 @@ actor HFHubClient {
 
         let (data, response) = try await session.data(for: request)
         try assertOK(response, data: data)
-        let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let obj = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let commitOid = obj["commitOid"] as? String,
+              let commitURL = obj["commitUrl"] as? String else {
+            throw HFError.malformedResponse("commit response is missing commitOid or commitUrl")
+        }
         return CommitResult(
-            commitOid: obj?["commitOid"] as? String,
-            commitURL: obj?["commitUrl"] as? String,
-            pullRequestURL: obj?["pullRequestUrl"] as? String
+            commitOid: commitOid,
+            commitURL: commitURL,
+            pullRequestURL: obj["pullRequestUrl"] as? String
         )
     }
 
@@ -286,19 +366,28 @@ actor HFHubClient {
     /// SHA256 hex + size over a file's contents, computed in 1 MB chunks so large WAVs don't load into RAM.
     nonisolated static func sha256Hex(fileURL: URL) throws -> (oid: String, size: Int) {
         let handle = try FileHandle(forReadingFrom: fileURL)
-        defer { try? handle.close() }
         var hasher = SHA256()
         var total = 0
-        while autoreleasepool(invoking: { () -> Bool in
-            do {
-                guard let chunk = try handle.read(upToCount: 1024 * 1024), !chunk.isEmpty else { return false }
+        do {
+            while true {
+                let chunk = try autoreleasepool {
+                    try handle.read(upToCount: 1024 * 1024) ?? Data()
+                }
+                guard !chunk.isEmpty else { break }
                 hasher.update(data: chunk)
                 total += chunk.count
-                return true
-            } catch {
-                return false
             }
-        }) {}
+            try handle.close()
+        } catch {
+            do {
+                try handle.close()
+            } catch {
+                logger.warning(
+                    "Could not close \(fileURL.path, privacy: .private) after a read failure: \(error.localizedDescription, privacy: .private)"
+                )
+            }
+            throw HFError.fileReadFailed(fileURL.path, error.localizedDescription)
+        }
         let digest = hasher.finalize()
         let hex = digest.map { String(format: "%02x", $0) }.joined()
         return (hex, total)
@@ -307,9 +396,20 @@ actor HFHubClient {
     /// First-N-bytes sample as base64 (HF uses this for preupload dedup hint).
     nonisolated static func sampleBase64(fileURL: URL, bytes: Int = 512) throws -> String {
         let handle = try FileHandle(forReadingFrom: fileURL)
-        defer { try? handle.close() }
-        let data = try handle.read(upToCount: bytes) ?? Data()
-        return data.base64EncodedString()
+        do {
+            let data = try handle.read(upToCount: bytes) ?? Data()
+            try handle.close()
+            return data.base64EncodedString()
+        } catch {
+            do {
+                try handle.close()
+            } catch {
+                logger.warning(
+                    "Could not close \(fileURL.path, privacy: .private) after a sample read failure: \(error.localizedDescription, privacy: .private)"
+                )
+            }
+            throw HFError.fileReadFailed(fileURL.path, error.localizedDescription)
+        }
     }
 
     // MARK: - Helpers
@@ -332,13 +432,26 @@ actor HFHubClient {
         return try await session.data(for: request)
     }
 
+    private func put(_ url: URL, json body: [String: Any]) async throws -> (Data, URLResponse) {
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        return try await session.data(for: request)
+    }
+
     private func assertOK(_ response: URLResponse, data: Data) throws {
         guard let http = response as? HTTPURLResponse else {
             throw HFError.malformedResponse("not an HTTP response")
         }
         if !(200..<300).contains(http.statusCode) {
             let body = String(data: data, encoding: .utf8) ?? ""
-            throw HFError.httpStatus(http.statusCode, body)
+            Self.logger.error(
+                "Hugging Face HTTP \(http.statusCode, privacy: .public). Response body: \(body, privacy: .private)"
+            )
+            throw HFError.httpStatus(http.statusCode)
         }
     }
 }

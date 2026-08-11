@@ -6,7 +6,7 @@ struct PermissionsStep: View {
             VStack(alignment: .leading, spacing: 18) {
                 OnboardingHeader(
                     title: "Grant permissions",
-                    subtitle: "ThinkAloud needs two macOS permissions. You can change these anytime in System Settings."
+                    subtitle: "Microphone access is required to dictate. Accessibility is optional and lets ThinkAloud paste for you."
                 )
 
                 // Same view (and the same live re-check machinery) the Settings Permissions pane uses.

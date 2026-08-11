@@ -46,17 +46,43 @@ final class LLMConfigTests: XCTestCase {
         XCTAssertTrue(cfg.isAnyProfileEnabled)
     }
 
-    // MARK: - Codable migration (decodeIfPresent — partial JSON never resets settings)
+    // MARK: - Canonical Codable contract
 
-    func testPartialJSONDecodesWithDefaults() throws {
-        // Older/partial payload missing newer keys must not throw — it should fill defaults.
-        let json = #"{"defaultProfile":{"enabled":true,"systemPrompt":"HI"}}"#.data(using: .utf8)!
-        let cfg = try JSONDecoder().decode(LLMPostEditConfig.self, from: json)
-        XCTAssertTrue(cfg.defaultProfile.enabled)
-        XCTAssertEqual(cfg.defaultProfile.systemPrompt, "HI")
-        XCTAssertEqual(cfg.defaultProfile.backend, .mlx, "missing backend → default .mlx")
-        XCTAssertEqual(cfg.defaultProfile.temperature, 0.3, accuracy: 1e-9)
-        XCTAssertTrue(cfg.perApp.isEmpty, "missing perApp → empty")
+    func testRejectsLLMProfilePayloadMissingAnyCanonicalKey() {
+        let partialProfiles = [
+            #"{"backend":"mlx","systemPrompt":"HI","temperature":0.3}"#,
+            #"{"enabled":true,"systemPrompt":"HI","temperature":0.3}"#,
+            #"{"enabled":true,"backend":"mlx","temperature":0.3}"#,
+            #"{"enabled":true,"backend":"mlx","systemPrompt":"HI"}"#
+        ]
+
+        for json in partialProfiles {
+            XCTAssertThrowsError(
+                try JSONDecoder().decode(LLMProfileConfig.self, from: Data(json.utf8))
+            ) { error in
+                guard case DecodingError.keyNotFound = error else {
+                    return XCTFail("Expected keyNotFound for partial LLMProfileConfig, got \(error)")
+                }
+            }
+        }
+    }
+
+    func testRejectsLLMPostEditPayloadMissingAnyCanonicalKey() {
+        let profile = #"{"enabled":true,"backend":"mlx","systemPrompt":"HI","temperature":0.3}"#
+        let partialPayloads = [
+            #"{"perApp":{}}"#,
+            #"{"defaultProfile":\#(profile)}"#
+        ]
+
+        for json in partialPayloads {
+            XCTAssertThrowsError(
+                try JSONDecoder().decode(LLMPostEditConfig.self, from: Data(json.utf8))
+            ) { error in
+                guard case DecodingError.keyNotFound = error else {
+                    return XCTFail("Expected keyNotFound for partial LLMPostEditConfig, got \(error)")
+                }
+            }
+        }
     }
 
     func testRoundTrip() throws {
@@ -65,6 +91,89 @@ final class LLMConfigTests: XCTestCase {
         let data = try JSONEncoder().encode(cfg)
         let back = try JSONDecoder().decode(LLMPostEditConfig.self, from: data)
         XCTAssertEqual(cfg, back)
+    }
+
+    @MainActor
+    func testLLMManagerUsesDefaultsOnlyWhenKeysAreUnset() throws {
+        let suiteName = "LLMConfigTests.Unset.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let cacheDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ThinkAloud-LLMSettings-\(UUID().uuidString)", isDirectory: true)
+
+        let manager = try LLMManager(cacheDirectory: cacheDirectory, defaults: defaults)
+
+        XCTAssertEqual(manager.selectedModel, .recommended)
+        XCTAssertEqual(manager.config, .default)
+    }
+
+    @MainActor
+    func testLLMManagerRejectsEveryInvalidSavedCanonicalSetting() {
+        let suiteName = "LLMConfigTests.Invalid.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let cacheDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ThinkAloud-InvalidLLMSettings-\(UUID().uuidString)", isDirectory: true)
+        let cases: [(key: String, value: Any, expected: SavedSettingsError)] = [
+            (
+                "ThinkAloud.llmModelProfile",
+                "retired-model",
+                .invalidSavedValue(.refineModel)
+            ),
+            (
+                "ThinkAloud.llmPostEditConfig",
+                Data(#"{"defaultProfile":{"enabled":true}}"#.utf8),
+                .invalidSavedValue(.refineConfiguration)
+            ),
+            (
+                "ThinkAloud.idleTimeout",
+                "twoWeeks",
+                .invalidSavedValue(.idleTimeout)
+            )
+        ]
+
+        for testCase in cases {
+            defaults.removePersistentDomain(forName: suiteName)
+            defaults.set(testCase.value, forKey: testCase.key)
+            XCTAssertThrowsError(
+                try LLMManager(cacheDirectory: cacheDirectory, defaults: defaults)
+            ) { error in
+                XCTAssertEqual(error as? SavedSettingsError, testCase.expected)
+            }
+        }
+    }
+
+    @MainActor
+    func testLLMManagerSurfacesEncodingFailureAndClearsItAfterSuccessfulSave() throws {
+        let suiteName = "LLMConfigTests.Persistence.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let cacheDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ThinkAloud-LLMPersistence-\(UUID().uuidString)", isDirectory: true)
+        let manager = try LLMManager(cacheDirectory: cacheDirectory, defaults: defaults)
+
+        manager.config.defaultProfile.temperature = .nan
+        XCTAssertEqual(manager.settingsError, .encodingFailed(.refineConfiguration))
+
+        manager.config.defaultProfile.temperature = 0.3
+        XCTAssertNil(manager.settingsError)
+        XCTAssertNotNil(defaults.data(forKey: "ThinkAloud.llmPostEditConfig"))
+    }
+
+    func testInvalidSavedSettingsExposeOnlyTheirExactCanonicalRecoveryKey() {
+        XCTAssertEqual(
+            SavedSettingsError.invalidSavedValue(.speechModel).invalidPreferenceKey,
+            "ThinkAloud.modelProfile"
+        )
+        XCTAssertEqual(
+            SavedSettingsError.invalidSavedValue(.postEdit).invalidPreferenceKey,
+            "ThinkAloud.postEditConfig"
+        )
+        XCTAssertEqual(
+            SavedSettingsError.invalidSavedValue(.refineConfiguration).invalidPreferenceKey,
+            "ThinkAloud.llmPostEditConfig"
+        )
+        XCTAssertNil(SavedSettingsError.encodingFailed(.postEdit).invalidPreferenceKey)
     }
 
     // MARK: - Reasoning strip (Qwen3 <think> blocks must never reach the editor/dataset)

@@ -24,24 +24,17 @@ struct DatasetRecord: Codable, FetchableRecord, PersistableRecord, Sendable, Equ
     var editedTranscript: String
 
     var inserted: Bool
-    var savedToDataset: Bool
-
     var language: String?
     var metadataJSON: String?
 
-    /// The transcript after the Auto Post-Edit pipeline ran (Chinese conversion, spacing, custom
-    /// dictionary) but BEFORE any manual human correction. Lets us separate automatic formatting
-    /// from real human edits: `raw → autoEdited` is the auto-format delta, `autoEdited → edited`
-    /// is what the person actually fixed. `nil` for records saved before v0.4.0 (no migration
-    /// backfill is possible — the intermediate text was never captured); such rows are EXCLUDED from
-    /// the edit/clean metrics (not counted in `eligibleCount`), never charged as a human edit — the
-    /// stats engine must never substitute `rawTranscript` here (that would punish S↔T-conversion users).
-    /// Appended last + defaulted so the synthesized memberwise init keeps existing call sites valid.
+    /// The transcript after Auto Post-Edit (Chinese conversion, spacing, custom dictionary) and
+    /// before AI Refine or manual correction. New records must contain this stage. It remains `nil`
+    /// for records saved before v0.4.0 because that historical intermediate cannot be reconstructed
+    /// safely; consumers exclude those rows from edit metrics instead of guessing a fallback value.
     var autoEditedTranscript: String? = nil
 
     /// The transcript after the AI Refine (LLM) stage, before any manual human correction. `nil` when
-    /// no LLM stage ran (feature off / model not ready / refusal fallback). Pipeline:
-    /// `raw → autoEdited → llmEdited → edited`. Appended last + defaulted (keeps the memberwise init valid).
+    /// no LLM stage ran. Pipeline: `raw → autoEdited → llmEdited? → edited`.
     var llmEditedTranscript: String? = nil
 
     enum CodingKeys: String, CodingKey {
@@ -60,7 +53,6 @@ struct DatasetRecord: Codable, FetchableRecord, PersistableRecord, Sendable, Equ
         case rawTranscript = "raw_transcript"
         case editedTranscript = "edited_transcript"
         case inserted
-        case savedToDataset = "saved_to_dataset"
         case language
         case metadataJSON = "metadata_json"
         case autoEditedTranscript = "auto_edited_transcript"

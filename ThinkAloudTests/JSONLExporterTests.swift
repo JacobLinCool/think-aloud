@@ -24,9 +24,9 @@ final class JSONLExporterTests: XCTestCase {
                 rawTranscript: "raw \(i)",
                 editedTranscript: "edited \(i)",
                 inserted: i % 2 == 0,
-                savedToDataset: true,
                 language: "en",
-                metadataJSON: nil
+                metadataJSON: nil,
+                autoEditedTranscript: "edited \(i)"
             )
         }
         let url = tempDir.appendingPathComponent("export.jsonl")

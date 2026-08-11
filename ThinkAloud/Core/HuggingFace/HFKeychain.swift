@@ -10,11 +10,18 @@ enum HFKeychain {
 
     enum KeychainError: Error, LocalizedError {
         case unhandled(OSStatus)
+        case invalidTokenData
 
         var errorDescription: String? {
             switch self {
-            case .unhandled(let status):
-                return "Keychain error \(status)"
+            case .unhandled:
+                return String(
+                    localized: "ThinkAloud couldn’t access the Hugging Face token in Keychain. Check Keychain access and try again."
+                )
+            case .invalidTokenData:
+                return String(
+                    localized: "The Hugging Face token in Keychain is unreadable. Replace or clear it in Dataset settings."
+                )
             }
         }
     }
@@ -26,18 +33,36 @@ enum HFKeychain {
             kSecAttrService as String: service,
             kSecAttrAccount as String: account
         ]
-        // Overwrite by deleting + re-adding. SecItemUpdate would also work but this is simpler.
-        SecItemDelete(query as CFDictionary)
-        var attrs = query
-        attrs[kSecValueData as String] = data
-        attrs[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
-        let status = SecItemAdd(attrs as CFDictionary, nil)
-        if status != errSecSuccess {
-            throw KeychainError.unhandled(status)
+        let replacement: [String: Any] = [
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock
+        ]
+
+        // Updating preserves the existing credential if Keychain rejects the replacement. A
+        // delete-then-add sequence can permanently destroy a valid token on any add failure.
+        let updateStatus = SecItemUpdate(
+            query as CFDictionary,
+            replacement as CFDictionary
+        )
+        switch updateStatus {
+        case errSecSuccess:
+            return
+        case errSecItemNotFound:
+            var attributes = query
+            replacement.forEach { attributes[$0.key] = $0.value }
+            let addStatus = SecItemAdd(attributes as CFDictionary, nil)
+            guard addStatus == errSecSuccess else {
+                throw KeychainError.unhandled(addStatus)
+            }
+        default:
+            throw KeychainError.unhandled(updateStatus)
         }
     }
 
-    static func get(service: String = defaultService, account: String = defaultAccount) -> String? {
+    static func get(
+        service: String = defaultService,
+        account: String = defaultAccount
+    ) throws -> String? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -47,8 +72,15 @@ enum HFKeychain {
         ]
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
-        guard status == errSecSuccess, let data = result as? Data else { return nil }
-        return String(data: data, encoding: .utf8)
+        if status == errSecItemNotFound { return nil }
+        guard status == errSecSuccess else {
+            throw KeychainError.unhandled(status)
+        }
+        guard let data = result as? Data,
+              let token = String(data: data, encoding: .utf8) else {
+            throw KeychainError.invalidTokenData
+        }
+        return token
     }
 
     static func delete(service: String = defaultService, account: String = defaultAccount) throws {

@@ -3,7 +3,15 @@ import ApplicationServices
 import Foundation
 
 @MainActor
-final class TextInsertionManager {
+protocol TextInserting: AnyObject {
+    func insert(
+        _ text: String,
+        into focus: FocusContext?
+    ) async -> TextInsertionManager.InsertionOutcome
+}
+
+@MainActor
+final class TextInsertionManager: TextInserting {
     enum InsertionError: Error, LocalizedError {
         case accessibilityDenied
         case clipboardWriteFailed
@@ -11,9 +19,16 @@ final class TextInsertionManager {
 
         var errorDescription: String? {
             switch self {
-            case .accessibilityDenied: return "Accessibility permission is required to paste text into other apps."
-            case .clipboardWriteFailed: return "Failed to write to the clipboard."
-            case .eventPostFailed: return "Failed to post the paste keyboard event."
+            case .accessibilityDenied:
+                return String(
+                    localized: "Accessibility permission is required to paste text into other apps."
+                )
+            case .clipboardWriteFailed:
+                return String(localized: "ThinkAloud couldn’t write the transcript to the clipboard.")
+            case .eventPostFailed:
+                return String(
+                    localized: "ThinkAloud couldn’t paste into the previous app. The transcript remains on the clipboard."
+                )
             }
         }
     }
@@ -23,6 +38,7 @@ final class TextInsertionManager {
         let inserted: Bool
         let copiedToClipboard: Bool
         let message: String
+        let requiresAttention: Bool
     }
 
     static let restoreDelay: TimeInterval = 0.3
@@ -35,11 +51,22 @@ final class TextInsertionManager {
         pasteboard.clearContents()
         let writeSuccess = pasteboard.setString(text, forType: .string)
         guard writeSuccess else {
-            return InsertionOutcome(inserted: false, copiedToClipboard: false, message: String(localized: "Failed to write to clipboard."))
+            return InsertionOutcome(
+                inserted: false,
+                copiedToClipboard: false,
+                message: String(localized: "ThinkAloud couldn’t copy the transcript. Keep this window open and try again."),
+                requiresAttention: true
+            )
         }
+        let transcriptChangeCount = pasteboard.changeCount
 
         guard ensureAccessibility(prompt: true) else {
-            return InsertionOutcome(inserted: false, copiedToClipboard: true, message: String(localized: "Accessibility permission missing. Text copied to clipboard — please paste manually."))
+            return InsertionOutcome(
+                inserted: false,
+                copiedToClipboard: true,
+                message: String(localized: "The transcript is on the clipboard. Paste it manually, or enable Accessibility in Settings."),
+                requiresAttention: true
+            )
         }
 
         if let pid = focus?.processID, let app = NSRunningApplication(processIdentifier: pid) {
@@ -49,12 +76,48 @@ final class TextInsertionManager {
 
         let posted = postPasteEvent()
         if !posted {
-            return InsertionOutcome(inserted: false, copiedToClipboard: true, message: String(localized: "Failed to send paste event. Text copied — please paste manually."))
+            return InsertionOutcome(
+                inserted: false,
+                copiedToClipboard: true,
+                message: String(localized: "ThinkAloud couldn’t paste automatically. The transcript is on the clipboard for manual pasting."),
+                requiresAttention: true
+            )
         }
 
-        try? await Task.sleep(nanoseconds: UInt64(Self.restoreDelay * 1_000_000_000))
-        restorePasteboardItems(previousItems, on: pasteboard)
-        return InsertionOutcome(inserted: true, copiedToClipboard: true, message: String(localized: "Inserted."))
+        do {
+            try await Task.sleep(for: .seconds(Self.restoreDelay))
+        } catch {
+            return InsertionOutcome(
+                inserted: true,
+                copiedToClipboard: true,
+                message: String(localized: "The transcript was inserted, but ThinkAloud couldn’t restore the previous clipboard contents."),
+                requiresAttention: true
+            )
+        }
+
+        // Never overwrite content copied by the user or another app while the paste was settling.
+        guard pasteboard.changeCount == transcriptChangeCount else {
+            return InsertionOutcome(
+                inserted: true,
+                copiedToClipboard: false,
+                message: String(localized: "Inserted. Newer clipboard contents were preserved."),
+                requiresAttention: false
+            )
+        }
+        guard restorePasteboardItems(previousItems, on: pasteboard) else {
+            return InsertionOutcome(
+                inserted: true,
+                copiedToClipboard: false,
+                message: String(localized: "The transcript was inserted, but ThinkAloud couldn’t restore the previous clipboard contents."),
+                requiresAttention: true
+            )
+        }
+        return InsertionOutcome(
+            inserted: true,
+            copiedToClipboard: false,
+            message: String(localized: "Inserted."),
+            requiresAttention: false
+        )
     }
 
     /// Returns true if accessibility is granted. When prompt is true, surfaces the system prompt the first time it's checked.
@@ -96,10 +159,13 @@ final class TextInsertionManager {
         return snapshots
     }
 
-    private func restorePasteboardItems(_ items: [NSPasteboardItem], on pasteboard: NSPasteboard) {
+    @discardableResult
+    private func restorePasteboardItems(
+        _ items: [NSPasteboardItem],
+        on pasteboard: NSPasteboard
+    ) -> Bool {
         pasteboard.clearContents()
-        if !items.isEmpty {
-            pasteboard.writeObjects(items)
-        }
+        guard !items.isEmpty else { return true }
+        return pasteboard.writeObjects(items)
     }
 }

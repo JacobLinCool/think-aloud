@@ -4,6 +4,7 @@ import SwiftUI
 /// middle (animated when it changes), and a shared navigation bar at the bottom.
 struct OnboardingScene: View {
     @Environment(AppContainer.self) private var container
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(spacing: 0) {
@@ -16,10 +17,7 @@ struct OnboardingScene: View {
             currentStep
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .id(container.onboardingState.step)
-                .transition(.asymmetric(
-                    insertion: .move(edge: .trailing).combined(with: .opacity),
-                    removal: .move(edge: .leading).combined(with: .opacity)
-                ))
+                .transition(stepTransition)
 
             Divider()
 
@@ -28,7 +26,15 @@ struct OnboardingScene: View {
                 .padding(.vertical, 14)
         }
         .frame(width: 640, height: 600)
-        .animation(.easeInOut(duration: 0.25), value: container.onboardingState.step)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: container.onboardingState.step)
+    }
+
+    private var stepTransition: AnyTransition {
+        if reduceMotion { return .opacity }
+        return .asymmetric(
+            insertion: .move(edge: .trailing).combined(with: .opacity),
+            removal: .move(edge: .leading).combined(with: .opacity)
+        )
     }
 
     @ViewBuilder
@@ -58,6 +64,16 @@ struct OnboardingStepIndicator: View {
                     .frame(width: step == current ? 24 : 8, height: 8)
             }
         }
+        .accessibilityRepresentation {
+            ProgressView(
+                value: Double(current.rawValue + 1),
+                total: Double(OnboardingStep.allCases.count)
+            ) {
+                Text("Setup progress")
+            } currentValueLabel: {
+                Text("Step \(current.rawValue + 1) of \(OnboardingStep.allCases.count): \(current.title)")
+            }
+        }
     }
 }
 
@@ -78,7 +94,7 @@ struct OnboardingNavBar: View {
             Spacer()
             if !container.onboardingState.isLastStep {
                 Button(String(localized: "Skip setup")) {
-                    container.finishOnboarding()
+                    container.finishOnboarding(as: .skipped)
                 }
                 .buttonStyle(.link)
             }
@@ -96,18 +112,30 @@ struct OnboardingNavBar: View {
         }
     }
 
-    /// The only gated step is Model: you can't advance with "Continue" until the chosen
-    /// model is on disk (or loaded). The Model step still offers its own "Download later"
-    /// escape, and "Skip setup" is always available.
     private var primaryDisabled: Bool {
-        guard container.onboardingState.step == .model else { return false }
+        switch container.onboardingState.step {
+        case .permissions:
+            return container.permissions.microphoneStatus != .granted
+        case .model:
+            return !readiness.modelReady
+        case .finish:
+            return !readiness.canFinish
+        case .welcome, .tutorial:
+            return false
+        }
+    }
+
+    private var readiness: OnboardingReadiness {
         let manager = container.modelManager
-        return !(manager.runtimeStatus.isReady || manager.isDownloaded(manager.profile))
+        return OnboardingReadiness(
+            microphoneGranted: container.permissions.microphoneStatus == .granted,
+            modelReady: manager.runtimeStatus.isReady || manager.isDownloaded(manager.profile)
+        )
     }
 
     private func advance() {
         if container.onboardingState.isLastStep {
-            container.finishOnboarding()
+            container.finishOnboarding(as: .completed)
         } else {
             container.onboardingState.next()
         }
@@ -141,6 +169,7 @@ struct OnboardingFeatureRow: View {
             Image(systemName: icon)
                 .foregroundStyle(.tint)
                 .frame(width: 22)
+                .accessibilityHidden(true)
             Text(text)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)

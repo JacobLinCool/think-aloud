@@ -15,46 +15,42 @@ struct BenchmarkResult: Sendable, Identifiable, Codable, Equatable {
     let cer: Double
     let exactMatch: Bool
 
-    // Lenient scoring — aggressive normalization (lowercase, full→half width, strip punctuation).
-    // Matches the convention Whisper-style ASR benchmarks report. Optional for forward-compat
-    // with any legacy in-memory report objects that predate this field.
-    let editDistanceNormalized: Int?
-    let referenceLengthNormalized: Int?
-    let cerNormalized: Double?
-    let exactMatchNormalized: Bool?
+    // Lenient scoring — aggressive normalization (lowercase, full-width → half-width,
+    // strip punctuation). Matches the convention Whisper-style ASR benchmarks report.
+    let editDistanceNormalized: Int
+    let referenceLengthNormalized: Int
+    let cerNormalized: Double
+    let exactMatchNormalized: Bool
 
     // Word Error Rate (light = whitespace-only normalization, normalized = aggressive).
-    // Optional for forward-compat with reports that predate the metric.
-    let wer: Double?
-    let werNormalized: Double?
+    let wer: Double
+    let werNormalized: Double
 
     let durationMs: Int
-    /// Decoded audio length in milliseconds. Drives RTF (processing ÷ audio). Optional for
-    /// forward-compat and nil when audio decode failed.
-    let audioDurationMs: Int?
+    /// Decoded audio length in milliseconds. Zero when audio decode failed.
+    let audioDurationMs: Int
     let error: String?
 
     var passed: Bool { error == nil }
 
-    /// Pick the right metric tuple based on the user's display toggle. Falls back to the strict
-    /// fields when an older report doesn't carry normalized values.
     func cer(useNormalized: Bool) -> Double {
-        useNormalized ? (cerNormalized ?? cer) : cer
+        useNormalized ? cerNormalized : cer
     }
     func wer(useNormalized: Bool) -> Double {
-        useNormalized ? (werNormalized ?? 0) : (wer ?? 0)
+        useNormalized ? werNormalized : wer
     }
     func exactMatch(useNormalized: Bool) -> Bool {
-        useNormalized ? (exactMatchNormalized ?? exactMatch) : exactMatch
+        useNormalized ? exactMatchNormalized : exactMatch
     }
     /// Real-Time Factor: processing time ÷ audio length. nil when audio length is unknown.
     var rtf: Double? {
-        guard let audioDurationMs, audioDurationMs > 0 else { return nil }
+        guard audioDurationMs > 0 else { return nil }
         return Double(durationMs) / Double(audioDurationMs)
     }
 }
 
 struct BenchmarkReport: Sendable, Codable {
+    let runID: String
     let modelID: String
     let preEdit: PreEditConfig
     let postEdit: PostEditConfig
@@ -93,13 +89,17 @@ struct BenchmarkReport: Sendable, Codable {
     /// Overall Real-Time Factor: total processing time ÷ total audio length across records with
     /// a known audio length. Weighting by audio length means long clips dominate (the standard
     /// throughput-style RTF) rather than each clip counting equally. nil when no record carries
-    /// duration data (e.g. an older report), letting the UI show a placeholder.
+    /// duration data, letting the UI show a placeholder.
     var averageRTF: Double? {
-        let valid = results.filter { $0.error == nil && ($0.audioDurationMs ?? 0) > 0 }
-        let totalAudioMs = valid.reduce(0) { $0 + ($1.audioDurationMs ?? 0) }
+        let valid = results.filter { $0.error == nil && $0.audioDurationMs > 0 }
+        let totalAudioMs = valid.reduce(0) { $0 + $1.audioDurationMs }
         guard totalAudioMs > 0 else { return nil }
         let totalProcessingMs = valid.reduce(0) { $0 + $1.durationMs }
         return Double(totalProcessingMs) / Double(totalAudioMs)
+    }
+
+    static func makeRunID() -> String {
+        UUID().uuidString.lowercased()
     }
 }
 
@@ -114,12 +114,16 @@ struct BenchmarkProgress: Sendable {
 /// record in a dataset slice, comparing against the stored editedTranscript. Honors Task
 /// cancellation between records.
 actor BenchmarkRunner {
+    private enum RunnerError: Error {
+        case emptyDecodedAudio
+    }
+
     func run(
         records: [DatasetRecord],
         runtime: any ASRRuntime,
         postEdit: PostEditConfig,
         preEdit: PreEditConfig = .default,
-        audioURLProvider: @Sendable (DatasetRecord) async -> URL,
+        audioURLProvider: @Sendable (DatasetRecord) async throws -> URL,
         denoise: (@Sendable ([Float]) async throws -> [Float])? = nil,
         progress: @Sendable (BenchmarkProgress) async -> Void = { _ in }
     ) async throws -> BenchmarkReport {
@@ -130,7 +134,25 @@ actor BenchmarkRunner {
             try Task.checkCancellation()
             await progress(BenchmarkProgress(completed: index, total: records.count, currentRecordID: record.id))
 
-            let audioURL = await audioURLProvider(record)
+            let audioURL: URL
+            do {
+                audioURL = try await audioURLProvider(record)
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {
+                results.append(
+                    failure(
+                        record: record,
+                        groundTruth: record.editedTranscript,
+                        error: error,
+                        userMessage: String(
+                            localized: "This recording’s audio file is unavailable. Restore the file, then run the benchmark again."
+                        ),
+                        start: Date()
+                    )
+                )
+                continue
+            }
             let result = await transcribe(record: record, audioURL: audioURL, runtime: runtime, postEdit: postEdit, denoiseMode: preEdit.denoise, denoise: preEdit.denoise != .off ? denoise : nil)
             results.append(result)
         }
@@ -138,9 +160,18 @@ actor BenchmarkRunner {
         try Task.checkCancellation()
         await progress(BenchmarkProgress(completed: records.count, total: records.count, currentRecordID: ""))
 
-        let modelID = await runtime.modelID
-        let runAt = ISO8601DateFormatter().string(from: Date())
-        return BenchmarkReport(modelID: modelID, preEdit: preEdit, postEdit: postEdit, runAt: runAt, results: results)
+        let modelID = runtime.modelID
+        let timestampFormatter = ISO8601DateFormatter()
+        timestampFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let runAt = timestampFormatter.string(from: Date())
+        return BenchmarkReport(
+            runID: BenchmarkReport.makeRunID(),
+            modelID: modelID,
+            preEdit: preEdit,
+            postEdit: postEdit,
+            runAt: runAt,
+            results: results
+        )
     }
 
     private func transcribe(record: DatasetRecord, audioURL: URL, runtime: any ASRRuntime, postEdit: PostEditConfig, denoiseMode: DenoiseMode, denoise: (@Sendable ([Float]) async throws -> [Float])?) async -> BenchmarkResult {
@@ -167,7 +198,26 @@ actor BenchmarkRunner {
                 audioDurationMs = sampleRate > 0 ? Int(Double(samples.count) / Double(sampleRate) * 1000) : 0
             }
         } catch {
-            return failure(record: record, groundTruth: groundTruth, error: error, start: start)
+            return failure(
+                record: record,
+                groundTruth: groundTruth,
+                error: error,
+                userMessage: String(
+                    localized: "This recording’s audio could not be prepared. Verify the file, then run the benchmark again."
+                ),
+                start: start
+            )
+        }
+        guard !samples.isEmpty, audioDurationMs > 0 else {
+            return failure(
+                record: record,
+                groundTruth: groundTruth,
+                error: RunnerError.emptyDecodedAudio,
+                userMessage: String(
+                    localized: "This recording contains no decodable audio. Restore a valid file, then run the benchmark again."
+                ),
+                start: start
+            )
         }
 
         // Run the streaming pipeline end-to-end.
@@ -183,7 +233,15 @@ actor BenchmarkRunner {
                 }
             }
         } catch {
-            return failure(record: record, groundTruth: groundTruth, error: error, start: start)
+            return failure(
+                record: record,
+                groundTruth: groundTruth,
+                error: error,
+                userMessage: String(
+                    localized: "The speech model could not process this recording. Verify the model, then run the benchmark again."
+                ),
+                start: start
+            )
         }
 
         let editedText = TranscriptPostProcessor.apply(postEdit, to: rawText)
@@ -224,7 +282,14 @@ actor BenchmarkRunner {
         )
     }
 
-    private func failure(record: DatasetRecord, groundTruth: String, error: Error, start: Date) -> BenchmarkResult {
+    private func failure(
+        record: DatasetRecord,
+        groundTruth: String,
+        error: Error,
+        userMessage: String,
+        start: Date
+    ) -> BenchmarkResult {
+        NSLog("ThinkAloud: benchmark failed for record \(record.id): \(error)")
         let elapsedMs = Int(Date().timeIntervalSince(start) * 1000)
         return BenchmarkResult(
             id: record.id,
@@ -243,8 +308,8 @@ actor BenchmarkRunner {
             wer: 0,
             werNormalized: 0,
             durationMs: elapsedMs,
-            audioDurationMs: nil,
-            error: String(describing: error)
+            audioDurationMs: 0,
+            error: userMessage
         )
     }
 }

@@ -7,10 +7,18 @@ import Observation
 @MainActor
 @Observable
 final class AudioPlayerController: NSObject, AVAudioPlayerDelegate {
+    enum LoadState: Equatable {
+        case idle
+        case loading
+        case ready
+        case error(String)
+    }
+
     private(set) var playingID: String?
     private(set) var isPlaying: Bool = false
     private(set) var duration: TimeInterval = 0
     private(set) var currentTime: TimeInterval = 0
+    private(set) var loadState: LoadState = .idle
 
     /// While true, the polling task does not overwrite `currentTime`. The detail view sets
     /// this during a Slider drag so the scrub position doesn't fight with playback position.
@@ -25,11 +33,29 @@ final class AudioPlayerController: NSObject, AVAudioPlayerDelegate {
     private var player: AVAudioPlayer?
     private var pollingTask: Task<Void, Never>?
 
+    func beginLoading(id: String) {
+        stop()
+        playingID = id
+        loadState = .loading
+    }
+
+    func reportLoadError(_ error: Error, id: String) {
+        NSLog("ThinkAloud: audio lookup failed for record \(id): \(error)")
+        stop()
+        playingID = id
+        loadState = .error(
+            String(
+                localized: "The recording’s audio file is unavailable. Refresh the dataset after restoring the file."
+            )
+        )
+    }
+
     /// Loads the file without starting playback. Lets the detail view show a scrubbable Slider
     /// with the correct duration before the user clicks ▶.
     func prepare(url: URL, id: String) {
-        if playingID == id { return }
+        if playingID == id, loadState == .ready { return }
         stop()
+        loadState = .loading
         do {
             let p = try AVAudioPlayer(contentsOf: url)
             p.delegate = self
@@ -39,8 +65,14 @@ final class AudioPlayerController: NSObject, AVAudioPlayerDelegate {
             self.duration = p.duration
             self.currentTime = 0
             self.isPlaying = false
+            self.loadState = .ready
         } catch {
-            NSLog("ThinkAloud: AudioPlayer prepare failed for \(url.lastPathComponent): \(error)")
+            NSLog("ThinkAloud: audio player preparation failed for record \(id): \(error)")
+            loadState = .error(
+                String(
+                    localized: "The recording couldn’t be loaded. Verify the audio file, then try again."
+                )
+            )
         }
     }
 
@@ -52,28 +84,46 @@ final class AudioPlayerController: NSObject, AVAudioPlayerDelegate {
                 isPlaying = false
                 stopPolling()
             } else {
-                player.play()
-                isPlaying = true
-                startPolling()
+                if player.play() {
+                    isPlaying = true
+                    startPolling()
+                } else {
+                    isPlaying = false
+                    loadState = .error(String(localized: "Playback could not start."))
+                }
             }
             return
         }
         // Different (or first) clip — fresh player.
         stop()
+        loadState = .loading
         do {
             let p = try AVAudioPlayer(contentsOf: url)
             p.delegate = self
             p.prepareToPlay()
-            p.play()
+            guard p.play() else {
+                throw NSError(
+                    domain: "ThinkAloud.AudioPlayer",
+                    code: 1,
+                    userInfo: [NSLocalizedDescriptionKey: String(localized: "Playback could not start.")]
+                )
+            }
             self.player = p
             self.playingID = id
             self.duration = p.duration
             self.currentTime = 0
             self.isPlaying = true
+            self.loadState = .ready
             startPolling()
         } catch {
-            NSLog("ThinkAloud: AudioPlayer failed for \(url.lastPathComponent): \(error)")
+            NSLog("ThinkAloud: audio playback failed for record \(id): \(error)")
             stop()
+            playingID = id
+            loadState = .error(
+                String(
+                    localized: "The recording couldn’t be played. Verify the audio file, then try again."
+                )
+            )
         }
     }
 
@@ -94,6 +144,7 @@ final class AudioPlayerController: NSObject, AVAudioPlayerDelegate {
         duration = 0
         currentTime = 0
         isScrubbing = false
+        loadState = .idle
     }
 
     private func startPolling() {

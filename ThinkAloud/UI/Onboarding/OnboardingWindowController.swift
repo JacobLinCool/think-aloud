@@ -30,6 +30,7 @@ final class OnboardingWindowController: NSObject, NSWindowDelegate {
         let hosting = NSHostingController(rootView: OnboardingScene().environment(container))
         let size = NSSize(width: 640, height: 600)
         hosting.preferredContentSize = size
+        hosting.view.setAccessibilityLabel(String(localized: "Setup"))
 
         let window = NSWindow(
             contentRect: NSRect(origin: .zero, size: size),
@@ -49,15 +50,13 @@ final class OnboardingWindowController: NSObject, NSWindowDelegate {
         self.window = window
     }
 
-    /// Programmatic close — used by "Skip setup" and the Finish step's primary button.
-    /// Routes through `window.close()` so `windowWillClose` does the bookkeeping.
-    func finish() {
+    /// Programmatic close after AppContainer has recorded an explicit completion or skip.
+    func finish(outcome: OnboardingCompletionOutcome) {
         window?.close()
     }
 
     nonisolated func windowWillClose(_ notification: Notification) {
         MainActor.assumeIsolated {
-            self.container?.onboardingState.markCompleted()
             self.window = nil
             NSApp.setActivationPolicy(.accessory)
         }

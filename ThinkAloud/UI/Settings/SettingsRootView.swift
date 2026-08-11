@@ -1,9 +1,7 @@
 import SwiftUI
 
-/// Root of the Settings window: a two-column `NavigationSplitView` (sidebar category list + a
-/// scrolling detail pane). Replaces the old fixed-size 6-tab `TabView`. The detail pane owns the
-/// window title via `navigationTitle`; the window's static title is only a window-menu / a11y
-/// fallback (see `SettingsWindowController`).
+/// Root of the Settings window. Keep the system navigation container so macOS supplies the native
+/// sidebar material, row treatment, title placement, divider, resizing, and accessibility roles.
 struct SettingsRootView: View {
     let router: SettingsRouter
 
@@ -18,20 +16,20 @@ struct SettingsRootView: View {
                         .tag(category)
                 }
             }
-            .navigationSplitViewColumnWidth(min: 200, ideal: 215, max: 240)
-            // Fixed System-Settings feel: the sidebar is always visible, never collapsible.
+            .frame(minWidth: 215)
+            .navigationSplitViewColumnWidth(min: 215, ideal: 230, max: 260)
             .toolbar(removing: .sidebarToggle)
         } detail: {
             SettingsDetail(category: router.selection)
-                .navigationSplitViewColumnWidth(min: 460, ideal: 480)
+                .navigationSplitViewColumnWidth(min: 460, ideal: 500)
         }
         .navigationSplitViewStyle(.balanced)
         .frame(minWidth: 680, idealWidth: 760, minHeight: 480, idealHeight: 580)
     }
 }
 
-/// Renders the pane for the selected category and owns the window title. Milestone A hosts the
-/// existing pane bodies verbatim; later phases swap in the re-sliced panes.
+/// The selected pane owns the system navigation title. Avoid a second, hand-built title bar inside
+/// the content; AppKit already presents the correct hierarchy in the window chrome.
 private struct SettingsDetail: View {
     let category: SettingsCategory
 

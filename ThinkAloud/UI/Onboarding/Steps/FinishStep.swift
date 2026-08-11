@@ -11,54 +11,91 @@ struct FinishStep: View {
     }
 
     private var shortcut: String {
-        KeyboardShortcuts.getShortcut(for: .startRecording).map { "\($0)" } ?? "⌥Space"
+        KeyboardShortcuts.getShortcut(for: .startRecording).map(String.init(describing:))
+            ?? String(localized: "Not set")
     }
 
-    private var pending: [Pending] {
+    private var pendingOptional: [Pending] {
         var items: [Pending] = []
-        if container.permissions.microphoneStatus != .granted {
-            items.append(.init(id: 0, label: String(localized: "Microphone access not granted"), step: .permissions))
-        }
         if container.permissions.accessibilityStatus != .granted {
             items.append(.init(id: 1, label: String(localized: "Accessibility off — text will be copied to the clipboard"), step: .permissions))
         }
-        let manager = container.modelManager
-        if !(manager.isDownloaded(manager.profile) || manager.runtimeStatus.isReady) {
-            items.append(.init(id: 2, label: String(localized: "Speech model not downloaded yet"), step: .model))
-        }
         return items
+    }
+
+    private var readiness: OnboardingReadiness {
+        let manager = container.modelManager
+        return OnboardingReadiness(
+            microphoneGranted: container.permissions.microphoneStatus == .granted,
+            modelReady: manager.isDownloaded(manager.profile) || manager.runtimeStatus.isReady
+        )
     }
 
     var body: some View {
         VStack(spacing: 18) {
             Spacer()
 
-            Image(systemName: "checkmark.circle.fill")
+            Image(systemName: readiness.canFinish ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
                 .font(.system(size: 64))
-                .foregroundStyle(.green)
+                .foregroundStyle(readiness.canFinish ? .green : .orange)
+                .accessibilityHidden(true)
 
             VStack(spacing: 6) {
-                Text("You're all set")
+                Text(
+                    readiness.canFinish
+                        ? String(localized: "You’re ready")
+                        : String(localized: "Setup is not complete")
+                )
                     .font(.largeTitle.bold())
-                Text("Press \(shortcut) anywhere to start talking. ThinkAloud lives in your menu bar.")
+                Text(
+                    readiness.canFinish
+                        ? String(
+                            localized: "Press \(shortcut) anywhere to start talking. ThinkAloud lives in your menu bar."
+                        )
+                        : String(
+                            localized: "Grant microphone access and download a speech model before finishing."
+                        )
+                )
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: 440)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            if !pending.isEmpty {
+            if !readiness.canFinish {
                 OnboardingCard {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("A few things are still pending — you can finish them now or later in Settings.")
+                        Text("Required")
+                            .font(.headline)
+                        if !readiness.microphoneGranted {
+                            requirementRow(
+                                label: String(localized: "Grant microphone access"),
+                                step: .permissions
+                            )
+                        }
+                        if !readiness.modelReady {
+                            requirementRow(
+                                label: String(localized: "Download a speech model"),
+                                step: .model
+                            )
+                        }
+                    }
+                }
+                .frame(maxWidth: 460)
+            } else if !pendingOptional.isEmpty {
+                OnboardingCard {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Optional")
+                            .font(.headline)
+                        Text("You can finish these now or later in Settings.")
                             .font(.callout)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
-                        ForEach(pending) { item in
+                        ForEach(pendingOptional) { item in
                             HStack {
                                 StatusBadge(tone: .warn, text: item.label)
                                 Spacer()
-                                Button(String(localized: "Fix")) {
+                                Button(String(localized: "Review Accessibility")) {
                                     container.onboardingState.go(to: item.step)
                                 }
                                 .controlSize(.small)
@@ -73,5 +110,17 @@ struct FinishStep: View {
         }
         .padding(32)
         .onAppear { container.permissions.refresh() }
+    }
+
+    private func requirementRow(label: String, step: OnboardingStep) -> some View {
+        HStack {
+            StatusBadge(tone: .error, text: label)
+            Spacer()
+            Button(String(localized: "Fix")) {
+                container.onboardingState.go(to: step)
+            }
+            .controlSize(.small)
+            .accessibilityLabel(String(localized: "Fix \(label)"))
+        }
     }
 }

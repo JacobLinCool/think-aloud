@@ -22,7 +22,8 @@ final class ActivityWindowingTests: XCTestCase {
                 sourceAppBundleID: nil, sourceAppName: nil,
                 asrProvider: "p", asrModel: "m", asrRuntime: "rt", asrConfigJSON: nil,
                 rawTranscript: "x", editedTranscript: "x",
-                inserted: true, savedToDataset: true, language: "en", metadataJSON: nil
+                inserted: true, language: "en", metadataJSON: nil,
+                autoEditedTranscript: "x"
             )
         }
         return DatasetStatistics.compute(from: records)

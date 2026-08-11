@@ -5,22 +5,26 @@ import Observation
 /// Owns achievement state: recomputes statistics, unlocks newly-earned milestones, persists the
 /// unlocked set, and fires a system notification when something new is earned. Also the shared
 /// statistics source for the Insights pane (the dashboard reads `stats`), so opening Insights or
-/// saving a record both refresh the numbers and the badges in one pass.
+/// completing an Insert attempt both refresh the numbers and the badges in one pass.
 @MainActor
 @Observable
 final class AchievementService {
-    private let datasetStore: DatasetStore
+    private let historyStore: DictationHistoryStore
+    private let defaults: UserDefaults
 
     /// Latest computed statistics (also drives the Insights dashboard). `.empty` until first refresh.
     private(set) var stats: DatasetStatistics = .empty
     /// True once `refresh()` has completed at least once — lets the UI show a loading state instead of
     /// flashing the empty state before the first compute lands.
     private(set) var hasLoaded: Bool = false
+    private(set) var loadError: String?
     /// Ids of unlocked achievements.
     private(set) var unlockedIDs: Set<String> = []
 
-    private static let unlockedKey = "ThinkAloud.achievements.unlocked"
-    private static let baselineKey = "ThinkAloud.achievements.baselineEstablished"
+    private static let unlockedKey = "ThinkAloud.usageAchievements.unlocked"
+    private static let baselineKey = "ThinkAloud.usageAchievements.baselineEstablished"
+    private static let retiredDatasetUnlockedKey = "ThinkAloud.achievements.unlocked"
+    private static let retiredDatasetBaselineKey = "ThinkAloud.achievements.baselineEstablished"
 
     private var didRequestAuth = false
     private var refreshInFlight = false
@@ -29,11 +33,16 @@ final class AchievementService {
     /// Takes the whole batch unlocked in one pass so a single auth round-trip covers all of them.
     var notifier: ([Achievement]) -> Void
 
-    init(datasetStore: DatasetStore) {
-        self.datasetStore = datasetStore
+    init(historyStore: DictationHistoryStore, defaults: UserDefaults = .standard) {
+        self.historyStore = historyStore
+        self.defaults = defaults
         self.notifier = { _ in }
         self.notifier = { [weak self] in self?.postSystemNotifications($0) }
-        if let saved = UserDefaults.standard.array(forKey: Self.unlockedKey) as? [String] {
+        // Dataset-derived unlocks are intentionally retired. Usage history starts at zero and uses
+        // a new namespace so existing Dataset rows can never leak into the new progress wall.
+        defaults.removeObject(forKey: Self.retiredDatasetUnlockedKey)
+        defaults.removeObject(forKey: Self.retiredDatasetBaselineKey)
+        if let saved = defaults.array(forKey: Self.unlockedKey) as? [String] {
             unlockedIDs = Set(saved)
         }
     }
@@ -47,10 +56,18 @@ final class AchievementService {
         defer { refreshInFlight = false }
         repeat {
             refreshPending = false
-            if let s = try? await datasetStore.computeStatistics() {
+            loadError = nil
+            do {
+                let s = try await historyStore.computeStatistics()
                 stats = s
                 hasLoaded = true
                 reconcile(with: s)
+            } catch {
+                NSLog("ThinkAloud: Insights statistics load failed: \(error)")
+                loadError = String(
+                    localized: "ThinkAloud couldn’t load Insights from local usage history. Try again."
+                )
+                return
             }
         } while refreshPending
     }
@@ -67,12 +84,12 @@ final class AchievementService {
 
     private func reconcile(with s: DatasetStatistics) {
         let satisfied = Achievement.satisfied(by: s)
-        let baselineEstablished = UserDefaults.standard.bool(forKey: Self.baselineKey)
+        let baselineEstablished = defaults.bool(forKey: Self.baselineKey)
         let result = Self.reconcile(satisfied: satisfied, unlocked: unlockedIDs, baselineEstablished: baselineEstablished)
         unlockedIDs = result.unlocked
-        UserDefaults.standard.set(Array(unlockedIDs), forKey: Self.unlockedKey)
+        defaults.set(Array(unlockedIDs), forKey: Self.unlockedKey)
         if !baselineEstablished {
-            UserDefaults.standard.set(true, forKey: Self.baselineKey)
+            defaults.set(true, forKey: Self.baselineKey)
             return
         }
         // Notify in catalogue order for a stable sequence when several land at once.

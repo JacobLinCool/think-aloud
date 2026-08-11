@@ -20,12 +20,28 @@ actor AudioRecorder {
 
         var errorDescription: String? {
             switch self {
-            case .engineStartFailed(let msg): return "Audio engine failed to start: \(msg)"
-            case .converterCreationFailed: return "Failed to create audio converter."
-            case .formatUnsupported: return "Microphone audio format is unsupported."
-            case .writerFailed(let msg): return "Failed to write WAV file: \(msg)"
-            case .resampleFailed(let msg): return "Failed to resample audio: \(msg)"
-            case .notRecording: return "No active recording."
+            case .engineStartFailed:
+                return String(
+                    localized: "ThinkAloud couldn’t start the microphone. Check its connection and try again."
+                )
+            case .converterCreationFailed:
+                return String(
+                    localized: "ThinkAloud couldn’t prepare microphone audio. Reconnect the microphone and try again."
+                )
+            case .formatUnsupported:
+                return String(
+                    localized: "The microphone’s audio format isn’t supported. Choose another input device and try again."
+                )
+            case .writerFailed:
+                return String(
+                    localized: "ThinkAloud couldn’t create the recording file. Check available storage and try again."
+                )
+            case .resampleFailed:
+                return String(
+                    localized: "ThinkAloud couldn’t process the recording’s audio format. Record it again and retry."
+                )
+            case .notRecording:
+                return String(localized: "There is no active recording to stop.")
             }
         }
     }
@@ -40,8 +56,7 @@ actor AudioRecorder {
     // audio. ASR needs 16 kHz, so PopupCoordinator resamples to 16 kHz (via `resample`) before
     // transcribing. Saved dataset WAVs keep the 48 kHz fidelity; `loadAudioArray` resamples them
     // back to 16 kHz on benchmark/playback.
-    // NOTE: 48 kHz makes saved WAVs ~3x larger than the old 16 kHz capture (16-bit mono:
-    // ~5.76 MB/min vs ~1.92 MB/min). Acceptable for short dictation clips.
+    // At 16-bit mono this uses about 5.76 MB per minute of recorded audio.
     private let targetSampleRate: Double = 48000
     private let engine = AVAudioEngine()
     private var outputBuffers: [Float] = []
@@ -159,16 +174,13 @@ actor AudioRecorder {
 
         // Use .noDataNow on subsequent callbacks instead of .endOfStream so the converter
         // does not flush/reset its internal state between buffers.
-        var didProvide = false
+        let inputProvider = AudioConverterInputProvider(
+            buffer: buffer,
+            exhaustedStatus: .noDataNow
+        )
         var error: NSError?
         let status = converter.convert(to: outBuffer, error: &error) { _, statusPointer in
-            if didProvide {
-                statusPointer.pointee = .noDataNow
-                return nil
-            }
-            didProvide = true
-            statusPointer.pointee = .haveData
-            return buffer
+            inputProvider.nextBuffer(status: statusPointer)
         }
         if status == .error || error != nil {
             NSLog("ThinkAloud: AVAudioConverter failed: \(error?.localizedDescription ?? "unknown")")
@@ -216,16 +228,13 @@ actor AudioRecorder {
             throw RecorderError.resampleFailed("output buffer allocation failed")
         }
 
-        var didProvide = false
+        let inputProvider = AudioConverterInputProvider(
+            buffer: inBuffer,
+            exhaustedStatus: .endOfStream
+        )
         var error: NSError?
         let status = converter.convert(to: outBuffer, error: &error) { _, statusPointer in
-            if didProvide {
-                statusPointer.pointee = .endOfStream
-                return nil
-            }
-            didProvide = true
-            statusPointer.pointee = .haveData
-            return inBuffer
+            inputProvider.nextBuffer(status: statusPointer)
         }
         if status == .error || error != nil {
             throw RecorderError.resampleFailed(error?.localizedDescription ?? "conversion error")
@@ -293,4 +302,35 @@ struct RecordingResult: Sendable {
 /// Wraps a non-Sendable reference type so it can cross isolation boundaries when the caller guarantees safety.
 private struct UncheckedSendableBox<T>: @unchecked Sendable {
     let value: T
+}
+
+/// Owns the one-shot input state used by `AVAudioConverter`'s `@Sendable` callback.
+///
+/// AVFoundation invokes the callback synchronously today, but the lock makes the single-delivery
+/// contract explicit and safe even if that implementation detail changes. The buffer is immutable
+/// for the lifetime of one conversion and is never exposed after the converter returns.
+private final class AudioConverterInputProvider: @unchecked Sendable {
+    private let lock = NSLock()
+    private let buffer: AVAudioPCMBuffer
+    private let exhaustedStatus: AVAudioConverterInputStatus
+    private var didProvideBuffer = false
+
+    init(buffer: AVAudioPCMBuffer, exhaustedStatus: AVAudioConverterInputStatus) {
+        self.buffer = buffer
+        self.exhaustedStatus = exhaustedStatus
+    }
+
+    func nextBuffer(
+        status: UnsafeMutablePointer<AVAudioConverterInputStatus>
+    ) -> AVAudioBuffer? {
+        lock.lock()
+        defer { lock.unlock() }
+        guard !didProvideBuffer else {
+            status.pointee = exhaustedStatus
+            return nil
+        }
+        didProvideBuffer = true
+        status.pointee = .haveData
+        return buffer
+    }
 }

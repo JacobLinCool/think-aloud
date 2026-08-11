@@ -68,11 +68,16 @@ struct RecordRowView: View {
         guard let ms = record.durationMs else { return "—" }
         let seconds = Double(ms) / 1000.0
         if seconds < 60 {
-            return String(format: "%.1fs", seconds)
+            let formatter = MeasurementFormatter()
+            formatter.unitStyle = .short
+            formatter.numberFormatter.maximumFractionDigits = 1
+            return formatter.string(from: Measurement(value: seconds, unit: UnitDuration.seconds))
         }
-        let m = Int(seconds) / 60
-        let s = Int(seconds) % 60
-        return String(format: "%d:%02d", m, s)
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .positional
+        formatter.allowedUnits = seconds >= 3600 ? [.hour, .minute, .second] : [.minute, .second]
+        formatter.zeroFormattingBehavior = .pad
+        return formatter.string(from: seconds) ?? "—"
     }
 
     private func relativeTimeLabel(for date: Date?) -> String {
@@ -84,9 +89,10 @@ struct RecordRowView: View {
     /// without hovering for the tooltip.
     private func shortClockLabel(for date: Date?) -> String {
         guard let date else { return "" }
-        // Two pre-built formatters instead of mutating one shared `dateFormat` per call.
-        let formatter = Calendar.current.isDateInToday(date) ? Self.clockToday : Self.clockOther
-        return formatter.string(from: date)
+        if Calendar.current.isDateInToday(date) {
+            return date.formatted(date: .omitted, time: .shortened)
+        }
+        return date.formatted(date: .numeric, time: .shortened)
     }
 
     // Formatters are expensive to construct (each builds an ICU backing object). Build them once
@@ -103,17 +109,4 @@ struct RecordRowView: View {
         return f
     }()
 
-    private static let clockToday: DateFormatter = {
-        let f = DateFormatter()
-        f.locale = .current
-        f.dateFormat = "HH:mm"
-        return f
-    }()
-
-    private static let clockOther: DateFormatter = {
-        let f = DateFormatter()
-        f.locale = .current
-        f.dateFormat = "M/d HH:mm"
-        return f
-    }()
 }

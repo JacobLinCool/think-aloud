@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Settings → Output: the everyday "make my transcription read the way I want" surface — audio
 /// cleanup (denoise), text formatting (Chinese + spacing), and word replacements (custom
-/// dictionary). Lifted verbatim from the old Model pane; labels are de-jargoned in a later phase.
+/// dictionary), with direct previews for the configured text transformations.
 struct OutputPane: View {
     @Environment(AppContainer.self) private var container
 
@@ -11,6 +11,9 @@ struct OutputPane: View {
 
     var body: some View {
         Form {
+            if let error = container.modelManager.settingsError {
+                SettingsPersistenceErrorSection(error: error)
+            }
             preEditSection
             postEditSection
             customDictionarySection
@@ -35,6 +38,7 @@ struct OutputPane: View {
                 Text("Auto cleans only clips it detects as noisy; On always cleans (DeepFilterNet).")
             }
             .pickerStyle(.segmented)
+            .accessibilityLabel(String(localized: "Clean up recordings"))
 
             DenoiseTesterView()
         } header: {
@@ -59,6 +63,7 @@ struct OutputPane: View {
                 }
             }
             .pickerStyle(.menu)
+            .accessibilityLabel(String(localized: "Chinese output"))
 
             Toggle(isOn: Binding(
                 get: { container.modelManager.postEdit.cjkLatinSpacing },
@@ -84,19 +89,42 @@ struct OutputPane: View {
     private var customDictionarySection: some View {
         Section {
             ForEach(dictionaryBinding) { $rule in
+                let position = dictionaryPosition(for: rule.id)
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 8) {
-                        Toggle("", isOn: $rule.enabled)
+                        Toggle(String(localized: "Enable word replacement"), isOn: $rule.enabled)
                             .labelsHidden()
+                            .accessibilityLabel(
+                                rule.from.isEmpty
+                                    ? String(localized: "Enable word replacement \(position.index)")
+                                    : String(localized: "Enable word replacement \(position.index) for \(rule.from)")
+                            )
+                            .accessibilityHint(
+                                String(localized: "Turns word replacement \(position.index) on or off.")
+                            )
+                            .accessibilityAction { rule.enabled.toggle() }
                             .toggleStyle(.switch)
                             .controlSize(.small)
                         TextField(String(localized: "term"), text: $rule.from)
                             .textFieldStyle(.roundedBorder)
+                            .accessibilityLabel(
+                                String(localized: "Word replacement \(position.index) source term")
+                            )
+                            .accessibilityHint(
+                                String(localized: "Enter the text to find for word replacement \(position.index).")
+                            )
                         Image(systemName: "arrow.right")
                             .foregroundStyle(.secondary)
                             .imageScale(.small)
+                            .accessibilityHidden(true)
                         TextField(String(localized: "replacement"), text: $rule.to)
                             .textFieldStyle(.roundedBorder)
+                            .accessibilityLabel(
+                                String(localized: "Word replacement \(position.index) replacement text")
+                            )
+                            .accessibilityHint(
+                                String(localized: "Enter the text that replaces the source term in word replacement \(position.index).")
+                            )
                         Button {
                             container.modelManager.postEdit.dictionary.removeAll { $0.id == rule.id }
                         } label: {
@@ -104,6 +132,14 @@ struct OutputPane: View {
                         }
                         .buttonStyle(.borderless)
                         .help(String(localized: "Remove term"))
+                        .accessibilityLabel(
+                            rule.from.isEmpty
+                                ? String(localized: "Remove word replacement \(position.index)")
+                                : String(localized: "Remove word replacement \(position.index) for \(rule.from)")
+                        )
+                        .accessibilityHint(
+                            String(localized: "Deletes word replacement \(position.index).")
+                        )
                     }
                     if rule.enabled, isDuplicateRule(rule) {
                         dictWarning("Duplicate — only the first is used.")
@@ -111,6 +147,13 @@ struct OutputPane: View {
                         dictWarning("Short terms may replace text you didn't mean to.")
                     }
                 }
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(
+                    String(localized: "Word replacement \(position.index) of \(position.total)")
+                )
+                .accessibilityHint(
+                    String(localized: "Contains an enable switch, source term, replacement text, and remove button.")
+                )
             }
 
             Button {
@@ -125,6 +168,14 @@ struct OutputPane: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
+    }
+
+    private func dictionaryPosition(for ruleID: UUID) -> (index: Int, total: Int) {
+        let rules = container.modelManager.postEdit.dictionary
+        guard let zeroBasedIndex = rules.firstIndex(where: { $0.id == ruleID }) else {
+            return (1, max(rules.count, 1))
+        }
+        return (zeroBasedIndex + 1, rules.count)
     }
 
     // MARK: - Preview (whole text pipeline)

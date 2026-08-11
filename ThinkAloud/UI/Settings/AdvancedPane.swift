@@ -9,20 +9,38 @@ struct AdvancedPane: View {
 
     @State private var smokeReport: SmokeTestReport?
     @State private var smokeRunning: Bool = false
+    @State private var smokeCancellationRequested = false
     @State private var smokeError: String?
+    @State private var smokeTask: Task<Void, Never>?
+    @State private var diagnosticsExpanded = false
 
     var body: some View {
         Form {
+            if let error = container.modelManager.settingsError {
+                SettingsPersistenceErrorSection(error: error)
+            }
             memorySection
             diagnosticsSection
         }
         .formStyle(.grouped)
+        .onDisappear {
+            smokeTask?.cancel()
+        }
     }
 
     // MARK: - Memory & performance
 
     private var memorySection: some View {
         Section {
+            HStack {
+                Text("Speech model")
+                Spacer()
+                StatusBadge(
+                    tone: container.modelManager.runtimeStatus.badge,
+                    text: container.modelManager.runtimeStatus.displayLabel
+                )
+            }
+
             Picker(String(localized: "Auto-unload when idle"), selection: Binding(
                 get: { container.modelManager.idleTimeout },
                 set: { container.modelManager.idleTimeout = $0 }
@@ -32,18 +50,52 @@ struct AdvancedPane: View {
                 }
             }
             .pickerStyle(.menu)
+            .accessibilityLabel(String(localized: "Auto-unload when idle"))
 
             HStack {
-                Button(String(localized: "Load model")) {
-                    container.modelManager.preloadNow()
+                if container.modelManager.preloadIsRunning {
+                    Button(
+                        container.modelManager.preloadCancellationRequested
+                            ? String(localized: "Canceling Model Load…")
+                            : String(localized: "Cancel Model Load")
+                    ) {
+                        container.modelManager.cancelPreload()
+                    }
+                    .disabled(container.modelManager.preloadCancellationRequested)
+                } else {
+                    Button(String(localized: "Load model")) {
+                        container.modelManager.preloadNow()
+                    }
+                    .disabled(
+                        container.modelManager.runtimeStatus.isLoading
+                            || container.modelManager.runtimeStatus == .ready
+                    )
                 }
-                .disabled(container.modelManager.runtimeStatus.isLoading || container.modelManager.runtimeStatus == .ready)
 
                 // Reversible — a plain button, no scary confirmation dialog.
                 Button(String(localized: "Unload model")) {
                     container.modelManager.unloadNow()
                 }
                 .disabled(container.modelManager.runtimeStatus != .ready)
+            }
+
+            if case .failed = container.modelManager.runtimeStatus {
+                VStack(alignment: .leading, spacing: 6) {
+                    if let detail = container.modelManager.lastError {
+                        Text(detail)
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                            .textSelection(.enabled)
+                    }
+                    Button(String(localized: "Retry Loading Speech Model")) {
+                        container.modelManager.preloadNow()
+                    }
+                    .controlSize(.small)
+                    Button(String(localized: "Open Model Settings…")) {
+                        container.openSettings(to: .model)
+                    }
+                    .controlSize(.small)
+                }
             }
 
             if container.modelManager.preEdit.denoise != .off {
@@ -82,12 +134,23 @@ struct AdvancedPane: View {
 
     private var diagnosticsSection: some View {
         Section {
-            DisclosureGroup {
+            DisclosureGroup(isExpanded: $diagnosticsExpanded) {
                 HStack {
-                    Button(smokeRunning ? String(localized: "Running…") : String(localized: "Run test")) {
-                        runSmokeTest()
+                    if smokeRunning {
+                        Button(
+                            smokeCancellationRequested
+                                ? String(localized: "Canceling Test…")
+                                : String(localized: "Cancel Test")
+                        ) {
+                            smokeCancellationRequested = true
+                            smokeTask?.cancel()
+                        }
+                        .disabled(smokeCancellationRequested)
+                    } else {
+                        Button(String(localized: "Run test")) {
+                            runSmokeTest()
+                        }
                     }
-                    .disabled(smokeRunning)
                     if smokeRunning {
                         ProgressView().controlSize(.small)
                     }
@@ -103,14 +166,15 @@ struct AdvancedPane: View {
             } label: {
                 Text("Test the model")
             }
+            .accessibilityAction { diagnosticsExpanded.toggle() }
 
-            Button(String(localized: "Run Setup Assistant again")) {
+            Button(String(localized: "Run Setup Assistant…")) {
                 container.openOnboarding()
             }
         } header: {
             Text("Diagnostics")
         } footer: {
-            Text("“Test the model” downloads three short clips from JacobLinCool/audio-testing (~5 MB) and runs them through the current model to verify it works.")
+            Text("“Test the model” downloads three short clips from JacobLinCool/audio-testing (~5 MB) and runs them through the current model. Cancel takes effect after the model finishes the sample it is currently transcribing.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -118,19 +182,34 @@ struct AdvancedPane: View {
 
     private func runSmokeTest() {
         smokeRunning = true
+        smokeCancellationRequested = false
         smokeError = nil
         let runtime = container.modelManager.runtime
         let postEdit = container.modelManager.postEdit
-        let cacheDir = AppPaths.applicationSupportDirectory().appendingPathComponent("smoke-test-cache", isDirectory: true)
-        Task { @MainActor in
-            do {
-                let runner = SmokeTestRunner(cacheDirectory: cacheDir)
-                let report = try await runner.run(using: runtime, postEdit: postEdit)
-                self.smokeReport = report
-            } catch {
-                self.smokeError = String(describing: error)
+        let cacheDir = container.applicationSupportDirectory.appendingPathComponent("smoke-test-cache", isDirectory: true)
+        smokeTask = Task { @MainActor in
+            defer {
+                self.smokeRunning = false
+                self.smokeCancellationRequested = false
+                self.smokeTask = nil
             }
-            self.smokeRunning = false
+            do {
+                let runner = try SmokeTestRunner(cacheDirectory: cacheDir)
+                let report = try await runner.run(using: runtime, postEdit: postEdit)
+                try Task.checkCancellation()
+                self.smokeReport = report
+            } catch is CancellationError {
+                self.smokeError = nil
+            } catch {
+                NSLog("ThinkAloud: model test failed: \(error)")
+                if let smokeTestError = error as? SmokeTestError {
+                    self.smokeError = smokeTestError.localizedDescription
+                } else {
+                    self.smokeError = String(
+                        localized: "The model test couldn’t finish. Check the model, your connection, and available storage, then try again."
+                    )
+                }
+            }
         }
     }
 }
@@ -145,7 +224,7 @@ private struct SmokeReportView: View {
             Text("Output style: \(report.postEdit.summary)")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            Text("Passed: \(report.passed) / \(report.total) · Average latency: \(report.averageLatencyMs) ms")
+            Text("Passed: \(report.passed) / \(report.total) · Average latency: \(formattedDuration(report.averageLatencyMs))")
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Divider()
@@ -165,7 +244,7 @@ private struct SmokeReportView: View {
                 Text(result.sample.id)
                     .font(.caption.weight(.medium))
                 Spacer()
-                Text("\(result.durationMs) ms")
+                Text(formattedDuration(result.durationMs))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -189,5 +268,16 @@ private struct SmokeReportView: View {
             }
         }
         .padding(.vertical, 2)
+    }
+
+    private func formattedDuration(_ milliseconds: Int) -> String {
+        Measurement(value: Double(milliseconds), unit: UnitDuration.milliseconds)
+            .formatted(
+                .measurement(
+                    width: .abbreviated,
+                    usage: .asProvided,
+                    numberFormatStyle: .number.precision(.fractionLength(0))
+                )
+            )
     }
 }

@@ -11,11 +11,16 @@ struct RefinePane: View {
     @State private var testInput = ""
     @State private var testOutput = ""
     @State private var testing = false
+    @State private var operationError: String?
+    @State private var pendingOverrideRemoval: String?
 
     private var llm: LLMManager { container.llmManager }
 
     var body: some View {
         Form {
+            if let error = llm.settingsError {
+                SettingsPersistenceErrorSection(error: error)
+            }
             introSection
             modelSection
             defaultStyleSection
@@ -26,6 +31,24 @@ struct RefinePane: View {
         .sheet(item: Binding(get: { editingAppBundleID.map { AppRef(bundleID: $0) } },
                              set: { editingAppBundleID = $0?.bundleID })) { ref in
             PerAppEditorSheet(bundleID: ref.bundleID, config: perAppBinding(ref.bundleID))
+        }
+        .confirmationDialog(
+            String(localized: "Remove this app’s refinement override?"),
+            isPresented: Binding(
+                get: { pendingOverrideRemoval != nil },
+                set: { if !$0 { pendingOverrideRemoval = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            if let bundleID = pendingOverrideRemoval {
+                Button(String(localized: "Remove \(appDisplayName(bundleID)) Override"), role: .destructive) {
+                    llm.config.perApp[bundleID] = nil
+                    pendingOverrideRemoval = nil
+                }
+            }
+            Button(String(localized: "Cancel"), role: .cancel) {}
+        } message: {
+            Text("The app will return to the default refinement style. This cannot be undone.")
         }
     }
 
@@ -38,7 +61,7 @@ struct RefinePane: View {
                 Text("After transcription, an on-device language model rewrites the text — fixing fillers, grammar, and punctuation — before you insert it.")
             }
         } footer: {
-            Text("This adds a brief \u{201C}Polishing…\u{201D} step after dictation. It needs a downloaded model (below) and falls back to the plain transcript if the model isn't ready or declines. Per-app overrides let work and chat apps get different styles.")
+            Text("This adds a brief \u{201C}Polishing…\u{201D} step after dictation. It needs a downloaded model below. If refinement fails, ThinkAloud keeps the original transcript and shows the failure before insertion.")
                 .font(.caption).foregroundStyle(.secondary)
         }
     }
@@ -48,7 +71,13 @@ struct RefinePane: View {
     private var modelSection: some View {
         Section {
             ForEach(LLMModelProfile.allCases) { profile in
-                LLMModelRow(profile: profile, manager: llm)
+                LLMModelRow(profile: profile, manager: llm, operationError: $operationError)
+            }
+            if let operationError {
+                Label(operationError, systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .textSelection(.enabled)
             }
         } header: {
             Text("Model")
@@ -87,19 +116,25 @@ struct RefinePane: View {
                     appIcon(bundleID)
                     VStack(alignment: .leading, spacing: 1) {
                         Text(appDisplayName(bundleID)).lineLimit(1)
-                        Text(llm.config.perApp[bundleID]?.enabled == true ? "On" : "Off")
+                        Text(
+                            llm.config.perApp[bundleID]?.enabled == true
+                                ? String(localized: "On")
+                                : String(localized: "Off")
+                        )
                             .font(.caption2).foregroundStyle(.secondary)
                     }
                     Spacer()
-                    Button("Edit") { editingAppBundleID = bundleID }
+                    Button("Edit…") { editingAppBundleID = bundleID }
                         .controlSize(.small)
+                        .accessibilityLabel(String(localized: "Edit \(appDisplayName(bundleID)) Override…"))
                     Button {
-                        llm.config.perApp[bundleID] = nil
+                        pendingOverrideRemoval = bundleID
                     } label: {
                         Image(systemName: "minus.circle.fill").foregroundStyle(.secondary)
                     }
                     .buttonStyle(.borderless)
                     .help(String(localized: "Remove override"))
+                    .accessibilityLabel(String(localized: "Remove \(appDisplayName(bundleID)) Override"))
                 }
             }
             Button {
@@ -158,6 +193,7 @@ struct RefinePane: View {
             }
         }
         .pickerStyle(.menu)
+        .accessibilityLabel(String(localized: "Engine"))
         if binding.wrappedValue == .appleFoundation, !AppleFoundationAvailability.isAvailable,
            let reason = AppleFoundationAvailability.unavailableReason {
             Text(reason).font(.caption).foregroundStyle(.orange)
@@ -186,7 +222,11 @@ struct RefinePane: View {
             HStack {
                 Text("Creativity")
                 Spacer()
-                Text(String(format: "%.1f", binding.wrappedValue))
+                Text(
+                    binding.wrappedValue.formatted(
+                        .number.precision(.fractionLength(1))
+                    )
+                )
                     .font(.caption.monospacedDigit()).foregroundStyle(.secondary)
             }
             Slider(value: binding, in: 0...1, step: 0.1)
@@ -262,16 +302,21 @@ struct RefinePane: View {
         Task { @MainActor in
             defer { testing = false }
             var out = ""
+            var failure: Error?
             do {
                 for try await chunk in llm.refine(input, using: profile.enabled ? profile : LLMProfileConfig(enabled: true, backend: profile.backend, systemPrompt: profile.systemPrompt, temperature: profile.temperature)) {
                     out += chunk
                     testOutput = out
                 }
             } catch {
-                testOutput = String(localized: "Failed: \(error.localizedDescription)")
+                failure = error
+                NSLog("ThinkAloud: refinement preview failed: \(error)")
+                testOutput = String(
+                    localized: "Refinement failed. Verify that the selected engine is available, then try again."
+                )
             }
-            if out.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                testOutput = String(localized: "(no output — the model declined or isn't ready)")
+            if failure == nil, out.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                testOutput = String(localized: "Refinement returned no usable text.")
             }
         }
     }
@@ -299,6 +344,7 @@ private struct PerAppEditorSheet: View {
                 }
             }
             .pickerStyle(.menu)
+            .accessibilityLabel(String(localized: "Engine"))
             Text("System prompt").font(.caption).foregroundStyle(.secondary)
             TextEditor(text: $config.systemPrompt)
                 .font(.callout).frame(minHeight: 120)
@@ -329,9 +375,12 @@ private struct PerAppEditorSheet: View {
 private struct LLMModelRow: View {
     let profile: LLMModelProfile
     @Bindable var manager: LLMManager
+    @Binding var operationError: String?
+    @State private var downloadTask: Task<Void, Never>?
+    @State private var cancellationRequested = false
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(alignment: .top, spacing: 10) {
             Button {
                 manager.setModel(profile)
             } label: {
@@ -340,13 +389,27 @@ private struct LLMModelRow: View {
             }
             .buttonStyle(.borderless)
             .help(String(localized: "Use this model"))
+            .accessibilityLabel(String(localized: "Use \(profile.displayName) for AI refinement"))
+            .accessibilityValue(
+                manager.selectedModel == profile
+                    ? String(localized: "Selected")
+                    : String(localized: "Not selected")
+            )
+            .accessibilityAddTraits(manager.selectedModel == profile ? .isSelected : [])
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(profile.displayName).fontWeight(manager.selectedModel == profile ? .semibold : .regular)
-                Text(statusText).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                Text(statusText)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            .layoutPriority(1)
             Spacer()
             trailing
+                .fixedSize(horizontal: true, vertical: false)
+                .padding(.top, 1)
         }
     }
 
@@ -359,22 +422,61 @@ private struct LLMModelRow: View {
                 } else {
                     ProgressView().controlSize(.small)
                 }
+                if let downloadTask {
+                    Button(cancellationRequested ? String(localized: "Canceling…") : String(localized: "Cancel Download")) {
+                        cancellationRequested = true
+                        downloadTask.cancel()
+                    }
+                    .buttonStyle(.link)
+                    .controlSize(.small)
+                    .disabled(cancellationRequested)
+                    .accessibilityLabel(String(localized: "Cancel \(profile.displayName) download"))
+                }
             }
         } else if manager.isDownloaded(profile) {
             HStack(spacing: 6) {
-                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+                    .accessibilityHidden(true)
                 DestructiveButton("Remove", confirmMessage: "Remove \(profile.displayName) (\(profile.estimatedDownloadSize))?", confirmLabel: "Remove") {
-                    try? manager.removeModel(profile)
+                    do {
+                        try manager.removeModel(profile)
+                        operationError = nil
+                    } catch {
+                        NSLog("ThinkAloud: failed to remove refinement model \(profile.modelID): \(error)")
+                        operationError = String(
+                            localized: "Couldn’t remove \(profile.displayName). Check file permissions, then try again."
+                        )
+                    }
                 }
                 .controlSize(.small)
+                .accessibilityLabel(String(localized: "Remove \(profile.displayName)"))
             }
         } else {
             Button {
-                Task { try? await manager.downloadModel(profile) }
+                operationError = nil
+                cancellationRequested = false
+                downloadTask = Task { @MainActor in
+                    defer {
+                        downloadTask = nil
+                        cancellationRequested = false
+                    }
+                    do {
+                        try await manager.downloadModel(profile)
+                    } catch is CancellationError {
+                        operationError = nil
+                    } catch {
+                        NSLog("ThinkAloud: failed to download refinement model \(profile.modelID): \(error)")
+                        operationError = String(
+                            localized: "Couldn’t download \(profile.displayName). Check your connection and available disk space, then try again."
+                        )
+                    }
+                }
             } label: {
-                Label(profile.estimatedDownloadSize, systemImage: "arrow.down.circle")
+                Label(String(localized: "Download \(profile.estimatedDownloadSize)"), systemImage: "arrow.down.circle")
             }
             .controlSize(.small)
+            .accessibilityLabel(String(localized: "Download \(profile.displayName)"))
         }
     }
 

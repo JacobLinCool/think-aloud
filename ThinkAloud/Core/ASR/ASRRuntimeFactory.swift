@@ -10,9 +10,17 @@ enum ASRRuntimeFactory {
     static func make(profile: ModelProfile, cacheDirectory: URL?) -> any ASRRuntime {
         switch profile.family {
         case .qwen3:
-            return MLXAudioQwenRuntime(modelID: profile.modelID, cacheDirectory: cacheDirectory)
+            return MLXAudioQwenRuntime(
+                modelID: profile.modelID,
+                matchingPatterns: profile.downloadMatchingPatterns,
+                cacheDirectory: cacheDirectory
+            )
         case .whisper:
-            return MLXAudioWhisperRuntime(modelID: profile.modelID, cacheDirectory: cacheDirectory)
+            return MLXAudioWhisperRuntime(
+                modelID: profile.modelID,
+                matchingPatterns: profile.downloadMatchingPatterns,
+                cacheDirectory: cacheDirectory
+            )
         }
     }
 

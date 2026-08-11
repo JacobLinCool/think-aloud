@@ -12,20 +12,20 @@ final class HFKeychainTests: XCTestCase {
 
     func testRoundTripSaveAndRead() throws {
         try HFKeychain.set("hf_test_secret_abc", service: testService, account: testAccount)
-        let read = HFKeychain.get(service: testService, account: testAccount)
+        let read = try HFKeychain.get(service: testService, account: testAccount)
         XCTAssertEqual(read, "hf_test_secret_abc")
     }
 
     func testOverwriteReplacesValue() throws {
         try HFKeychain.set("v1", service: testService, account: testAccount)
         try HFKeychain.set("v2", service: testService, account: testAccount)
-        XCTAssertEqual(HFKeychain.get(service: testService, account: testAccount), "v2")
+        XCTAssertEqual(try HFKeychain.get(service: testService, account: testAccount), "v2")
     }
 
     func testDeleteRemoves() throws {
         try HFKeychain.set("temp", service: testService, account: testAccount)
         try HFKeychain.delete(service: testService, account: testAccount)
-        XCTAssertNil(HFKeychain.get(service: testService, account: testAccount))
+        XCTAssertNil(try HFKeychain.get(service: testService, account: testAccount))
     }
 
     func testDeleteMissingIsIdempotent() throws {

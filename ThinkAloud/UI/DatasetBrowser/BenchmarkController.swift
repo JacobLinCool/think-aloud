@@ -4,6 +4,21 @@ import Observation
 @MainActor
 @Observable
 final class BenchmarkController {
+    enum Stage: Equatable {
+        case idle
+        case loadingRecords
+        case downloadingModel(estimatedSize: String)
+        case loadingModel
+        case preparingDenoiser
+        case running
+    }
+
+    struct RunConfiguration: Equatable {
+        let profile: ModelProfile
+        let postEdit: PostEditConfig
+        let preEdit: PreEditConfig
+    }
+
     // Configuration (bound to UI pickers)
     var selectedProfile: ModelProfile
     var selectedPostEdit: PostEditConfig
@@ -15,15 +30,19 @@ final class BenchmarkController {
 
     // Runtime state
     private(set) var isRunning: Bool = false
+    private(set) var cancellationRequested: Bool = false
     private(set) var progressCompleted: Int = 0
     private(set) var progressTotal: Int = 0
     private(set) var currentRecordID: String?
+    private(set) var stage: Stage = .idle
+    private(set) var activeConfiguration: RunConfiguration?
     /// History of completed runs, newest first. Lets the user compare different model / preference
     /// configurations in one session. Cleared when the browser window closes.
     private(set) var history: [BenchmarkReport] = []
     /// The currently-displayed report from history. Defaults to the newest entry; user can switch.
-    var displayedRunAt: String?
+    var displayedRunID: String?
     private(set) var errorMessage: String?
+    private(set) var exportErrorMessage: String?
 
     /// One-off feedback flag — view sets to nil after surfacing it.
     var lastExportPath: String?
@@ -56,16 +75,31 @@ final class BenchmarkController {
         return Double(progressCompleted) / Double(progressTotal)
     }
 
+    var selectedModelIsDownloaded: Bool {
+        let snapshot = modelsDirectory
+            .appendingPathComponent("mlx-audio", isDirectory: true)
+            .appendingPathComponent(selectedProfile.modelID.replacingOccurrences(of: "/", with: "_"), isDirectory: true)
+        return ASRRuntimeFactory.hasModelFiles(in: snapshot)
+    }
+
     func run() {
         guard !isRunning else { return }
-        let profile = selectedProfile
-        let postEdit = selectedPostEdit
-        let preEdit = selectedPreEdit
+        let configuration = RunConfiguration(
+            profile: selectedProfile,
+            postEdit: selectedPostEdit,
+            preEdit: selectedPreEdit
+        )
+        let profile = configuration.profile
+        let postEdit = configuration.postEdit
+        let preEdit = configuration.preEdit
         let datasetStore = datasetStore
         let audioFileStore = audioFileStore
         let modelsDirectory = modelsDirectory
 
         isRunning = true
+        cancellationRequested = false
+        activeConfiguration = configuration
+        stage = .loadingRecords
         errorMessage = nil
         progressCompleted = 0
         progressTotal = 0
@@ -76,6 +110,9 @@ final class BenchmarkController {
                 self?.isRunning = false
                 self?.currentRecordID = nil
                 self?.task = nil
+                self?.stage = .idle
+                self?.activeConfiguration = nil
+                self?.cancellationRequested = false
             }
             do {
                 let records = try await datasetStore.all()
@@ -88,10 +125,24 @@ final class BenchmarkController {
                 // Transient runtime so the popup's active runtime is undisturbed. It will be
                 // unloaded after the run completes.
                 let runtime = ASRRuntimeFactory.make(profile: profile, cacheDirectory: modelsDirectory)
+                let snapshot = modelsDirectory
+                    .appendingPathComponent("mlx-audio", isDirectory: true)
+                    .appendingPathComponent(profile.modelID.replacingOccurrences(of: "/", with: "_"), isDirectory: true)
+                self?.stage = ASRRuntimeFactory.hasModelFiles(in: snapshot)
+                    ? .loadingModel
+                    : .downloadingModel(estimatedSize: profile.estimatedDownloadSize)
                 do {
                     try await runtime.preload()
+                } catch is CancellationError {
+                    await runtime.unload()
+                    self?.errorMessage = String(localized: "Benchmark cancelled.")
+                    return
                 } catch {
-                    self?.errorMessage = String(localized: "Model preload failed: \(error.localizedDescription)")
+                    NSLog("ThinkAloud: benchmark model preparation failed: \(error)")
+                    await runtime.unload()
+                    self?.errorMessage = String(
+                        localized: "The benchmark model couldn’t be prepared. Check Model settings, available storage, and your connection, then retry."
+                    )
                     return
                 }
 
@@ -99,9 +150,29 @@ final class BenchmarkController {
                 // Build the transient denoiser for .on and .auto (the per-record heuristic decides
                 // whether it actually runs); skip it entirely for .off.
                 let dfn = preEdit.denoise != .off ? DeepFilterNetRuntime(modelsDirectory: modelsDirectory) : nil
+                if let dfn {
+                    self?.stage = .preparingDenoiser
+                    do {
+                        try await dfn.preload()
+                    } catch is CancellationError {
+                        await runtime.unload()
+                        await dfn.unload()
+                        self?.errorMessage = String(localized: "Benchmark cancelled.")
+                        return
+                    } catch {
+                        NSLog("ThinkAloud: benchmark audio cleanup preparation failed: \(error)")
+                        await runtime.unload()
+                        await dfn.unload()
+                        self?.errorMessage = String(
+                            localized: "Audio cleanup couldn’t be prepared. Choose Off, or check Audio Cleanup settings and retry."
+                        )
+                        return
+                    }
+                }
 
                 let runner = BenchmarkRunner()
                 let report: BenchmarkReport
+                self?.stage = .running
                 do {
                     report = try await runner.run(
                         records: records,
@@ -109,7 +180,10 @@ final class BenchmarkController {
                         postEdit: postEdit,
                         preEdit: preEdit,
                         audioURLProvider: { record in
-                            await audioFileStore.absoluteURL(for: record.audioPath)
+                            guard try await audioFileStore.fileExists(relativePath: record.audioPath) else {
+                                throw AudioFileStore.StoreError.sourceMissing(record.audioPath)
+                            }
+                            return try await audioFileStore.validatedAbsoluteURL(for: record.audioPath)
                         },
                         denoise: dfn.map { d in { @Sendable (samples: [Float]) async throws -> [Float] in try await d.enhance(samples) } },
                         progress: { [weak self] p in
@@ -122,33 +196,45 @@ final class BenchmarkController {
                 } catch is CancellationError {
                     await runtime.unload()
                     await dfn?.unload()
-                    self?.errorMessage = String(localized: "Cancelled.")
+                    self?.errorMessage = String(localized: "Benchmark cancelled.")
                     return
                 } catch {
+                    NSLog("ThinkAloud: benchmark run failed: \(error)")
                     await runtime.unload()
                     await dfn?.unload()
-                    self?.errorMessage = String(localized: "Benchmark failed: \(error.localizedDescription)")
+                    self?.errorMessage = String(
+                        localized: "The benchmark couldn’t finish. Verify the selected model and saved audio files, then retry."
+                    )
                     return
                 }
                 await runtime.unload()
                 await dfn?.unload()
                 if let self {
                     self.history.insert(report, at: 0)
-                    self.displayedRunAt = report.runAt
+                    self.displayedRunID = report.runID
                 }
             } catch {
-                self?.errorMessage = String(localized: "Failed to load records: \(error.localizedDescription)")
+                NSLog("ThinkAloud: benchmark record load failed: \(error)")
+                self?.errorMessage = String(
+                    localized: "ThinkAloud couldn’t load records for the benchmark. Refresh the dataset and try again."
+                )
             }
         }
     }
 
     func cancel() {
+        guard isRunning, !cancellationRequested else { return }
+        cancellationRequested = true
         task?.cancel()
+    }
+
+    func clearError() {
+        errorMessage = nil
     }
 
     /// The displayed report — either an explicit selection from history or the newest run.
     var displayedReport: BenchmarkReport? {
-        if let runAt = displayedRunAt, let hit = history.first(where: { $0.runAt == runAt }) {
+        if let runID = displayedRunID, let hit = history.first(where: { $0.runID == runID }) {
             return hit
         }
         return history.first
@@ -163,6 +249,14 @@ final class BenchmarkController {
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
         let data = try encoder.encode(report)
         try data.write(to: url, options: .atomic)
+        exportErrorMessage = nil
         lastExportPath = url.path
+    }
+
+    func recordExportFailure(_ error: Error) {
+        NSLog("ThinkAloud: benchmark report export failed: \(error)")
+        exportErrorMessage = String(
+            localized: "ThinkAloud couldn’t export the benchmark report. Choose a writable folder and try again."
+        )
     }
 }

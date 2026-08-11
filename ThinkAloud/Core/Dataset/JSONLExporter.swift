@@ -7,8 +7,14 @@ struct JSONLExporter {
 
         var errorDescription: String? {
             switch self {
-            case .encodingFailed: return "Failed to encode dataset records."
-            case .ioFailed(let msg): return "Failed to write export file: \(msg)"
+            case .encodingFailed:
+                return String(
+                    localized: "ThinkAloud couldn’t prepare the dataset for export. Try again."
+                )
+            case .ioFailed:
+                return String(
+                    localized: "ThinkAloud couldn’t save the export. Choose another folder and try again."
+                )
             }
         }
     }

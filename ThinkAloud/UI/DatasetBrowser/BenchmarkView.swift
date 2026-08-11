@@ -5,20 +5,24 @@ struct BenchmarkView: View {
     @Bindable var controller: BenchmarkController
 
     @State private var exportToastVisible: Bool = false
+    @State private var confirmModelDownload: Bool = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 setupSection
                 Divider()
+                if let err = controller.errorMessage {
+                    errorBanner(err)
+                }
+                if let err = controller.exportErrorMessage {
+                    errorBanner(err)
+                }
                 if controller.isRunning {
                     progressSection
                 } else if !controller.history.isEmpty {
                     reportArea
-                } else if let err = controller.errorMessage {
-                    Text(err)
-                        .font(.callout)
-                        .foregroundStyle(.red)
                 } else {
                     placeholderSection
                 }
@@ -35,6 +39,18 @@ struct BenchmarkView: View {
                 await MainActor.run { exportToastVisible = false }
             }
         }
+        .confirmationDialog(
+            String(localized: "Download model and run benchmark?"),
+            isPresented: $confirmModelDownload,
+            titleVisibility: .visible
+        ) {
+            Button(String(localized: "Download \(controller.selectedProfile.estimatedDownloadSize) and Run")) {
+                controller.run()
+            }
+            Button(String(localized: "Cancel"), role: .cancel) {}
+        } message: {
+            Text("The selected \(controller.selectedProfile.displayName) model is not downloaded. Benchmark will download approximately \(controller.selectedProfile.estimatedDownloadSize), then load it into memory before processing records.")
+        }
     }
 
     // MARK: - Setup
@@ -43,51 +59,109 @@ struct BenchmarkView: View {
     private var setupSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             sectionHeader("Setup")
+            LazyVGrid(
+                columns: [
+                    GridItem(.flexible(minimum: 300), spacing: 24),
+                    GridItem(.flexible(minimum: 260))
+                ],
+                alignment: .leading,
+                spacing: 10
+            ) {
+                modelPicker
+                chineseOutputPicker
+                denoisePicker
+                spacingToggle
+            }
             HStack(spacing: 12) {
-                LabeledContent(String(localized: "Model")) {
-                    Picker("", selection: $controller.selectedProfile) {
-                        ForEach(ModelProfile.allCases) { p in
-                            Text(p.displayName).tag(p)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
-                }
-                LabeledContent(String(localized: "Chinese output")) {
-                    Picker("", selection: $controller.selectedPostEdit.chinese) {
-                        ForEach(ChinesePreference.allCases) { c in
-                            Text(c.displayName).tag(c)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
-                }
-                Toggle(String(localized: "Space between Chinese and English/numbers"), isOn: $controller.selectedPostEdit.cjkLatinSpacing)
-                    .toggleStyle(.checkbox)
-                LabeledContent(String(localized: "Denoise")) {
-                    Picker("", selection: $controller.selectedPreEdit.denoise) {
-                        ForEach(DenoiseMode.allCases) { mode in
-                            Text(mode.displayName).tag(mode)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
+                if !controller.selectedModelIsDownloaded && !controller.isRunning {
+                    Label(
+                        String(localized: "Not downloaded · \(controller.selectedProfile.estimatedDownloadSize)"),
+                        systemImage: "arrow.down.circle"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Button {
+                runControls
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var modelPicker: some View {
+        Picker(String(localized: "Model"), selection: $controller.selectedProfile) {
+            ForEach(ModelProfile.allCases) { profile in
+                Text(profile.displayName).tag(profile)
+            }
+        }
+        .pickerStyle(.menu)
+        .disabled(controller.isRunning)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var chineseOutputPicker: some View {
+        Picker(String(localized: "Chinese output"), selection: $controller.selectedPostEdit.chinese) {
+            ForEach(ChinesePreference.allCases) { preference in
+                Text(preference.displayName).tag(preference)
+            }
+        }
+        .pickerStyle(.menu)
+        .disabled(controller.isRunning)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var denoisePicker: some View {
+        Picker(String(localized: "Denoise"), selection: $controller.selectedPreEdit.denoise) {
+            ForEach(DenoiseMode.allCases) { mode in
+                Text(mode.displayName).tag(mode)
+            }
+        }
+        .pickerStyle(.menu)
+        .disabled(controller.isRunning)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var spacingToggle: some View {
+        Toggle(
+            String(localized: "Space between Chinese and English/numbers"),
+            isOn: $controller.selectedPostEdit.cjkLatinSpacing
+        )
+        .toggleStyle(.checkbox)
+        .disabled(controller.isRunning)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var runControls: some View {
+        HStack(spacing: 8) {
+            Button {
+                if controller.selectedModelIsDownloaded {
                     controller.run()
-                } label: {
-                    Label(String(localized: "Run benchmark"), systemImage: "gauge.with.dots.needle.50percent")
+                } else {
+                    confirmModelDownload = true
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(controller.isRunning)
-                if controller.isRunning {
-                    Button(role: .destructive) {
-                        controller.cancel()
-                    } label: {
+            } label: {
+                Label(String(localized: "Run benchmark"), systemImage: "gauge.with.dots.needle.50percent")
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(controller.isRunning)
+            if controller.isRunning {
+                Button(role: .destructive) {
+                    controller.cancel()
+                } label: {
+                    if controller.cancellationRequested {
+                        HStack(spacing: 5) {
+                            ProgressView().controlSize(.small)
+                            Text("Canceling…")
+                        }
+                    } else {
                         Label(String(localized: "Cancel"), systemImage: "stop.fill")
                     }
                 }
+                .disabled(controller.cancellationRequested)
             }
         }
     }
@@ -97,21 +171,50 @@ struct BenchmarkView: View {
     @ViewBuilder
     private var progressSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionHeader("Running")
-            ProgressView(value: controller.progressFraction)
-                .progressViewStyle(.linear)
-            HStack {
-                Text("\(controller.progressCompleted) / \(controller.progressTotal)")
-                    .font(.caption.monospacedDigit())
-                Spacer()
-                if let id = controller.currentRecordID {
-                    Text("Current: \(id)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
+            Text(stageTitle)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+            if controller.stage == .running {
+                ProgressView(value: controller.progressFraction)
+                    .progressViewStyle(.linear)
+                    .accessibilityLabel(stageTitle)
+                    .accessibilityValue("\(controller.progressCompleted) of \(controller.progressTotal)")
+                HStack {
+                    Text("\(controller.progressCompleted.formatted()) / \(controller.progressTotal.formatted())")
+                        .font(.caption.monospacedDigit())
+                    Spacer()
+                    if let id = controller.currentRecordID {
+                        Text("Current: \(id)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    }
                 }
+            } else {
+                ProgressView()
+                    .controlSize(.small)
+                    .accessibilityLabel(stageTitle)
             }
+            if let configuration = controller.activeConfiguration {
+                Text("\(configuration.profile.displayName) · \(configuration.preEdit.summary) · \(configuration.postEdit.summary)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .textSelection(.enabled)
+            }
+        }
+    }
+
+    private var stageTitle: String {
+        switch controller.stage {
+        case .idle: return String(localized: "Preparing benchmark")
+        case .loadingRecords: return String(localized: "Loading records")
+        case .downloadingModel(let estimatedSize):
+            return String(localized: "Downloading model (\(estimatedSize))")
+        case .loadingModel: return String(localized: "Loading model into memory")
+        case .preparingDenoiser: return String(localized: "Preparing denoiser")
+        case .running: return String(localized: "Running benchmark")
         }
     }
 
@@ -134,16 +237,17 @@ struct BenchmarkView: View {
                 Text("Run")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
-                Picker("", selection: Binding(
-                    get: { controller.displayedRunAt ?? controller.history.first?.runAt ?? "" },
-                    set: { controller.displayedRunAt = $0 }
+                Picker(String(localized: "Run"), selection: Binding(
+                    get: { controller.displayedRunID ?? controller.history.first?.runID ?? "" },
+                    set: { controller.displayedRunID = $0 }
                 )) {
-                    ForEach(controller.history, id: \.runAt) { r in
-                        Text(historyLabel(r)).tag(r.runAt)
+                    ForEach(controller.history, id: \.runID) { r in
+                        Text(historyLabel(r)).tag(r.runID)
                     }
                 }
                 .pickerStyle(.menu)
                 .labelsHidden()
+                .accessibilityLabel(String(localized: "Run"))
                 .frame(maxWidth: 400)
                 Spacer()
             }
@@ -152,12 +256,13 @@ struct BenchmarkView: View {
 
     private func historyLabel(_ report: BenchmarkReport) -> String {
         let f = DateFormatter()
-        f.timeStyle = .short
+        f.dateStyle = .medium
+        f.timeStyle = .medium
         let iso = ISO8601DateFormatter()
-        iso.formatOptions = [.withInternetDateTime]
+        iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         let timeText = iso.date(from: report.runAt).map { f.string(from: $0) } ?? report.runAt
         let modelShort = report.modelID.components(separatedBy: "/").last ?? report.modelID
-        return "\(timeText) · \(modelShort)"
+        return "\(timeText) · \(modelShort) · \(report.preEdit.summary) · \(report.postEdit.summary)"
     }
 
     @ViewBuilder
@@ -182,7 +287,7 @@ struct BenchmarkView: View {
                 }
                 .controlSize(.small)
             }
-            .animation(.easeOut(duration: 0.2), value: exportToastVisible)
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: exportToastVisible)
 
             summaryGrid(report)
 
@@ -212,35 +317,35 @@ struct BenchmarkView: View {
                 summaryCell(label: String(localized: "Denoise"), value: report.preEdit.summary)
             }
             GridRow {
-                summaryCell(label: String(localized: "Total"), value: "\(report.total)")
+                summaryCell(label: String(localized: "Total"), value: report.total.formatted())
                 summaryCell(
                     label: String(localized: "Exact match"),
-                    value: "\(report.exactMatchCount(useNormalized: useNorm)) (\(String(format: "%.1f%%", report.exactMatchRate(useNormalized: useNorm) * 100)))"
+                    value: "\(report.exactMatchCount(useNormalized: useNorm).formatted()) (\(report.exactMatchRate(useNormalized: useNorm).formatted(.percent.precision(.fractionLength(1)))))"
                 )
             }
             GridRow {
                 summaryCell(
                     label: String(localized: "Avg CER"),
-                    value: String(format: "%.3f", report.averageCER(useNormalized: useNorm)),
+                    value: report.averageCER(useNormalized: useNorm).formatted(.number.precision(.fractionLength(3))),
                     tooltip: String(localized: "Character Error Rate — 0 means perfect, lower is better.")
                 )
                 summaryCell(
                     label: String(localized: "Avg WER"),
-                    value: String(format: "%.3f", report.averageWER(useNormalized: useNorm)),
+                    value: report.averageWER(useNormalized: useNorm).formatted(.number.precision(.fractionLength(3))),
                     tooltip: String(localized: "Word Error Rate — CJK ideographs count as words; 0 means perfect, lower is better.")
                 )
             }
             GridRow {
-                summaryCell(label: String(localized: "Avg latency"), value: "\(report.averageLatencyMs) ms")
+                summaryCell(label: String(localized: "Avg latency"), value: durationLabel(milliseconds: report.averageLatencyMs))
                 summaryCell(
                     label: String(localized: "Avg RTF"),
-                    value: report.averageRTF.map { String(format: "%.2f×", $0) } ?? "—",
+                    value: report.averageRTF.map { "\($0.formatted(.number.precision(.fractionLength(2))))×" } ?? "—",
                     tooltip: String(localized: "Real-Time Factor — processing time ÷ audio length. Below 1.0× is faster than real time.")
                 )
             }
             if report.failed > 0 {
                 GridRow {
-                    summaryCell(label: String(localized: "Failed"), value: "\(report.failed)", tone: .red)
+                    summaryCell(label: String(localized: "Failed"), value: report.failed.formatted(), tone: .red)
                 }
             }
         }
@@ -250,7 +355,7 @@ struct BenchmarkView: View {
     private var metricsToggleBar: some View {
         HStack(spacing: 8) {
             Toggle(isOn: $controller.useNormalizedMetrics) {
-                Text("Normalize (lowercase + strip punctuation + 全→半形)")
+                Text("Normalize (lowercase + strip punctuation + full-width → half-width)")
                     .font(.caption)
             }
             .toggleStyle(.switch)
@@ -283,10 +388,10 @@ struct BenchmarkView: View {
     private var cerLegend: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 14) {
-                legendDot(.green, label: String(localized: "Exact"))
-                legendDot(.yellow, label: String(localized: "CER < 0.1"))
-                legendDot(.orange, label: String(localized: "0.1–0.3"))
-                legendDot(.red, label: String(localized: "> 0.3"))
+                legendDot(.green, symbol: "checkmark.circle.fill", label: String(localized: "Exact"))
+                legendDot(.yellow, symbol: "circle.lefthalf.filled", label: String(localized: "CER < 0.1"))
+                legendDot(.orange, symbol: "circle.dotted", label: String(localized: "CER 0.1–0.3"))
+                legendDot(.red, symbol: "xmark.circle.fill", label: String(localized: "CER > 0.3"))
                 HStack(spacing: 3) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .font(.caption2)
@@ -300,19 +405,15 @@ struct BenchmarkView: View {
             HStack(spacing: 14) {
                 // Char-diff colors mirror git semantics relative to the ground truth.
                 HStack(spacing: 4) {
-                    Text("綠")
-                        .font(.caption2)
-                        .foregroundColor(.green)
-                        .underline()
+                    Image(systemName: "minus.circle")
+                        .foregroundStyle(.green)
                     Text("Missing (model omitted)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                 HStack(spacing: 4) {
-                    Text("紅")
-                        .font(.caption2)
-                        .foregroundColor(.red)
-                        .strikethrough()
+                    Image(systemName: "plus.circle")
+                        .foregroundStyle(.red)
                     Text("Extra (model hallucinated)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -324,9 +425,11 @@ struct BenchmarkView: View {
     }
 
     @ViewBuilder
-    private func legendDot(_ color: Color, label: String) -> some View {
+    private func legendDot(_ color: Color, symbol: String, label: String) -> some View {
         HStack(spacing: 3) {
-            Circle().fill(color).frame(width: 8, height: 8)
+            Image(systemName: symbol)
+                .foregroundStyle(color)
+                .imageScale(.small)
             Text(label)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -343,14 +446,15 @@ struct BenchmarkView: View {
                 Image(systemName: rowIcon(r, isExact: isExact))
                     .foregroundStyle(rowColor(r, cer: cerValue, isExact: isExact))
                     .imageScale(.small)
+                    .accessibilityLabel(rowStatus(r, cer: cerValue, isExact: isExact))
                 Text(r.id)
                     .font(.caption.weight(.medium))
                 Spacer()
                 if r.error == nil {
-                    Text("CER \(String(format: "%.2f", cerValue))")
+                    Text("CER \(cerValue.formatted(.number.precision(.fractionLength(2))))")
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
-                    Text("\(r.durationMs) ms")
+                    Text(durationLabel(milliseconds: r.durationMs))
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.tertiary)
                 }
@@ -374,7 +478,10 @@ struct BenchmarkView: View {
                     diffText(reference: r.groundTruth, hypothesis: r.predictedEdited)
                         .lineLimit(4)
                         .textSelection(.enabled)
+                        .accessibilityHidden(true)
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(diffAccessibilityLabel(reference: r.groundTruth, hypothesis: r.predictedEdited))
             }
         }
         .padding(.vertical, 4)
@@ -388,7 +495,7 @@ struct BenchmarkView: View {
     ///     red strikethrough. Read as "needs to be removed".
     private func diffText(reference: String, hypothesis: String) -> Text {
         let segments = TextDiff.diff(reference: reference, hypothesis: hypothesis)
-        var out = Text("")
+        var out = Text(verbatim: "")
         for seg in segments {
             switch seg.op {
             case .equal:
@@ -422,6 +529,30 @@ struct BenchmarkView: View {
         return .red
     }
 
+    private func rowStatus(_ r: BenchmarkResult, cer: Double, isExact: Bool) -> String {
+        if r.error != nil { return String(localized: "Error") }
+        if isExact { return String(localized: "Exact match") }
+        if cer < 0.1 { return String(localized: "Character error rate below 0.1") }
+        if cer < 0.3 { return String(localized: "Character error rate between 0.1 and 0.3") }
+        return String(localized: "Character error rate above 0.3")
+    }
+
+    private func diffAccessibilityLabel(reference: String, hypothesis: String) -> String {
+        let segments = TextDiff.diff(reference: reference, hypothesis: hypothesis)
+        return segments.map { segment in
+            switch segment.op {
+            case .equal: return segment.text
+            case .delete: return String(localized: "Missing: \(segment.text)")
+            case .insert: return String(localized: "Extra: \(segment.text)")
+            }
+        }.joined(separator: ", ")
+    }
+
+    private func durationLabel(milliseconds: Int) -> String {
+        Measurement(value: Double(milliseconds), unit: UnitDuration.milliseconds)
+            .formatted(.measurement(width: .abbreviated, usage: .asProvided))
+    }
+
     // MARK: - Placeholder
 
     @ViewBuilder
@@ -430,6 +561,7 @@ struct BenchmarkView: View {
             Image(systemName: "gauge.with.dots.needle.50percent")
                 .font(.largeTitle)
                 .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
             Text("Run the full pipeline against every record")
                 .font(.headline)
                 .foregroundStyle(.secondary)
@@ -462,8 +594,19 @@ struct BenchmarkView: View {
             do {
                 try controller.exportJSON(to: url)
             } catch {
-                NSLog("ThinkAloud: benchmark export failed: \(error)")
+                controller.recordExportFailure(error)
             }
         }
+    }
+
+    @ViewBuilder
+    private func errorBanner(_ message: String) -> some View {
+        Label(message, systemImage: "exclamationmark.triangle.fill")
+            .font(.callout)
+            .foregroundStyle(.red)
+            .padding(10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+            .accessibilityLabel(String(localized: "Benchmark error: \(message)"))
     }
 }

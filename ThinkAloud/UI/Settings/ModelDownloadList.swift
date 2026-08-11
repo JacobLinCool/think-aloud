@@ -1,6 +1,34 @@
 import AppKit
 import SwiftUI
 
+struct ModelDownloadSpaceRequirement: Equatable {
+    static let minimumSafetyMarginBytes: Int64 = 500_000_000
+
+    let downloadBytes: Int64
+
+    init(downloadBytes: Int64) {
+        precondition(downloadBytes >= 0, "Model download size cannot be negative")
+        self.downloadBytes = downloadBytes
+    }
+
+    /// The downloader first stores Hugging Face blobs and then installs a separate snapshot copy.
+    /// Both can coexist until cleanup, so free-space checks must budget for the peak, not merely the
+    /// final model size.
+    var peakModelBytes: Int64 {
+        let (result, overflow) = downloadBytes.multipliedReportingOverflow(by: 2)
+        return overflow ? .max : result
+    }
+
+    var safetyMarginBytes: Int64 {
+        max(Self.minimumSafetyMarginBytes, downloadBytes / 5)
+    }
+
+    var requiredAvailableBytes: Int64 {
+        let (result, overflow) = peakModelBytes.addingReportingOverflow(safetyMarginBytes)
+        return overflow ? .max : result
+    }
+}
+
 /// The unified Model section: one per-profile list where tapping a row selects the active engine
 /// (stages it via `setProfile` — no auto-download), shows the full model ID, download state / size,
 /// and a per-row Download / Remove. The active row additionally reflects the live runtime readiness.
@@ -12,6 +40,8 @@ struct ModelDownloadList: View {
     @Environment(AppContainer.self) private var container
 
     @State private var inflightDownloads: Set<ModelProfile> = []
+    @State private var downloadTasks: [ModelProfile: Task<Void, Never>] = [:]
+    @State private var cancellationRequested: Set<ModelProfile> = []
     @State private var inflightRemovals: Set<ModelProfile> = []
     @State private var error: String?
     @State private var refreshToken = 0  // bumped to force re-read of cacheSize after mutations
@@ -24,9 +54,6 @@ struct ModelDownloadList: View {
     /// thread. Recomputed only on appear and whenever `refreshToken` bumps (download/remove done).
     @State private var sizes: [ModelProfile: Int64] = [:]
     @State private var downloadedProfiles: Set<ModelProfile> = []
-
-    /// Trigger the low-disk confirmation when free space on the models volume drops below this.
-    private let lowDiskThresholdBytes: Int64 = 5 * 1_000_000_000
 
     var body: some View {
         Section {
@@ -63,8 +90,13 @@ struct ModelDownloadList: View {
                 performDownload(profile)
             }
             Button(String(localized: "Cancel"), role: .cancel) {}
-        } message: { _ in
-            Text("Only \(formatBytes(availableBytes)) free on the models volume. Continue downloading?")
+        } message: { profile in
+            let required = ModelDownloadSpaceRequirement(
+                downloadBytes: profile.estimatedDownloadBytes
+            ).requiredAvailableBytes
+            Text(
+                "This model may need about \(formatBytes(required)) at peak for the temporary Hugging Face blob, installed snapshot, and safety margin, but only \(formatBytes(availableBytes)) is available. Continue downloading?"
+            )
         }
     }
 
@@ -77,29 +109,49 @@ struct ModelDownloadList: View {
         let isRemoving = inflightRemovals.contains(profile)
 
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: isCurrent ? "largecircle.fill.circle" : "circle")
-                .foregroundStyle(isCurrent ? Color.accentColor : Color.secondary)
-                .imageScale(.large)
-                .padding(.top, 1)
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 6) {
-                    Text(profile.shortName).fontWeight(.semibold)
-                    if isCurrent {
-                        Text("Current")
-                            .font(.caption2)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.accentColor.opacity(0.18), in: Capsule())
-                            .foregroundStyle(Color.accentColor)
+            Button {
+                container.modelManager.setProfile(profile)
+            } label: {
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: isCurrent ? "largecircle.fill.circle" : "circle")
+                        .foregroundStyle(isCurrent ? Color.accentColor : Color.secondary)
+                        .imageScale(.large)
+                        .padding(.top, 1)
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 6) {
+                            Text(profile.shortName).fontWeight(.semibold)
+                            if isCurrent {
+                                Text("Current")
+                                    .font(.caption2)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Color.accentColor.opacity(0.18), in: Capsule())
+                                    .foregroundStyle(Color.accentColor)
+                                    .accessibilityHidden(true)
+                            }
+                        }
+                        Text(profile.modelID)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                        statusLine(
+                            profile: profile,
+                            downloaded: downloaded,
+                            size: size,
+                            isDownloading: isDownloading,
+                            isRemoving: isRemoving,
+                            isCurrent: isCurrent
+                        )
                     }
                 }
-                Text(profile.modelID)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
-                statusLine(profile: profile, downloaded: downloaded, size: size, isDownloading: isDownloading, isRemoving: isRemoving, isCurrent: isCurrent)
             }
+            .buttonStyle(.plain)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(String(localized: "Use \(profile.shortName) for transcription"))
+            .accessibilityValue(isCurrent ? String(localized: "Selected") : String(localized: "Not selected"))
+            .accessibilityAddTraits(isCurrent ? .isSelected : [])
             Spacer()
             VStack(alignment: .trailing, spacing: 6) {
                 if downloaded {
@@ -112,18 +164,30 @@ struct ModelDownloadList: View {
                     }
                     .controlSize(.small)
                     .disabled(isRemoving)
+                    .accessibilityLabel(String(localized: "Remove \(profile.shortName)"))
+                } else if isDownloading {
+                    Button(
+                        cancellationRequested.contains(profile)
+                            ? String(localized: "Canceling…")
+                            : String(localized: "Cancel Download")
+                    ) {
+                        cancellationRequested.insert(profile)
+                        downloadTasks[profile]?.cancel()
+                    }
+                    .controlSize(.small)
+                    .disabled(cancellationRequested.contains(profile))
+                    .accessibilityLabel(String(localized: "Cancel \(profile.shortName) Download"))
                 } else {
                     Button(String(localized: "Download")) {
                         download(profile)
                     }
                     .controlSize(.small)
                     .disabled(isDownloading)
+                    .accessibilityLabel(String(localized: "Download \(profile.shortName)"))
                 }
             }
         }
         .padding(.vertical, 4)
-        .contentShape(Rectangle())
-        .onTapGesture { container.modelManager.setProfile(profile) }
     }
 
     @ViewBuilder
@@ -135,6 +199,11 @@ struct ModelDownloadList: View {
             Text(status?.displayLabel ?? String(localized: "Downloading…"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
+            if cancellationRequested.contains(profile) {
+                Text("Cancellation requested. The download stops when the server responds.")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
         } else if isRemoving {
             HStack(spacing: 6) {
                 ProgressView().controlSize(.mini)
@@ -170,36 +239,55 @@ struct ModelDownloadList: View {
     }
 
     private func download(_ profile: ModelProfile) {
-        let free = freeSpaceAtModelsVolume()
-        if free < lowDiskThresholdBytes {
-            availableBytes = free
-            lowDiskPrompt = profile
-            return
+        do {
+            let free = try freeSpaceAtModelsVolume()
+            let requirement = ModelDownloadSpaceRequirement(downloadBytes: profile.estimatedDownloadBytes)
+            if free < requirement.requiredAvailableBytes {
+                availableBytes = free
+                lowDiskPrompt = profile
+                return
+            }
+            performDownload(profile)
+        } catch {
+            NSLog("ThinkAloud: model download disk-space check failed: \(error)")
+            self.error = String(
+                localized: "ThinkAloud couldn’t check available storage. Check storage access and try again."
+            )
         }
-        performDownload(profile)
     }
 
     private func performDownload(_ profile: ModelProfile) {
         inflightDownloads.insert(profile)
         error = nil
-        Task { @MainActor in
+        let task = Task { @MainActor in
             do {
                 try await container.modelManager.downloadProfile(profile)
             } catch {
-                self.error = String(localized: "Download failed: \(error.localizedDescription)")
+                if !Task.isCancelled {
+                    NSLog("ThinkAloud: model download failed for \(profile.modelID): \(error)")
+                    self.error = String(
+                        localized: "The model couldn’t be downloaded. Check your connection and available storage, then try again."
+                    )
+                }
             }
+            downloadTasks[profile] = nil
+            cancellationRequested.remove(profile)
             inflightDownloads.remove(profile)
             refreshToken &+= 1
         }
+        downloadTasks[profile] = task
     }
 
     /// Free bytes on the volume that hosts the models cache. Uses
     /// `volumeAvailableCapacityForImportantUsageKey` so it accounts for purgeable storage the
     /// system will reclaim under pressure (closer to what Finder shows).
-    private func freeSpaceAtModelsVolume() -> Int64 {
+    private func freeSpaceAtModelsVolume() throws -> Int64 {
         let url = container.modelManager.modelCacheURL
-        let values = try? url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
-        return Int64(values?.volumeAvailableCapacityForImportantUsage ?? 0)
+        let values = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
+        guard let capacity = values.volumeAvailableCapacityForImportantUsage else {
+            throw CocoaError(.fileReadUnknown)
+        }
+        return Int64(capacity)
     }
 
     private func remove(_ profile: ModelProfile) {
@@ -209,7 +297,10 @@ struct ModelDownloadList: View {
             do {
                 try container.modelManager.removeProfile(profile)
             } catch {
-                self.error = String(localized: "Remove failed: \(error.localizedDescription)")
+                NSLog("ThinkAloud: model removal failed for \(profile.modelID): \(error)")
+                self.error = String(
+                    localized: "The downloaded model couldn’t be removed. Check storage access and try again."
+                )
             }
             inflightRemovals.remove(profile)
             refreshToken &+= 1

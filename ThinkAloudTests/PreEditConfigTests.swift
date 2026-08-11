@@ -22,17 +22,18 @@ final class PreEditConfigTests: XCTestCase {
         XCTAssertNotEqual(off, on)
     }
 
-    // MARK: - Codable back-compat (the load-bearing migration)
+    // MARK: - Canonical Codable contract
 
-    func testDecodesLegacyBoolTrueAsOn() throws {
-        // Pre-tri-state config stored `{"denoise": true}` (a Bool). Must migrate to .on, not reset.
-        let data = #"{"denoise":true}"#.data(using: .utf8)!
-        XCTAssertEqual(try JSONDecoder().decode(PreEditConfig.self, from: data).denoise, .on)
-    }
-
-    func testDecodesLegacyBoolFalseAsOff() throws {
-        let data = #"{"denoise":false}"#.data(using: .utf8)!
-        XCTAssertEqual(try JSONDecoder().decode(PreEditConfig.self, from: data).denoise, .off)
+    func testRejectsLegacyBoolDenoiseValues() {
+        for json in [#"{"denoise":true}"#, #"{"denoise":false}"#] {
+            XCTAssertThrowsError(
+                try JSONDecoder().decode(PreEditConfig.self, from: Data(json.utf8))
+            ) { error in
+                guard case DecodingError.typeMismatch = error else {
+                    return XCTFail("Expected typeMismatch for legacy Bool payload, got \(error)")
+                }
+            }
+        }
     }
 
     func testDecodesNewEnumStrings() throws {
@@ -44,9 +45,22 @@ final class PreEditConfigTests: XCTestCase {
         XCTAssertEqual(try decode(#"{"denoise":"on"}"#), .on)
     }
 
-    func testDecodesMissingOrGarbageAsOff() throws {
-        XCTAssertEqual(try JSONDecoder().decode(PreEditConfig.self, from: #"{}"#.data(using: .utf8)!).denoise, .off)
-        XCTAssertEqual(try JSONDecoder().decode(PreEditConfig.self, from: #"{"denoise":42}"#.data(using: .utf8)!).denoise, .off)
+    func testRejectsMissingDenoiseKey() {
+        XCTAssertThrowsError(
+            try JSONDecoder().decode(PreEditConfig.self, from: Data(#"{}"#.utf8))
+        ) { error in
+            guard case DecodingError.keyNotFound = error else {
+                return XCTFail("Expected keyNotFound for incomplete canonical payload, got \(error)")
+            }
+        }
+    }
+
+    func testRejectsInvalidDenoiseValue() {
+        for json in [#"{"denoise":42}"#, #"{"denoise":"automatic"}"#] {
+            XCTAssertThrowsError(
+                try JSONDecoder().decode(PreEditConfig.self, from: Data(json.utf8))
+            )
+        }
     }
 
     func testCodableRoundTrip() throws {

@@ -4,8 +4,8 @@ import SwiftUI
 /// persisted selection token (see `SettingsRouter`), so reordering or adding cases later never
 /// corrupts a previously-saved selection.
 ///
-/// Insights is the home page (first item, default landing — every open lands here so the user sees
-/// their stats + achievements immediately). The rest are the job-shaped categories: app-level setup
+/// Insights is the home page and first-open default. Later opens restore the last selected pane.
+/// The rest are the job-shaped categories: app-level setup
 /// (Startup), the dictation hotkeys (Shortcuts), OS grants (Permissions), updates (Software Update),
 /// the engine + its files (Model), everyday output shaping (Output), saved records (Dataset), and
 /// power/diagnostic tools (Advanced).

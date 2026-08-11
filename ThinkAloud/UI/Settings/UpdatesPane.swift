@@ -33,6 +33,7 @@ struct UpdatesPane: View {
                         Text(channel.displayName).tag(channel)
                     }
                 }
+                .accessibilityLabel(String(localized: "Channel"))
                 Toggle(String(localized: "Automatically check for updates"),
                        isOn: $updater.automaticallyChecksForUpdates)
                 Toggle(String(localized: "Automatically download and install updates"),

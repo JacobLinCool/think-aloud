@@ -1,3 +1,5 @@
+import AppKit
+import Combine
 import SwiftUI
 
 /// "Test my environment" control embedded in the Audio cleanup section: records a short sample,
@@ -5,10 +7,15 @@ import SwiftUI
 /// audio. Collapsed by default so it doesn't crowd the simple Off/Auto/On picker.
 struct DenoiseTesterView: View {
     @Environment(AppContainer.self) private var container
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var tester = DenoiseTester()
+    @State private var isExpanded = false
+
+    private let appActivated = NotificationCenter.default
+        .publisher(for: NSApplication.didBecomeActiveNotification)
 
     var body: some View {
-        DisclosureGroup {
+        DisclosureGroup(isExpanded: $isExpanded) {
             VStack(alignment: .leading, spacing: 10) {
                 content
             }
@@ -16,6 +23,9 @@ struct DenoiseTesterView: View {
         } label: {
             Text("Test my environment")
         }
+        .accessibilityAction { isExpanded.toggle() }
+        .onAppear { container.permissions.refresh() }
+        .onReceive(appActivated) { _ in container.permissions.refresh() }
         .onDisappear { tester.reset() }
     }
 
@@ -27,13 +37,13 @@ struct DenoiseTesterView: View {
         case .notDetermined:
             Text("Microphone access is needed to record a test sample.")
                 .font(.caption).foregroundStyle(.secondary)
-            Button(String(localized: "Request access")) {
+            Button(String(localized: "Request Microphone Access…")) {
                 Task { await container.permissions.requestMicrophone() }
             }
         case .denied, .unknown:
             Text("Microphone access is off. Enable it to record a test sample.")
                 .font(.caption).foregroundStyle(.secondary)
-            Button(String(localized: "Open System Settings")) {
+            Button(String(localized: "Open Microphone Settings…")) {
                 container.permissions.openMicrophoneSettings()
             }
         }
@@ -52,13 +62,30 @@ struct DenoiseTesterView: View {
             }
 
         case .recording:
+            let elapsed = Measurement(
+                value: tester.elapsed,
+                unit: UnitDuration.seconds
+            ).formatted(
+                .measurement(
+                    width: .abbreviated,
+                    usage: .asProvided,
+                    numberFormatStyle: .number.precision(.fractionLength(0))
+                )
+            )
             HStack(spacing: 10) {
                 Image(systemName: "waveform")
                     .foregroundStyle(.red)
-                    .symbolEffect(.variableColor.iterative, options: .repeating)
-                Text("Recording… \(Int(tester.elapsed))s")
+                    .symbolEffect(
+                        .variableColor.iterative,
+                        options: .repeating,
+                        isActive: !reduceMotion
+                    )
+                Text("Recording… \(elapsed)")
                     .monospacedDigit()
                 Spacer()
+                Button(String(localized: "Cancel")) {
+                    tester.reset()
+                }
                 Button(String(localized: "Stop")) {
                     tester.stopAndProcess()
                 }
@@ -70,6 +97,10 @@ struct DenoiseTesterView: View {
                 ProgressView().controlSize(.small)
                 Text("Analyzing & cleaning… (the first run downloads the denoiser)")
                     .font(.caption).foregroundStyle(.secondary)
+                Spacer()
+                Button(String(localized: "Cancel")) {
+                    tester.reset()
+                }
             }
 
         case .ready:
@@ -90,9 +121,11 @@ struct DenoiseTesterView: View {
         HStack(spacing: 6) {
             Image(systemName: decision.shouldDenoise ? "sparkles" : "checkmark.circle")
                 .foregroundStyle(decision.shouldDenoise ? Color.accentColor : .green)
-            Text(decision.shouldDenoise
-                 ? "Auto would clean this clip"
-                 : "Auto would leave this clip as-is")
+            Text(
+                decision.shouldDenoise
+                    ? String(localized: "Auto would clean this clip")
+                    : String(localized: "Auto would leave this clip as-is")
+            )
                 .font(.callout.weight(.medium))
         }
         Text(verdictDetail(decision))
@@ -135,8 +168,10 @@ struct DenoiseTesterView: View {
 
     /// Plain-language explanation of the decision + the numbers behind it.
     private func verdictDetail(_ d: DenoiseDecision) -> String {
-        let snr = String(format: "%.0f", d.snrDB)
-        let threshold = String(format: "%.0f", DenoiseHeuristic.snrNoisyDB)
+        let snr = d.snrDB.formatted(.number.precision(.fractionLength(0)))
+        let threshold = DenoiseHeuristic.snrNoisyDB.formatted(
+            .number.precision(.fractionLength(0))
+        )
         switch d.reason {
         case .noisy:
             return String(localized: "Steady background noise detected (signal-to-noise ≈ \(snr) dB, below the \(threshold) dB threshold).")
