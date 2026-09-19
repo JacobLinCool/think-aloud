@@ -69,6 +69,9 @@ enum ASRError: Error, LocalizedError {
     case modelNotReady
     case audioLoadFailed(String)
     case modelLoadFailed(String)
+    /// The Hub answered non-2xx while downloading weights. Carries the status so the message can
+    /// name the real cause instead of blaming the network.
+    case modelDownloadRejected(status: Int)
 
     var errorDescription: String? {
         switch self {
@@ -83,6 +86,15 @@ enum ASRError: Error, LocalizedError {
         case .modelLoadFailed:
             return String(
                 localized: "ThinkAloud couldn’t load the speech model. Open Model settings and retry."
+            )
+        case .modelDownloadRejected(let status):
+            if status == 401 || status == 403 {
+                return String(
+                    localized: "Hugging Face refused access to this model (\(status)). It may be gated, or require signing in and accepting its licence."
+                )
+            }
+            return String(
+                localized: "Hugging Face returned an error (\(status)). Wait a moment, then try again."
             )
         }
     }

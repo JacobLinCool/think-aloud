@@ -105,6 +105,9 @@ actor MLXAudioQwenRuntime: ASRRuntime {
         } catch {
             pollingTask?.cancel()
             currentStatus = .failed(String(describing: error))
+            if let status = ModelDownloadFailure.httpStatus(in: error) {
+                throw ASRError.modelDownloadRejected(status: status)
+            }
             throw ASRError.modelLoadFailed(String(describing: error))
         }
     }

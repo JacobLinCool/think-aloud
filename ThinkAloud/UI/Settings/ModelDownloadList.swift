@@ -215,7 +215,7 @@ struct ModelDownloadList: View {
             // The active model: show its live runtime readiness (Loaded / Loading / Downloading…).
             HStack(spacing: 6) {
                 StatusBadge(tone: container.modelManager.runtimeStatus.badge,
-                            text: container.modelManager.runtimeStatus.displayLabel)
+                            text: currentStatusLabel(downloaded: downloaded))
                 if downloaded {
                     Text("· \(formatBytes(size))")
                         .font(.caption)
@@ -236,6 +236,16 @@ struct ModelDownloadList: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
+    }
+
+    /// `.unloaded` means "not in memory", but sitting next to a Download button it reads as
+    /// "not downloaded". Spell out which one it is once the weights are actually on disk.
+    private func currentStatusLabel(downloaded: Bool) -> String {
+        let status = container.modelManager.runtimeStatus
+        if downloaded, case .unloaded = status {
+            return String(localized: "Downloaded · not in memory")
+        }
+        return status.displayLabel
     }
 
     private func download(_ profile: ModelProfile) {
@@ -265,9 +275,17 @@ struct ModelDownloadList: View {
             } catch {
                 if !Task.isCancelled {
                     NSLog("ThinkAloud: model download failed for \(profile.modelID): \(error)")
-                    self.error = String(
-                        localized: "The model couldn’t be downloaded. Check your connection and available storage, then try again."
-                    )
+                    // Only the Hub-rejected case knows better than the generic advice; anything
+                    // else really could be the connection or the disk.
+                    if let asrError = error as? ASRError,
+                       case .modelDownloadRejected = asrError,
+                       let reason = asrError.errorDescription {
+                        self.error = reason
+                    } else {
+                        self.error = String(
+                            localized: "The model couldn’t be downloaded. Check your connection and available storage, then try again."
+                        )
+                    }
                 }
             }
             downloadTasks[profile] = nil

@@ -2261,6 +2261,16 @@
         }
       }
     },
+    "Downloaded · not in memory": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已下載 · 未載入記憶體"
+          }
+        }
+      }
+    },
     "Downloading %lld%% (%@ / %@)": {
       "localizations": {
         "zh-Hant": {
@@ -2897,6 +2907,16 @@
         }
       }
     },
+    "Hugging Face refused access to this model (%lld). It may be gated, or require signing in and accepting its licence.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 拒絕存取這個模型（%lld）。它可能是 gated 模型，需要登入並同意授權條款。"
+          }
+        }
+      }
+    },
     "Hugging Face refused required dataset files: %@": {
       "localizations": {
         "zh-Hant": {
@@ -2923,6 +2943,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hugging Face 傳回 ThinkAloud 無法辨識的回應。請再試一次；若問題持續，請檢查 App 更新。"
+          }
+        }
+      }
+    },
+    "Hugging Face returned an error (%lld). Wait a moment, then try again.": {
+      "localizations": {
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hugging Face 回應錯誤（%lld）。稍候再試一次。"
           }
         }
       }
