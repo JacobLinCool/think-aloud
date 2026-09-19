@@ -12,7 +12,8 @@ private struct UncheckedBox<T>: @unchecked Sendable {
 
 /// Free function so the actor can `await` a Sendable wrapper instead of the raw non-Sendable model.
 private func loadQwenModel(modelID: String, cache: HubCache) async throws -> UncheckedBox<Qwen3ASRModel> {
-    let model = try await Qwen3ASRModel.fromPretrained(modelID, cache: cache)
+    let modelDir = try await ASRRuntimeFactory.resolveSnapshot(modelID: modelID, cache: cache)
+    let model = try await Qwen3ASRModel.fromModelDirectory(modelDir)
     return UncheckedBox(value: model)
 }
 

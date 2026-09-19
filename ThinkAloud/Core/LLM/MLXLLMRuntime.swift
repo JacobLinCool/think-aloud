@@ -112,7 +112,7 @@ actor MLXLLMRuntime: LLMRuntime {
 
     private func loadContainer() async throws -> UncheckedBox<ModelContainer> {
         let c = try await loadModelContainer(
-            from: #hubDownloader(HubClient(cache: cache)),
+            from: #hubDownloader(HubDownloadClient.make(cache: cache)),
             using: #huggingFaceTokenizerLoader(),
             id: modelID
         )
