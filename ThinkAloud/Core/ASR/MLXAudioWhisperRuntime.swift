@@ -9,7 +9,14 @@ private struct WhisperBox: @unchecked Sendable {
 }
 
 private func loadWhisperModel(modelID: String, cache: HubCache) async throws -> WhisperBox {
-    let model = try await WhisperModel.fromPretrained(modelID, cache: cache)
+    // Pattern list copied from `WhisperModel.fromPretrained` — Whisper repos keep the tokenizer
+    // in `*.model` / `merges.txt` / `vocab.json`, which the default allow-list misses.
+    let modelDir = try await ASRRuntimeFactory.resolveSnapshot(
+        modelID: modelID,
+        cache: cache,
+        additionalMatchingPatterns: ["*.json", "*.txt", "*.model", "merges.txt", "vocab.json"]
+    )
+    let model = try await WhisperModel.fromDirectory(modelDir, cache: cache)
     return WhisperBox(value: model)
 }
 
@@ -98,6 +105,9 @@ actor MLXAudioWhisperRuntime: ASRRuntime {
         } catch {
             pollingTask?.cancel()
             currentStatus = .failed(String(describing: error))
+            if let status = ModelDownloadFailure.httpStatus(in: error) {
+                throw ASRError.modelDownloadRejected(status: status)
+            }
             throw ASRError.modelLoadFailed(String(describing: error))
         }
     }

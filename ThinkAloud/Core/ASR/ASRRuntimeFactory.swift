@@ -1,5 +1,6 @@
 import Foundation
 import HuggingFace
+import MLXAudioCore
 
 /// Builds the right runtime for a `ModelProfile` and exposes the shared on-disk layout
 /// helpers (snapshot directory + "is the snapshot present?" check). Both family runtimes
@@ -22,6 +23,26 @@ enum ASRRuntimeFactory {
                 cacheDirectory: cacheDirectory
             )
         }
+    }
+
+    /// Downloads (or resolves from cache) a model snapshot. Mirrors what the mlx-audio
+    /// `fromPretrained` helpers do internally, minus their ambient Hugging Face token lookup —
+    /// see `HubDownloadClient`.
+    static func resolveSnapshot(
+        modelID: String,
+        cache: HubCache,
+        additionalMatchingPatterns: [String] = []
+    ) async throws -> URL {
+        guard let repoID = Repo.ID(rawValue: modelID) else {
+            throw ASRError.modelLoadFailed("Invalid repository ID: \(modelID)")
+        }
+        return try await ModelUtils.resolveOrDownloadModel(
+            client: HubDownloadClient.make(cache: cache),
+            cache: cache,
+            repoID: repoID,
+            requiredExtension: "safetensors",
+            additionalMatchingPatterns: additionalMatchingPatterns
+        )
     }
 
     static func snapshotDirectory(for modelID: String, cache: HubCache) -> URL {
